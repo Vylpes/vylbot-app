@@ -1,0 +1,22 @@
+{
+  "name": "vylbot-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"No tests specified\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vylpes/vylbot-app.git"
+  },
+  "author": "Vylpes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vylpes/vylbot-app/issues"
+  },
+  "homepage": "https://github.com/Vylpes/vylbot-app#readme",
+  "dependencies": {
+    "vylbot-core": "^1.0.4"
+  }
+}
