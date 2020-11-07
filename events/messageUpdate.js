@@ -1,18 +1,25 @@
+// Required components
 const { event } = require('vylbot-core');
 const { MessageEmbed } = require('discord.js');
 
+// Event variables
 const embedColor = "0x3050ba";
 const logchannel = "logs";
 
+// Event class
 class messageupdate extends event {
     constructor() {
+        // Set the event's run method
         super("messageupdate");
     }
 
+    // Run method
     messageupdate(oldMessage, newMessage) {
+        // If the user is a bot or the content didn't change, return
         if (newMessage.author.bot) return;
         if (oldMessage.content == newMessage.content) return;
 
+        // Create an embed with the message's information
         let embed = new MessageEmbed()
             .setTitle("Message Embed")
             .setColor(embedColor)
@@ -22,6 +29,7 @@ class messageupdate extends event {
             .addField("After", `\`\`\`${newMessage.content || "*none*"}\`\`\``)
             .setThumbnail(newMessage.author.displayAvatarURL({ type: 'png', dynamic: true }));
 
+        // Send the embed into the log channel
         newMessage.guild.channels.cache.find(channel => channel.name == logchannel).send(embed);
     }
 }
