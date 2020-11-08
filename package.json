@@ -4,7 +4,7 @@
   "description": "",
   "main": "bot.js",
   "scripts": {
-    "start": "node bot.js",
+    "start": "node vylbot.js",
     "test": "echo \"No tests specified\""
   },
   "repository": {
