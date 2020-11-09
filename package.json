@@ -2,7 +2,7 @@
   "name": "vylbot-app",
   "version": "1.0.0",
   "description": "",
-  "main": "bot.js",
+  "main": "vylbot.js",
   "scripts": {
     "start": "node vylbot.js",
     "test": "echo \"No tests specified\""
