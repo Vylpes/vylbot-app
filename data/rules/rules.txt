@@ -8,32 +8,24 @@ All servers are required to follow the Discord Terms of Service. This includes m
 - **English Only**
 In order for everyone to understand each other we would like to ask everyone to speak in English only.
 
-- **No NSFW content**
-Please keep all content SFW, including profile pictures, usernames, and nicknames.
+- **No NSFW or Obscene Content**
+This includes text, images, or links featuring nudity, sex, hard violence, or other graphically disturbing content.
 
-- **No Excessive Swearing**
-You may swear in moderation, but please don't overdo it.
+- **Treat Everyone with Respect**
+Absolutely no harassment, witch hunting, sexism, racism, or hate speech will be tolerated.
 
-- **Do Not Spam**
-This includes posting repeatedly the same text in a short amount of time, copypastas, etc.
+- **No spam or self promotion**
+Outside of #self-promo. This includes DMing fellow members.
 
-- **Caps Lock**
-Having your entire message in capitals counts as spam. You may do it to show emotion, but please keep it to a minimum. Same applies to bold characters. Grammatical use of all caps is allowed.
+- **Keep Politics to #general**
+And make sure it doesn't become too heated. Debate don't argue.
 
-- **Toxicity**
-Do not be toxic towards others.
-
-- **Backseat Modding**
-Do not backseat mod. Its annoying for the moderators. If no mod is available you can help but if a mod is there, let them handle it or ping them if needed.
-
-- **Politics**
-Please keep politics to #general, and make sure it doesn't become too heated. Debate don't argue.
-
-- **Self Promotion**
-Self promotion of your own content is allowed in #self-promo only. You, however, are allowed to post links to others' work in the appropriate channel.
-
-- **No Drama**
+- **Drama From Other Servers**
 Please don't bring up drama from other servers, keep that to DMs
+
+- **Bot Abuse**
+Don't abuse the bots or you will be blocked from using them
+
 > Moderators Discretion
 Don't argue with a mod's decision. A moderator's choice is final. If you have an issue with a member of the mod team DM me (Vylpes#0001).
 > Supporters
@@ -46,3 +38,4 @@ YouTube: https://www.youtube.com/channel/UCwPlzKwCmP5Q9bCX3fHk2BA
 Patreon: https://www.patreon.com/vylpes
 Twitch: https://www.twitch.tv/vylpes_
 Twitter: https://twitter.com/vylpes
+

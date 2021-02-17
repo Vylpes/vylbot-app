@@ -27,7 +27,7 @@ class clear extends command {
                 // Attempt to bulk delete the amount of messages specified as an argument
                 context.message.channel.bulkDelete(context.arguments[0]).then(() => {
                     // Public embed
-                    let embed = new MessageEmbed()
+                    const embed = new MessageEmbed()
                         .setColor(embedColor)
                         .setDescription(`${context.arguments[0]} messages were removed`);
 
@@ -48,7 +48,7 @@ class clear extends command {
 
 // Function to send an error embed
 function errorEmbed(context, message) {
-    let embed = new MessageEmbed()
+    const embed = new MessageEmbed()
         .setColor(embedColor)
         .setDescription(message);
 

@@ -23,28 +23,28 @@ class kick extends command {
         // Checks if the user has the mod role, set in the config json string
         if (context.message.member.roles.cache.find(role => role.name == context.client.config.kick.modrole)) {
             // Gets the first user pinged in the command
-            let user = context.message.mentions.users.first();
+            const user = context.message.mentions.users.first();
 
             // If a user was pinged
             if (user) {
                 // Gets the guild member object of the pinged user
-                let member = context.message.guild.member(user);
+                const member = context.message.guild.member(user);
 
                 // If the member object exists, i.e if the user is in the server
                 if (member) {
                     // Gets the part of the argument array which holds the reason
-                    let reasonArgs = context.arguments;
+                    const reasonArgs = context.arguments;
                     reasonArgs.splice(0, 1);
 
                     // Joins the reason into a string
-                    let reason = reasonArgs.join(" ");
+                    const reason = reasonArgs.join(" ");
 
                     // If the server is available
                     if (context.message.guild.available) {
                         // If the bot client can kick the mentioned member
                         if (member.kickable) {
                             // The embed to go into the bot log
-                            let embedLog = new MessageEmbed()
+                            const embedLog = new MessageEmbed()
                                 .setTitle("Member Kicked")
                                 .setColor(embedColor)
                                 .addField("User", `${user} \`${user.tag}\``, true)
@@ -53,7 +53,7 @@ class kick extends command {
                                 .setThumbnail(user.displayAvatarURL);
 
                             // The embed to go into channel the command was sent in
-                            let embedPublic = new MessageEmbed()
+                            const embedPublic = new MessageEmbed()
                                 .setColor(embedColor)
                                 .setDescription(`${user} has been kicked`);
 
@@ -83,7 +83,7 @@ class kick extends command {
 
 // Function to post an embed in case of an error
 function errorEmbed(context, message) {
-    let embed = new MessageEmbed()
+    const embed = new MessageEmbed()
         .setColor(embedColor)
         .setDescription(message);
 

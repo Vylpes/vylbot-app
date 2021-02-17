@@ -4,7 +4,7 @@ const { MessageEmbed } = require('discord.js');
 
 // Event variables
 const embedColor = "0x3050ba";
-const logchannel = "logs";
+const logchannel = "member-logs";
 
 // Event class
 class guildmemberupdate extends event {
@@ -19,12 +19,11 @@ class guildmemberupdate extends event {
         if (oldMember.nickname != newMember.nickname) {
             // Get the user's name with tag, their old nickname and their new nickname
             // If they didn't have a nickname or they removed it, set it to "none" in italics
-            let memberName = newMember.user.tag;
-            let oldNickname = oldMember.nickname || "*none*";
-            let newNickname = newMember.nickname || "*none*";
+            const oldNickname = oldMember.nickname || "*none*";
+            const newNickname = newMember.nickname || "*none*";
 
             // Create the embed with the user's information
-            let embed = new MessageEmbed()
+            const embed = new MessageEmbed()
                 .setTitle("Nickname Changed")
                 .setColor(embedColor)
                 .addField("User", `${newMember} \`${newMember.user.tag}\``)
@@ -34,7 +33,7 @@ class guildmemberupdate extends event {
                 .setThumbnail(newMember.user.displayAvatarURL({ type: 'png', dynamic: true }));
 
             // Send the embed in the log channel
-            newMember.guild.channels.cache.find(channel => channel.name == lgochannel).send(embed);
+            newMember.guild.channels.cache.find(channel => channel.name == logchannel).send(embed);
         }
     }
 }

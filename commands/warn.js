@@ -23,26 +23,26 @@ class warn extends command {
         // If the user has the mod role
         if (context.message.member.roles.cache.find(role => role.name == context.client.config.warn.modrole)) {
             // Get the user first pinged in the message
-            let user = context.message.mentions.users.first();
+            const user = context.message.mentions.users.first();
 
             // If the user object exists
             if (user) {
                 // Get the guild member object from the user
-                let member = context.message.guild.member(user);
+                const member = context.message.guild.member(user);
 
                 // If the member object exists. i.e. if the user is in the server
                 if (member) {
                     // Get the part of the argument array which the reason is in
-                    let reasonArgs = context.arguments;
+                    const reasonArgs = context.arguments;
                     reasonArgs.splice(0, 1);
 
                     // Join the array into a string
-                    let reason = reasonArgs.join(" ");
+                    const reason = reasonArgs.join(" ");
 
                     // If the server is available
                     if (context.message.guild.available) {
                         // The embed to go into the bot log
-                        let embedLog = new MessageEmbed()
+                        const embedLog = new MessageEmbed()
                             .setColor(embedColor)
                             .setTitle("Member Warned")
                             .addField("User", `${user} \`${user.tag}\``, true)
@@ -51,7 +51,7 @@ class warn extends command {
                             .setThumbnail(user.displayAvatarURL);
 
                         // The embed to go into the channel the command was sent in
-                        let embedPublic = new MessageEmbed()
+                        const embedPublic = new MessageEmbed()
                             .setColor(embedColor)
                             .setDescription(`${user} has been warned`)
                             .addField("Reason", reason || "*none*");
@@ -76,7 +76,7 @@ class warn extends command {
 
 // Send an embed in case of an error
 function errorEmbed(context, message) {
-    let embed = new MessageEmbed()
+    const embed = new MessageEmbed()
         .setColor(embedColor)
         .setDescription(message);
 
