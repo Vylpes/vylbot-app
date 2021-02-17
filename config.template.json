@@ -1,0 +1,54 @@
+{
+    "token": "",
+    "prefix": "d!",
+    "commands": [
+        "commands"
+    ],
+    "events": [
+        "events"
+    ],
+    "about": {
+        "description": "Discord Bot for Vylpes' Den",
+        "version": "2.1",
+        "core-ver": "1.0.4",
+        "author": "Vylpes",
+        "date": "17-Feb-21"
+    },
+    "ban": {
+        "modrole": "Moderator",
+        "logchannel": "mod-logs"
+    },
+    "clear": {
+        "modrole": "Moderator",
+        "logchannel": "mod-logs"
+    },
+    "eval": {
+        "ownerid": "147392775707426816"
+    },
+    "kick": {
+        "modrole": "Moderator",
+        "logchannel": "mod-logs"
+    },
+    "mute": {
+        "modrole": "Moderator",
+        "logchannel": "mod-logs",
+        "muterole": "Muted"
+    },
+    "partner": {
+        "adminrole": "Admin",
+        "partnersfile": "data/partner/partner.json"
+    },
+    "rules": {
+        "adminrole": "Admin",
+        "rulesfile": "data/rules/rules.txt"
+    },
+    "unmute": {
+        "modrole": "Moderator",
+        "logchannel": "mod-logs",
+        "muterole": "Muted"
+    },
+    "warn": {
+        "modrole": "Moderator",
+        "logchannel": "mod-logs"
+    }
+}

@@ -21,7 +21,7 @@ class role extends command {
     // Run method
     role(context) {
         // Get the array containing the assignable roles
-        let roles = context.client.config.role.assignable;
+        const roles = context.client.config.role.assignable;
         let requestedRole = "";
 
         // If the arguments specifys a specific role
@@ -37,13 +37,13 @@ class role extends command {
             // If a matching assignable role was found
             if (requestedRole != "") {
                 // Get the role object from the server with the role name
-                let role = context.message.guild.roles.cache.find(r => r.name == requestedRole);
+                const role = context.message.guild.roles.cache.find(r => r.name == requestedRole);
 
                 // If the user already has the role, remove the role from them and send an embed
                 // Otherwise, add the role and send an embed
                 if (context.message.member.roles.cache.find(r => r.name == requestedRole)) {
                     context.message.member.roles.remove(role).then(() => {
-                        let embed = new MessageEmbed()
+                        const embed = new MessageEmbed()
                             .setColor(embedColor)
                             .setDescription(`Removed role: ${requestedRole}`);
 
@@ -51,7 +51,7 @@ class role extends command {
                     }).catch(err => {
                         console.error(err);
 
-                        let errorEmbed = new MessageEmbed()
+                        const errorEmbed = new MessageEmbed()
                             .setColor(embedColor)
                             .setDescription("An error occured. Please check logs");
 
@@ -59,7 +59,7 @@ class role extends command {
                     });
                 } else { // If the user doesn't have the role
                     context.message.member.roles.add(role).then(() => {
-                        let embed = new MessageEmbed()
+                        const embed = new MessageEmbed()
                             .setColor(embedColor)
                             .setDescription(`Gave role: ${requestedRole}`);
 
@@ -67,7 +67,7 @@ class role extends command {
                     }).catch(err => {
                         console.error(err);
 
-                        let errorEmbed = new MessageEmbed()
+                        const errorEmbed = new MessageEmbed()
                             .setColor(embedColor)
                             .setDescription("An error occured. Please check logs");
 
@@ -75,7 +75,7 @@ class role extends command {
                     });
                 }
             } else { // If the role can't be found, send an error embed
-                let embed = new MessageEmbed()
+                const embed = new MessageEmbed()
                     .setColor(embedColor)
                     .setDescription("This role does not exist, see assignable roles with the role command (no arguments)");
 
@@ -91,7 +91,7 @@ class role extends command {
             }
 
             // Create an embed containing the text
-            let embed = new MessageEmbed()
+            const embed = new MessageEmbed()
                 .setTitle("Roles")
                 .setColor(embedColor)
                 .setDescription(rolesString);

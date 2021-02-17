@@ -23,28 +23,28 @@ class ban extends command {
         // If the user has the modrole (set in config.ban.modrole)
         if (context.message.guild.roles.cache.find(role => role.name == context.client.config.ban.modrole)) {
             // Gets the user pinged in the command
-            let user = context.message.mentions.users.first();
+            const user = context.message.mentions.users.first();
 
             // If the user pinged is a valid user
             if (user) {
                 // Get the guild member object from the pinged user
-                let member = context.message.guild.member(user);
+                const member = context.message.guild.member(user);
 
                 // If the member object exists, i.e. if they are in the server
                 if (member) {
                     // Get the arguments and remove what isn't the reason
-                    let reasonArgs = context.arguments;
+                    const reasonArgs = context.arguments;
                     reasonArgs.splice(0, 1);
 
                     // Join the array into a string
-                    let reason = reasonArgs.join(" ");
+                    const reason = reasonArgs.join(" ");
 
                     // If the guild is available to work with
                     if (context.message.guild.available) {
                         // If the bot client is able to ban the member
                         if (member.bannable) {
                             // The Message Embed which goes into the bot log
-                            let embedLog = new MessageEmbed()
+                            const embedLog = new MessageEmbed()
                                 .setTitle("Member Banned")
                                 .setColor(embedColor)
                                 .addField("User", `${user} \`${user.tag}\``, true)
@@ -53,7 +53,7 @@ class ban extends command {
                                 .setThumbnail(user.displayAvatarURL);
 
                             // The Message Embed which goes into the public channel the message was sent in
-                            let embedPublic = new MessageEmbed()
+                            const embedPublic = new MessageEmbed()
                                 .setColor(embedColor)
                                 .setDescription(`${user} has been banned`);
 
@@ -83,7 +83,7 @@ class ban extends command {
 
 // Post an error embed
 function errorEmbed(context, message) {
-    let embed = new MessageEmbed()
+    const embed = new MessageEmbed()
         .setColor(embedColor)
         .setDescription(message);
 

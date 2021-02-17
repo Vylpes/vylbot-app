@@ -1,7 +1,7 @@
 // Required components
 const { command } = require('vylbot-core');
 const { MessageEmbed } = require('discord.js');
-const randomPuppy = require('random-puppy');
+const randomBunny = require('random-bunny');
 
 // Command variables
 const embedColor = "0x3050ba";
@@ -18,11 +18,13 @@ class bunny extends command {
     // Run method
     bunny(context) {
         // Get a random post from r/Rabbits
-        randomPuppy('Rabbits').then(image => {
+        randomBunny('rabbits', 'hot', (image, title) => {
             // Create an embed containing the random image
-            let embed = new MessageEmbed()
+            const embed = new MessageEmbed()
                 .setColor(embedColor)
-                .setImage(image);
+                .setTitle(title)
+                .setImage(image)
+                .setFooter('r/Rabbits');
 
             // Send the embed
             context.message.channel.send(embed);

@@ -4,7 +4,7 @@ const { MessageEmbed } = require('discord.js');
 
 // Event variables
 const embedColor = "0x3050ba";
-const logchannel = "logs";
+const logchannel = "member-logs";
 
 // Event class
 class guildmemberremove extends event {
@@ -16,7 +16,7 @@ class guildmemberremove extends event {
     // Run method
     guildmemberremove(member) {
         // Create an embed with the user's information
-        let embed = new MessageEmbed()
+        const embed = new MessageEmbed()
             .setTitle("Member Left")
             .setColor(embedColor)
             .addField("User", `${member} \`${member.user.tag}\``)

@@ -4,7 +4,7 @@ const { MessageEmbed } = require('discord.js');
 
 // Event variables
 const embedColor = "0x3050ba";
-const logchannel = "logs";
+const logchannel = "message-logs";
 
 // Event class
 class messageupdate extends event {
@@ -20,8 +20,8 @@ class messageupdate extends event {
         if (oldMessage.content == newMessage.content) return;
 
         // Create an embed with the message's information
-        let embed = new MessageEmbed()
-            .setTitle("Message Embed")
+        const embed = new MessageEmbed()
+            .setTitle("Message Edited")
             .setColor(embedColor)
             .addField("User", `${newMessage.author} \`${newMessage.author.tag}\``)
             .addField("Channel", newMessage.channel)

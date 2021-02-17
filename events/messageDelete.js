@@ -4,7 +4,7 @@ const { MessageEmbed } = require('discord.js');
 
 // Event variables
 const embedColor = "0x3050ba";
-const logchannel = "logs";
+const logchannel = "message-logs";
 
 // Event class
 class messagedelete extends event {
@@ -16,7 +16,7 @@ class messagedelete extends event {
     // Run method
     messagedelete(message) {
         // Create an embed with the message's information
-        let embed = new MessageEmbed()
+        const embed = new MessageEmbed()
             .setTitle("Message Deleted")
             .setColor(embedColor)
             .addField("User", `${message.author} \`${message.author.tag}\``)

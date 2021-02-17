@@ -8,25 +8,6 @@ Download the latest version from the [releases page](https://github.com/Vylpes/v
 
 Copy the config template file and fill in the strings.
 
-```json
-{
-    "token": "",
-    "prefix": "v!",
-    "commands": [
-        "essentials/commands",
-        "commands"
-    ],
-    "events": [
-        "events"
-    ]
-}
-```
-
-* **Token:** Your bot's token
-* **Prefix** The command prefix
-* **Commands:** An array of the folders which contain your commands
-* **Events:** An array of the folders which contain your events
-
 ## Usage
 
 Implement the client using something like:
