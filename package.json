@@ -4,7 +4,8 @@
   "description": "",
   "main": "vylbot.js",
   "scripts": {
-    "start": "node vylbot.js",
+    "start": "node out/bot.js",
+    "build": "tsc",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -19,11 +20,13 @@
   },
   "homepage": "https://github.com/Vylpes/vylbot-app#readme",
   "dependencies": {
+    "discord.js": "^12.5.1",
     "emoji-regex": "^9.2.0",
     "random-bunny": "^1.0.0",
-    "vylbot-core": "^1.0.4"
+    "tsyringe": "^4.4.0"
   },
   "devDependencies": {
-    "eslint": "^7.17.0"
+    "eslint": "^7.17.0",
+    "typescript": "^4.2.3"
   }
 }
