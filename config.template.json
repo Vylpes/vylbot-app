@@ -1,6 +1,6 @@
 {
     "token": "",
-    "prefix": "d!",
+    "prefix": "v!",
     "commands": [
         "commands"
     ],
@@ -9,10 +9,10 @@
     ],
     "about": {
         "description": "Discord Bot for Vylpes' Den",
-        "version": "2.1",
+        "version": "2.1.2",
         "core-ver": "1.0.4",
         "author": "Vylpes",
-        "date": "17-Feb-21"
+        "date": "29-May-21"
     },
     "ban": {
         "modrole": "Moderator",
