@@ -12,7 +12,7 @@
         "version": "2.2",
         "core-ver": "1.0.4",
         "author": "Vylpes",
-        "date": "22/04/2021"
+        "date": "23/11/2021"
     },
     "ban": {
         "modrole": "Moderator",
@@ -50,5 +50,12 @@
     "warn": {
         "modrole": "Moderator",
         "logchannel": "mod-logs"
+    },
+    "role": {
+        "assignable": [
+            "Notify",
+            "VotePings",
+            "ProjectUpdates"
+        ]
     }
 }
