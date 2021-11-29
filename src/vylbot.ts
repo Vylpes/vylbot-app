@@ -12,6 +12,7 @@ if (!process.env.ROLES_MODERATOR) throw "ROLES_MODERATOR is required in .env";
 if (!process.env.CHANNELS_LOGS_MESSAGE) throw "CHANNELS_LOGS_MESSAGE is required in .env";
 if (!process.env.CHANNELS_LOGS_MEMBER) throw "CHANNELS_LOGS_MEMBER is required in .env";
 if (!process.env.CHANNELS_LOGS_MOD) throw "CHANNELS_LOGS_MOD is required in .env";
+if (!process.env.COMMANDS_MUTE_ROLE) throw "COMMANDS_MUTE_ROLE is required in .env";
 
 const client = new CoreClient();
 client.start();
