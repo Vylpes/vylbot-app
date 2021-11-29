@@ -9,7 +9,7 @@ export default class LogEmbed extends MessageEmbed {
     constructor(context: ICommandContext, title: string) {
         super();
         
-        super.setColor(process.env.ERROR_EMBED!);
+        super.setColor(process.env.EMBED_COLOUR!);
         super.setTitle(title);
 
         this._context = context;
