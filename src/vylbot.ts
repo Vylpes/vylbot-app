@@ -11,7 +11,8 @@ const requiredConfigs = [
     "CHANNELS_LOGS_MESSAGE",
     "CHANNELS_LOGS_MEMBER",
     "CHANNELS_LOGS_MOD",
-    "COMMANDS_ROLE_ROLES"
+    "COMMANDS_ROLE_ROLES",
+    "COMMANDS_RULES_FILE"
 ];
 
 requiredConfigs.forEach(config => {
