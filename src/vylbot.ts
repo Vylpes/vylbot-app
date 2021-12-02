@@ -3,16 +3,22 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-// Ensure required data is in dotenv
-if (!process.env.EMBED_COLOUR) throw "EMBED_COLOUR is required in .env";
-if (!process.env.EMBED_COLOUR_ERROR) throw "EMBED_COLOUR_ERROR is required in .env";
+const requiredConfigs = [
+    "EMBED_COLOUR",
+    "EMBED_COLOUR_ERROR",
+    "ROLES_MODERATOR",
+    "ROLES_MUTED",
+    "CHANNELS_LOGS_MESSAGE",
+    "CHANNELS_LOGS_MEMBER",
+    "CHANNELS_LOGS_MOD",
+    "COMMANDS_ROLE_ROLES"
+];
 
-if (!process.env.ROLES_MODERATOR) throw "ROLES_MODERATOR is required in .env";
-
-if (!process.env.CHANNELS_LOGS_MESSAGE) throw "CHANNELS_LOGS_MESSAGE is required in .env";
-if (!process.env.CHANNELS_LOGS_MEMBER) throw "CHANNELS_LOGS_MEMBER is required in .env";
-if (!process.env.CHANNELS_LOGS_MOD) throw "CHANNELS_LOGS_MOD is required in .env";
-if (!process.env.COMMANDS_MUTE_ROLE) throw "COMMANDS_MUTE_ROLE is required in .env";
+requiredConfigs.forEach(config => {
+    if (!process.env[config]) {
+        throw `${config} is required in .env`;
+    }
+});
 
 const client = new CoreClient();
 client.start();

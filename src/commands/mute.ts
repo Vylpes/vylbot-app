@@ -54,7 +54,7 @@ export default class Mute extends Command {
         const publicEmbed = new PublicEmbed(context, "", `${targetUser} has been muted`);
         publicEmbed.AddReason(reason);
 
-        const mutedRole = context.message.guild.roles.cache.find(role => role.name == process.env.COMMANDS_MUTE_ROLE);
+        const mutedRole = context.message.guild.roles.cache.find(role => role.name == process.env.ROLES_MUTED);
 
         if (!mutedRole) {
             const embed = new ErrorEmbed(context, ErrorMessages.RoleNotFound);
