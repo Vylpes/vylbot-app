@@ -1131,10 +1131,10 @@ v8-compile-cache@^2.0.3:
   resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.3.0.tgz#2de19618c66dc247dcfb6f99338035d8245a2cee"
   integrity sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==
 
-vylbot-core@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/vylbot-core/-/vylbot-core-2.0.2.tgz#8f83b836b423e9f0812abb86368672716dc1fa75"
-  integrity sha512-Og+cdPG+ExjzjhqVDb1hac7pm6KfLvT85NMBoL7hfbSPsg11wFwLKI6toqVnbvbqMKzKnOpIvijo4jx+fdUDsA==
+vylbot-core@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/vylbot-core/-/vylbot-core-2.0.3.tgz#e7d844bc54e72b14f06f14b63866854e3b846d55"
+  integrity sha512-RxABRcwhVIVZcIssVP8yosLlUXzcdrNLiYJzcvkAIz4KeHfoARcxjsz2vG2x9GIzeFpfn/hjrPvjFC5lN6zclw==
   dependencies:
     discord.js "^12.3.1"
     dotenv "^10.0.0"
