@@ -19,7 +19,7 @@
   "dependencies": {
     "dotenv": "^10.0.0",
     "emoji-regex": "^9.2.0",
-    "random-bunny": "^1.0.0",
+    "random-bunny": "^2.0.0",
     "vylbot-core": "^2.0.2"
   },
   "devDependencies": {
