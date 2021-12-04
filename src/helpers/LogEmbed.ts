@@ -38,7 +38,7 @@ export default class LogEmbed extends MessageEmbed {
             .find(channel => channel.name == name) as TextChannel;
         
         if (!channel) {
-            const errorEmbed = new ErrorEmbed(this._context, ErrorMessages.CantFindChannel);
+            const errorEmbed = new ErrorEmbed(this._context, ErrorMessages.ChannelNotFound);
             errorEmbed.SendToCurrentChannel();
             return;
         }
