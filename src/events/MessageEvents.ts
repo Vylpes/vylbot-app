@@ -9,6 +9,7 @@ export default class MessageEvents extends Event {
 
     public override messageDelete(message: Message) {
         if (!message.guild) return;
+        if (message.author.bot) return;
 
         const embed = new EventEmbed(message.guild, "Message Deleted");
         embed.AddUser("User", message.author, true);
