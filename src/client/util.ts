@@ -5,6 +5,8 @@ import { IBaseResponse } from "../contracts/IBaseResponse";
 import { Command } from "../type/command";
 import { Event } from "../type/event";
 import { ICommandContext } from "../contracts/ICommandContext";
+import ICommandItem from "../contracts/ICommandItem";
+import IEventItem from "../contracts/IEventItem";
 
 export interface IUtilResponse extends IBaseResponse {
     context?: {
@@ -16,8 +18,7 @@ export interface IUtilResponse extends IBaseResponse {
 
 // Util Class
 export class Util {
-
-    public loadCommand(name: string, args: string[], message: Message): IUtilResponse {
+    public loadCommand(name: string, args: string[], message: Message, commands: ICommandItem[]): IUtilResponse {
         if (!message.member) return {
             valid: false,
             message: "Member is not part of message",
@@ -36,97 +37,66 @@ export class Util {
 
         const folder = process.env.FOLDERS_COMMANDS;
 
-        if (existsSync(`${process.cwd()}/${folder}/`)) {
-            if (existsSync(`${process.cwd()}/${folder}/${name}.ts`)) {
-                const commandFile = require(`${process.cwd()}/${folder}/${name}.ts`).default;
-                const command = new commandFile() as Command;
+        const item = commands.find(x => x.Name == name);
 
-                const requiredRoles = command._roles;
+        if (!item) {
+            message.reply('Command not found');
 
-                if (!command._category) command._category = "none";
-    
-                for (const i in requiredRoles) {
-                    if (!message.member.roles.cache.find(role => role.name == requiredRoles[i])) {
-                        message.reply(`You require the \`${requiredRoles[i]}\` role to run this command`);
-
-                        return {
-                            valid: false,
-                            message: `You require the \`${requiredRoles[i]}\` role to run this command`,
-                        };
-                    }
-                }
-				
-				const context: ICommandContext = {
-					name: name,
-					args: args,
-					message: message,
-				}
-    
-                // Run the command and pass the command context with it
-                command.execute(context);
-
-                return {
-                    valid: true,
-                    context: {
-                        name: name,
-                        args: args,
-                        message: message,
-                    }
-                }
-            } else {
-                return {
-                    valid: false,
-                    message: "File does not exist",
-                }
-            }
-        } else {
             return {
                 valid: false,
-                message: "Command folder does not exist",
+                message: "Command not found"
+            };
+        }
+
+        const requiredRoles = item.Command._roles;
+
+        for (const i in requiredRoles) {
+            if (!message.member.roles.cache.find(role => role.name == requiredRoles[i])) {
+                message.reply(`You require the \`${requiredRoles[i]}\` role to run this command`);
+
+                return {
+                    valid: false,
+                    message: `You require the \`${requiredRoles[i]}\` role to run this command`
+                };
             }
+        }
+
+        const context: ICommandContext = {
+            name: name,
+            args: args,
+            message: message
+        };
+
+        item.Command.execute(context);
+
+        return {
+            valid: true,
+            context: context
         }
     }
 
     // Load the events
-    loadEvents(client: Client): IUtilResponse {
+    loadEvents(client: Client, events: IEventItem[]): IUtilResponse {
         const folder = process.env.FOLDERS_EVENTS;
-		
-        if (existsSync(`${process.cwd()}/${folder}/`)) {
-            const eventFiles = readdirSync(`${process.cwd()}/${folder}/`);
-			
-            for (let i = 0; i < eventFiles.length; i++) {
-                if (eventFiles[i].includes('.ts')) {
-					const eventName = eventFiles[i].split('.')[0];
-					
-                    const file = require(`${process.cwd()}/${folder}/${eventName}.ts`);
-					
-                    const event = new file[eventName]() as Event;
-					
-					// Load events
-					client.on('channelCreate', event.channelCreate);
-					client.on('channelDelete', event.channelDelete);
-					client.on('channelUpdate', event.channelUpdate);
-					client.on('guildBanAdd', event.guildBanAdd);
-					client.on('guildBanRemove', event.guildBanRemove);
-					client.on('guildCreate', event.guildCreate);
-					client.on('guildMemberAdd', event.guildMemberAdd);
-					client.on('guildMemberRemove', event.guildMemberRemove);
-					client.on('guildMemberUpdate', event.guildMemberUpdate);
-					client.on('message', event.message);
-					client.on('messageDelete', event.messageDelete);
-					client.on('messageUpdate', event.messageUpdate);
-					client.on('ready', event.ready);
-                }
-            }
 
-            return {
-                valid: true,
-            }
-        } else {
-            return {
-                valid: false,
-                message: "Event folder does not exist",
-            }
+        events.forEach((e) => {
+            client.on('channelCreate', e.Event.channelCreate);
+            client.on('channelDelete', e.Event.channelDelete);
+            client.on('channelUpdate', e.Event.channelUpdate);
+            client.on('guildBanAdd', e.Event.guildBanAdd);
+            client.on('guildBanRemove', e.Event.guildBanRemove);
+            client.on('guildCreate', e.Event.guildCreate);
+            client.on('guildMemberAdd', e.Event.guildMemberAdd);
+            client.on('guildMemberRemove', e.Event.guildMemberRemove);
+            client.on('guildMemberUpdate', e.Event.guildMemberUpdate);
+            client.on('message', e.Event.message);
+            client.on('messageDelete', e.Event.messageDelete);
+            client.on('messageUpdate', e.Event.messageUpdate);
+            client.on('ready', e.Event.ready);
+        });
+
+        return {
+            valid: true
         }
     }
 }

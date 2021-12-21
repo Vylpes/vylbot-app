@@ -5,7 +5,7 @@ import PublicEmbed from "../helpers/embeds/PublicEmbed";
 import { Command } from "../type/command";
 import { ICommandContext } from "../contracts/ICommandContext";
 
-export default class Bane extends Command {
+export default class Ban extends Command {
     constructor() {
         super();
         

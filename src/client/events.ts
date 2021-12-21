@@ -1,5 +1,6 @@
 import { Message } from "discord.js";
 import { IBaseResponse } from "../contracts/IBaseResponse";
+import ICommandItem from "../contracts/ICommandItem";
 import { Util } from "./util";
 
 export interface IEventResponse extends IBaseResponse {
@@ -20,7 +21,7 @@ export class Events {
 
     // Emit when a message is sent
     // Used to check for commands
-    public onMessage(message: Message): IEventResponse {
+    public onMessage(message: Message, commands: ICommandItem[]): IEventResponse {
         if (!message.guild) return {
             valid: false,
             message: "Message was not sent in a guild, ignoring.",
@@ -42,7 +43,7 @@ export class Events {
                 message: "Command name was not found",
             };
 
-            const res = this._util.loadCommand(name, args, message);
+            const res = this._util.loadCommand(name, args, message, commands);
 
             if (!res.valid) {
                 return {
