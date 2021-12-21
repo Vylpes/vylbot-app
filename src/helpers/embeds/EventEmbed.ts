@@ -1,18 +1,15 @@
-import { MessageEmbed, TextChannel, User } from "discord.js";
-import { ICommandContext } from "vylbot-core";
-import ErrorMessages from "../constants/ErrorMessages";
-import ErrorEmbed from "./ErrorEmbed";
+import { MessageEmbed, TextChannel, User, Guild } from "discord.js";
 
-export default class LogEmbed extends MessageEmbed {
-    private _context: ICommandContext;
+export default class EventEmbed extends MessageEmbed {
+    private _guild: Guild;
 
-    constructor(context: ICommandContext, title: string) {
+    constructor(guild: Guild, title: string) {
         super();
         
         super.setColor(process.env.EMBED_COLOUR!);
         super.setTitle(title);
 
-        this._context = context;
+        this._guild = guild;
     }
 
     // Detail methods
@@ -29,17 +26,12 @@ export default class LogEmbed extends MessageEmbed {
     }
 
     // Send methods
-    public SendToCurrentChannel() {
-        this._context.message.channel.send(this);
-    }
-
     public SendToChannel(name: string) {
-        const channel = this._context.message.guild?.channels.cache
+        const channel = this._guild.channels.cache
             .find(channel => channel.name == name) as TextChannel;
         
         if (!channel) {
-            const errorEmbed = new ErrorEmbed(this._context, ErrorMessages.ChannelNotFound);
-            errorEmbed.SendToCurrentChannel();
+            console.error(`Unable to find channel ${name}`);
             return;
         }
 

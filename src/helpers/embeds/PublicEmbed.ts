@@ -1,5 +1,5 @@
 import { MessageEmbed } from "discord.js";
-import { ICommandContext } from "vylbot-core";
+import { ICommandContext } from "../../contracts/ICommandContext";
 
 export default class PublicEmbed extends MessageEmbed {
     private _context: ICommandContext;

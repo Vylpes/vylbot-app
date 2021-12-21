@@ -1,17 +1,18 @@
-import { MessageEmbed, TextChannel, User, Guild } from "discord.js";
-import ErrorMessages from "../constants/ErrorMessages";
+import { MessageEmbed, TextChannel, User } from "discord.js";
+import ErrorMessages from "../../constants/ErrorMessages";
+import { ICommandContext } from "../../contracts/ICommandContext";
 import ErrorEmbed from "./ErrorEmbed";
 
-export default class EventEmbed extends MessageEmbed {
-    private _guild: Guild;
+export default class LogEmbed extends MessageEmbed {
+    private _context: ICommandContext;
 
-    constructor(guild: Guild, title: string) {
+    constructor(context: ICommandContext, title: string) {
         super();
         
         super.setColor(process.env.EMBED_COLOUR!);
         super.setTitle(title);
 
-        this._guild = guild;
+        this._context = context;
     }
 
     // Detail methods
@@ -28,12 +29,17 @@ export default class EventEmbed extends MessageEmbed {
     }
 
     // Send methods
+    public SendToCurrentChannel() {
+        this._context.message.channel.send(this);
+    }
+
     public SendToChannel(name: string) {
-        const channel = this._guild.channels.cache
+        const channel = this._context.message.guild?.channels.cache
             .find(channel => channel.name == name) as TextChannel;
         
         if (!channel) {
-            console.error(`Unable to find channel ${name}`);
+            const errorEmbed = new ErrorEmbed(this._context, ErrorMessages.ChannelNotFound);
+            errorEmbed.SendToCurrentChannel();
             return;
         }
 

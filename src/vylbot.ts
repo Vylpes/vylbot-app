@@ -1,4 +1,4 @@
-import { CoreClient } from "vylbot-core";
+import { CoreClient } from "./client/client";
 import * as dotenv from "dotenv";
 
 dotenv.config();
