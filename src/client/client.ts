@@ -53,5 +53,7 @@ export class CoreClient extends Client {
         const item: IEventItem = {
             Event: event,
         };
+
+        this._eventItems.push(item);
     }
 }

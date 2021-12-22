@@ -1,4 +1,3 @@
-import { Message } from "discord.js";
 import { ICommandContext } from "../contracts/ICommandContext";
 
 export class Command {
