@@ -1,7 +1,8 @@
-import { Command, ICommandContext } from "vylbot-core";
-import ErrorEmbed from "../helpers/ErrorEmbed";
-import PublicEmbed from "../helpers/PublicEmbed";
+import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
+import PublicEmbed from "../helpers/embeds/PublicEmbed";
 import { Role as DiscordRole } from "discord.js";
+import { Command } from "../type/command";
+import { ICommandContext } from "../contracts/ICommandContext";
 
 export default class Role extends Command {
     constructor() {

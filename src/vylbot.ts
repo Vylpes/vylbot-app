@@ -1,5 +1,6 @@
-import { CoreClient } from "vylbot-core";
+import { CoreClient } from "./client/client";
 import * as dotenv from "dotenv";
+import Register from "./Register";
 
 dotenv.config();
 
@@ -22,4 +23,8 @@ requiredConfigs.forEach(config => {
 });
 
 const client = new CoreClient();
+
+Register.RegisterCommands(client);
+Register.RegisterEvents(client);
+
 client.start();

@@ -1,7 +1,8 @@
-import { Command, ICommandContext } from "vylbot-core";
-import ErrorEmbed from "../helpers/ErrorEmbed";
+import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
 import { TextChannel } from "discord.js";
-import PublicEmbed from "../helpers/PublicEmbed";
+import PublicEmbed from "../helpers/embeds/PublicEmbed";
+import { Command } from "../type/command";
+import { ICommandContext } from "../contracts/ICommandContext";
 
 export default class Clear extends Command {
     constructor() {

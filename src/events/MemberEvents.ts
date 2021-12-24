@@ -1,6 +1,6 @@
-import { Event } from "vylbot-core";
+import { Event } from "../type/event";
 import { GuildMember } from "discord.js";
-import EventEmbed from "../helpers/EventEmbed";
+import EventEmbed from "../helpers/embeds/EventEmbed";
 import GuildMemberUpdate from "./MemberEvents/GuildMemberUpdate";
 
 export default class MemberEvents extends Event {

@@ -1,6 +1,6 @@
-import { Event } from "vylbot-core";
+import { Event } from "../type/event";
 import { Message } from "discord.js";
-import EventEmbed from "../helpers/EventEmbed";
+import EventEmbed from "../helpers/embeds/EventEmbed";
 
 export default class MessageEvents extends Event {
     constructor() {

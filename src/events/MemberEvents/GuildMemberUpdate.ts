@@ -1,5 +1,5 @@
 import { GuildMember } from "discord.js";
-import EventEmbed from "../../helpers/EventEmbed";
+import EventEmbed from "../../helpers/embeds/EventEmbed";
 
 export default class GuildMemberUpdate {
     private _oldMember: GuildMember;

@@ -1,10 +1,11 @@
-import { Command, ICommandContext } from "vylbot-core";
-import ErrorEmbed from "../helpers/ErrorEmbed";
+import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
 import ErrorMessages from "../constants/ErrorMessages";
-import LogEmbed from "../helpers/LogEmbed";
-import PublicEmbed from "../helpers/PublicEmbed";
+import LogEmbed from "../helpers/embeds/LogEmbed";
+import PublicEmbed from "../helpers/embeds/PublicEmbed";
+import { Command } from "../type/command";
+import { ICommandContext } from "../contracts/ICommandContext";
 
-export default class Bane extends Command {
+export default class Ban extends Command {
     constructor() {
         super();
         

@@ -1,7 +1,8 @@
-import { Command, ICommandContext } from "vylbot-core";
-import ErrorEmbed from "../helpers/ErrorEmbed";
-import LogEmbed from "../helpers/LogEmbed";
-import PublicEmbed from "../helpers/PublicEmbed";
+import { ICommandContext } from "../contracts/ICommandContext";
+import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
+import LogEmbed from "../helpers/embeds/LogEmbed";
+import PublicEmbed from "../helpers/embeds/PublicEmbed";
+import { Command } from "../type/command";
 
 export default class Warn extends Command {
     constructor() {

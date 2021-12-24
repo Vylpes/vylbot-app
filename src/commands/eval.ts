@@ -1,6 +1,7 @@
-import { Command, ICommandContext } from "vylbot-core";
-import ErrorEmbed from "../helpers/ErrorEmbed";
-import PublicEmbed from "../helpers/PublicEmbed";
+import { ICommandContext } from "../contracts/ICommandContext";
+import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
+import PublicEmbed from "../helpers/embeds/PublicEmbed";
+import { Command } from "../type/command";
 
 export default class Evaluate extends Command {
     constructor() {
