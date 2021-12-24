@@ -1,6 +1,6 @@
 import { Util } from "../../src/client/util";
 
-import { Client, Guild, Message, Role, SnowflakeUtil, TextChannel, User } from "discord.js";
+import { Client, Message } from "discord.js";
 import fs from "fs";
 import { mock } from "jest-mock-extended";
 import { Command } from "../../src/type/command";
@@ -22,9 +22,6 @@ describe('LoadCommand', () => {
       FOLDERS_COMMANDS: 'commands',
       FOLDERS_EVENTS: 'events',
     }
-    
-    process.cwd = jest.fn().mockReturnValue("../../tests/__mocks");
-    fs.existsSync = jest.fn().mockReturnValue(true);
   
     const message = {
       member: {
@@ -61,9 +58,6 @@ describe('LoadCommand', () => {
       FOLDERS_COMMANDS: 'commands',
       FOLDERS_EVENTS: 'events',
     }
-    
-    process.cwd = jest.fn().mockReturnValue("../../tests/__mocks");
-    fs.existsSync = jest.fn().mockReturnValue(true);
   
     const message = {
       member: null
@@ -94,9 +88,6 @@ describe('LoadCommand', () => {
       FOLDERS_COMMANDS: 'commands',
       FOLDERS_EVENTS: 'events',
     }
-    
-    process.cwd = jest.fn().mockReturnValue("../../tests/__mocks");
-    fs.existsSync = jest.fn().mockReturnValue(true);
   
     const message = {
       member: {
@@ -133,9 +124,6 @@ describe('LoadCommand', () => {
       FOLDERS_COMMANDS: 'commands',
       FOLDERS_EVENTS: 'events',
     }
-    
-    process.cwd = jest.fn().mockReturnValue("../../tests/__mocks");
-    fs.existsSync = jest.fn().mockReturnValue(true);
   
     const message = {
       member: {
@@ -176,9 +164,6 @@ describe('LoadCommand', () => {
       COMMANDS_DISABLED: 'test',
       COMMANDS_DISABLED_MESSAGE: 'disabled',
     }
-    
-    process.cwd = jest.fn().mockReturnValue("../../tests/__mocks");
-    fs.existsSync = jest.fn().mockReturnValue(true);
   
     const message = {
       member: {
@@ -220,9 +205,6 @@ describe('LoadCommand', () => {
       FOLDERS_EVENTS: 'events',
       COMMANDS_DISABLED: 'test',
     }
-    
-    process.cwd = jest.fn().mockReturnValue("../../tests/__mocks");
-    fs.existsSync = jest.fn().mockReturnValue(true);
   
     const message = {
       member: {
@@ -264,9 +246,6 @@ describe('LoadCommand', () => {
       FOLDERS_EVENTS: 'events',
       COMMANDS_DISABLED: 'other',
     }
-    
-    process.cwd = jest.fn().mockReturnValue("../../tests/__mocks");
-    fs.existsSync = jest.fn().mockReturnValue(true);
   
     const message = {
       member: {
@@ -310,9 +289,6 @@ describe('LoadCommand', () => {
       FOLDERS_COMMANDS: 'commands',
       FOLDERS_EVENTS: 'events',
     }
-    
-    process.cwd = jest.fn().mockReturnValue("../../tests/__mocks");
-    fs.existsSync = jest.fn().mockReturnValue(true);
   
     const message = {
       member: {
@@ -346,10 +322,6 @@ describe('LoadEvents', () => {
       FOLDERS_EVENTS: 'events',
     }
   
-    process.cwd = jest.fn().mockReturnValue("../../tests/__mocks");
-    fs.existsSync = jest.fn().mockReturnValue(true);
-    fs.readdirSync = jest.fn().mockReturnValue(["normal.ts"]);
-  
     const client = {
       on: jest.fn(),
     } as unknown as Client;
@@ -379,10 +351,6 @@ describe('LoadEvents', () => {
       FOLDERS_COMMANDS: 'commands',
       FOLDERS_EVENTS: 'events',
     }
-  
-    process.cwd = jest.fn().mockReturnValue("../../tests/__mocks");
-    fs.existsSync = jest.fn().mockReturnValue(true);
-    fs.readdirSync = jest.fn().mockReturnValue(["normal"]);
   
     const client = {
       on: jest.fn(),

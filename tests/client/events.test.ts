@@ -1,5 +1,5 @@
 import { Events } from "../../src/client/events";
-import { Message, Client, TextChannel, Guild, SnowflakeUtil, DMChannel } from "discord.js";
+import { Message } from "discord.js";
 import { Util } from "../../src/client/util";
 import ICommandItem from "../../src/contracts/ICommandItem";
 import { Command } from "../../src/type/command";

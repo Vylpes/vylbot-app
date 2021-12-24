@@ -5,9 +5,7 @@ import * as dotenv from "dotenv";
 import { Events } from "../../src/client/events";
 import { Util } from "../../src/client/util";
 import { Command } from "../../src/type/command";
-import ICommandItem from "../../src/contracts/ICommandItem";
 import { mock } from "jest-mock-extended";
-import IEventItem from "../../src/contracts/IEventItem";
 import { Event } from "../../src/type/event";
 
 jest.mock("discord.js");
