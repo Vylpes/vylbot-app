@@ -4,6 +4,11 @@ import { Client } from "discord.js";
 import * as dotenv from "dotenv";
 import { Events } from "../../src/client/events";
 import { Util } from "../../src/client/util";
+import { Command } from "../../src/type/command";
+import ICommandItem from "../../src/contracts/ICommandItem";
+import { mock } from "jest-mock-extended";
+import IEventItem from "../../src/contracts/IEventItem";
+import { Event } from "../../src/type/event";
 
 jest.mock("discord.js");
 jest.mock("dotenv");
@@ -135,5 +140,30 @@ describe('Start', () => {
         const coreClient = new CoreClient();
         
         expect(() => coreClient.start()).toThrow("FOLDERS_EVENTS is not defined in .env");
+    });
+});
+
+describe('RegisterCommand', () => {
+    test('Expect command added to register', () => {
+        const cmd = mock<Command>();
+        
+        const client = new CoreClient();
+        client.RegisterCommand("test", cmd);
+
+        expect(client.commandItems.length).toBe(1);
+        expect(client.commandItems[0].Name).toBe("test");
+        expect(client.commandItems[0].Command).toBe(cmd);
+    });
+});
+
+describe('RegisterEvent', () => {
+    test('Expect event added to register', () => {
+        const evt = mock<Event>();
+        
+        const client = new CoreClient();
+        client.RegisterEvent(evt);
+
+        expect(client.eventItems.length).toBe(1);
+        expect(client.eventItems[0].Event).toBe(evt);
     });
 });

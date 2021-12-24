@@ -302,6 +302,39 @@ describe('LoadCommand', () => {
     expect(cmd.execute).toBeCalled();
     expect(otherCmd.execute).not.toBeCalled();
   });
+
+  test('Given command is not found in register, expect command not found error', () => {
+    process.env = {
+      BOT_TOKEN: 'TOKEN',
+      BOT_PREFIX: '!',
+      FOLDERS_COMMANDS: 'commands',
+      FOLDERS_EVENTS: 'events',
+    }
+    
+    process.cwd = jest.fn().mockReturnValue("../../tests/__mocks");
+    fs.existsSync = jest.fn().mockReturnValue(true);
+  
+    const message = {
+      member: {
+        roles: {
+          cache: {
+            find: jest.fn().mockReturnValue(true),
+          }
+        },
+      },
+      reply: jest.fn(),
+    } as unknown as Message;
+
+    const commands: ICommandItem[] = [];
+  
+    const util = new Util();
+  
+    const result = util.loadCommand("test", [ "first" ], message, commands);
+  
+    expect(result.valid).toBeFalsy();
+    expect(result.message).toBe('Command not found');
+    expect(message.reply).toBeCalledWith('Command not found');
+  });
 });
 
 describe('LoadEvents', () => {
