@@ -6,7 +6,7 @@
   "typings": "./dist",
   "scripts": {
     "build": "tsc",
-    "start": "ts-node ./src/vylbot",
+    "start": "node ./dist/vylbot",
     "test": "jest"
   },
   "repository": {
@@ -30,7 +30,6 @@
   "devDependencies": {
     "@types/node": "^16.11.10",
     "eslint": "^7.17.0",
-    "ts-node": "^10.4.0",
     "typescript": "^4.5.2"
   }
 }
