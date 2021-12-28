@@ -1,5 +1,4 @@
-import { Collection, Guild, GuildChannel, GuildChannelManager, GuildManager, GuildMember, Message, MessageEmbed, TextChannel, User } from "discord.js";
-import { mock } from "jest-mock-extended";
+import { GuildMember, Message, TextChannel, User } from "discord.js";
 import Ban from "../../src/commands/ban";
 import { ICommandContext } from "../../src/contracts/ICommandContext";
 
