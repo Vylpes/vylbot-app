@@ -30,7 +30,7 @@ export default class Help extends Command {
 
     public SendAll(context: ICommandContext): ICommandReturnContext {
         const allCommands = this.GetAllCommandData();
-        const cateogries = this.DetermineCategories(allCommands);
+        const cateogries = [...new Set(allCommands.map(x => x.Category!))];;
 
         const embed = new PublicEmbed(context, "Commands", "");
 
@@ -118,17 +118,5 @@ export default class Help extends Command {
         };
 
         return data;
-    }
-
-    public DetermineCategories(commands: ICommandData[]): string[] {
-        const result: string[] = [];
-
-        commands.forEach(cmd => {
-            if (!result.includes(cmd.Category!)) {
-                result.push(cmd.Category!);
-            }
-        });
-
-        return result;
     }
 }

@@ -2,6 +2,8 @@ import Help, { ICommandData } from "../../src/commands/help";
 import { Message } from "discord.js";
 import { ICommandContext } from "../../src/contracts/ICommandContext";
 
+const oldCwd = process.cwd();
+
 describe('Constructor', () => {
 	test('Expect properties to be set', () => {
 		const help = new Help();
@@ -86,13 +88,10 @@ describe('SendAll', () => {
 
 		help.GetAllCommandData = jest.fn()
 			.mockReturnValue([commandData0, commandData1]);
-		help.DetermineCategories = jest.fn()
-			.mockReturnValue(['general']);
 
 		const result = help.SendAll(context);
 
 		expect(help.GetAllCommandData).toBeCalled();
-		expect(help.DetermineCategories).toBeCalled();
 		expect(messageChannelSend).toBeCalled();
 
 		expect(result.embeds.length).toBe(1);
@@ -198,5 +197,71 @@ describe('SendSingle', () => {
 		const errorEmbed = result.embeds[0];
 
 		expect(errorEmbed.description).toBe('Command does not exist');
+	});
+});
+
+describe('GetAllCommandData', () => {
+	test('Expect array of command data to be returned', () => {
+		process.env = {
+			FOLDERS_COMMANDS: "commands"
+		};
+
+		process.cwd = jest.fn()
+			.mockReturnValue(`${oldCwd}/tests/_mocks`);
+
+		const help = new Help();
+
+		const result = help.GetAllCommandData();
+
+		expect(result.length).toBe(1);
+
+		// Mock Command
+		const mockCommand = result[0];
+
+		expect(mockCommand.Exists).toBeTruthy();
+		expect(mockCommand.Name).toBe("mockCmd");
+		expect(mockCommand.Category).toBe("General");
+
+		expect(mockCommand.Roles!.length).toBe(1);
+		expect(mockCommand.Roles![0]).toBe("Moderator");
+	});
+});
+
+describe('GetCommandData', () => {
+	test('Given command exists, expect data to be returned', () => {
+		process.env = {
+			FOLDERS_COMMANDS: "commands"
+		};
+
+		process.cwd = jest.fn()
+			.mockReturnValue(`${oldCwd}/tests/_mocks`);
+
+		const help = new Help();
+
+		const result = help.GetCommandData('mockCmd');
+
+		expect(result.Exists).toBeTruthy();
+		expect(result.Name).toBe("mockCmd");
+		expect(result.Category).toBe("General");
+
+		expect(result.Roles!.length).toBe(1);
+		expect(result.Roles![0]).toBe("Moderator");
+	});
+
+	test('Given command does not exist, expect exists false to be returned', () => {
+		process.env = {
+			FOLDERS_COMMANDS: "commands"
+		};
+
+		const oldCwd = process.cwd();
+
+		process.cwd = jest.fn()
+			.mockReturnValue(`${oldCwd}/tests/_mocks`);
+
+		const help = new Help();
+
+		const result = help.GetCommandData('none');
+
+		expect(result.Exists).toBeFalsy();
 	});
 });
