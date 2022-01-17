@@ -1,5 +1,6 @@
 import ErrorMessages from "../constants/ErrorMessages";
 import { ICommandContext } from "../contracts/ICommandContext";
+import ICommandReturnContext from "../contracts/ICommandReturnContext";
 import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
 import LogEmbed from "../helpers/embeds/LogEmbed";
 import PublicEmbed from "../helpers/embeds/PublicEmbed";
@@ -15,13 +16,17 @@ export default class Kick extends Command {
         ];
     }
 
-    public override async execute(context: ICommandContext) {
+    public override async execute(context: ICommandContext): Promise<ICommandReturnContext> {
         const targetUser = context.message.mentions.users.first();
 
         if (!targetUser) {
             const embed = new ErrorEmbed(context, "User does not exist");
             embed.SendToCurrentChannel();
-            return;
+
+            return {
+                commandContext: context,
+                embeds: [embed]
+            };
         }
 
         const targetMember = context.message.guild?.member(targetUser);
@@ -29,7 +34,11 @@ export default class Kick extends Command {
         if (!targetMember) {
             const embed = new ErrorEmbed(context, "User is not in this server");
             embed.SendToCurrentChannel();
-            return;
+            
+            return {
+                commandContext: context,
+                embeds: [embed]
+            };
         }
 
         const reasonArgs = context.args;
@@ -38,13 +47,20 @@ export default class Kick extends Command {
         const reason = reasonArgs.join(" ");
         
         if (!context.message.guild?.available) {
-            return;
+            return {
+                commandContext: context,
+                embeds: []
+            };
         }
 
         if (!targetMember.kickable) {
             const embed = new ErrorEmbed(context, ErrorMessages.InsufficientBotPermissions);
             embed.SendToCurrentChannel();
-            return;
+            
+            return {
+                commandContext: context,
+                embeds: [embed]
+            };
         }
 
         const logEmbed = new LogEmbed(context, "Member Kicked");
@@ -58,5 +74,10 @@ export default class Kick extends Command {
 
         logEmbed.SendToModLogsChannel();
         publicEmbed.SendToCurrentChannel();
+
+        return {
+            commandContext: context,
+            embeds: [logEmbed, publicEmbed]
+        };
     }
 }
