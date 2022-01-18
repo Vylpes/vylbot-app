@@ -26,7 +26,7 @@ describe('Execute', () => {
     test('Given user has permission, expect user to be kicked', async () => {
         process.env = {
             CHANNELS_LOGS_MOD: 'mod-logs'
-        }
+        };
 
         const user = {
             displayAvatarURL: jest.fn(),
