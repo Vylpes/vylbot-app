@@ -1,4 +1,5 @@
 import { ICommandContext } from "../contracts/ICommandContext";
+import ICommandReturnContext from "../contracts/ICommandReturnContext";
 import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
 import PublicEmbed from "../helpers/embeds/PublicEmbed";
 import { Command } from "../type/command";
@@ -10,14 +11,18 @@ export default class Poll extends Command {
         super._category = "General";
     }
 
-    public override async execute(context: ICommandContext) {
+    public override async execute(context: ICommandContext): Promise<ICommandReturnContext> {
         const argsJoined = context.args.join(" ");
         const argsSplit = argsJoined.split(";");
 
         if (argsSplit.length < 3 || argsSplit.length > 10) {
             const errorEmbed = new ErrorEmbed(context, "Usage: <title>;<option 1>;<option 2>... (separate options with semicolons), maximum of 9 options");
             errorEmbed.SendToCurrentChannel();
-            return;
+            
+            return {
+                commandContext: context,
+                embeds: [errorEmbed]
+            };
         }
 
         const title = argsSplit[0];
@@ -53,5 +58,10 @@ export default class Poll extends Command {
         if (context.message.deletable) {
             await context.message.delete({ reason: "Poll command" });
         }
+
+        return {
+            commandContext: context,
+            embeds: [embed]
+        };
     }
 }
