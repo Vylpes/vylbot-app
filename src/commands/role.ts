@@ -3,6 +3,7 @@ import PublicEmbed from "../helpers/embeds/PublicEmbed";
 import { Role as DiscordRole } from "discord.js";
 import { Command } from "../type/command";
 import { ICommandContext } from "../contracts/ICommandContext";
+import ICommandReturnContext from "../contracts/ICommandReturnContext";
 
 export default class Role extends Command {
     constructor() {
@@ -11,30 +12,39 @@ export default class Role extends Command {
         super._category = "General";
     }
 
-    public override execute(context: ICommandContext) {
+    public override async execute(context: ICommandContext) {
         const roles = process.env.COMMANDS_ROLE_ROLES!.split(',');
 
         if (context.args.length == 0) {
             this.SendRolesList(context, roles);
         } else {
-            this.ToggleRole(context, roles);
+            await this.ToggleRole(context, roles);
         }
     }
 
-    private SendRolesList(context: ICommandContext, roles: String[]) {
+    public SendRolesList(context: ICommandContext, roles: String[]): ICommandReturnContext {
         const description = `Do ${process.env.BOT_PREFIX}role <role> to get the role!\n${roles.join('\n')}`;
 
         const embed = new PublicEmbed(context, "Roles", description);
         embed.SendToCurrentChannel();
+
+        return {
+            commandContext: context,
+            embeds: [embed]
+        };
     }
 
-    private ToggleRole(context: ICommandContext, roles: String[]) {
+    public async ToggleRole(context: ICommandContext, roles: String[]): Promise<ICommandReturnContext> {
         const requestedRole = context.args[0];
 
         if (!roles.includes(requestedRole)) {
             const errorEmbed = new ErrorEmbed(context, "This role isn't marked as assignable, to see a list of assignable roles, run this command without any parameters");
             errorEmbed.SendToCurrentChannel();
-            return;
+
+            return {
+                commandContext: context,
+                embeds: [errorEmbed]
+            };
         }
 
         const assignRole = context.message.guild?.roles.cache.find(x => x.name == requestedRole);
@@ -42,29 +52,48 @@ export default class Role extends Command {
         if (!assignRole) {
             const errorEmbed = new ErrorEmbed(context, "The current server doesn't have this role. Please contact the server's moderators");
             errorEmbed.SendToCurrentChannel();
-            return;
+            
+            return {
+                commandContext: context,
+                embeds: [errorEmbed]
+            };
         }
 
         const role = context.message.member?.roles.cache.find(x => x.name == requestedRole)
 
         if (!role) {
-            this.AddRole(context, assignRole);
+            await this.AddRole(context, assignRole);
         } else {
-            this.RemoveRole(context, assignRole);
+            await this.RemoveRole(context, assignRole);
         }
+
+        return {
+            commandContext: context,
+            embeds: []
+        };
     }
 
-    private async AddRole(context: ICommandContext, role: DiscordRole) {
+    public async AddRole(context: ICommandContext, role: DiscordRole): Promise<ICommandReturnContext> {
         await context.message.member?.roles.add(role);
 
         const embed = new PublicEmbed(context, "", `Gave role: ${role.name}`);
         embed.SendToCurrentChannel();
+
+        return {
+            commandContext: context,
+            embeds: [embed]
+        };
     }
 
-    private async RemoveRole(context: ICommandContext, role: DiscordRole) {
+    public async RemoveRole(context: ICommandContext, role: DiscordRole): Promise<ICommandReturnContext> {
         await context.message.member?.roles.remove(role);
 
         const embed = new PublicEmbed(context, "", `Removed role: ${role.name}`);
         embed.SendToCurrentChannel();
+
+        return {
+            commandContext: context,
+            embeds: [embed]
+        };
     }
 }
