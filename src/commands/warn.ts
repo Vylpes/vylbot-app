@@ -1,4 +1,5 @@
 import { ICommandContext } from "../contracts/ICommandContext";
+import ICommandReturnContext from "../contracts/ICommandReturnContext";
 import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
 import LogEmbed from "../helpers/embeds/LogEmbed";
 import PublicEmbed from "../helpers/embeds/PublicEmbed";
@@ -14,21 +15,29 @@ export default class Warn extends Command {
         ];
     }
 
-    public override execute(context: ICommandContext) {
+    public override execute(context: ICommandContext): ICommandReturnContext {
         const user = context.message.mentions.users.first();
 
         if (!user) {
-            const errorEmbed = new ErrorEmbed(context, "Please specify a valid user");
+            const errorEmbed = new ErrorEmbed(context, "User does not exist");
             errorEmbed.SendToCurrentChannel();
-            return;
+            
+            return {
+                commandContext: context,
+                embeds: [errorEmbed]
+            };
         }
 
         const member = context.message.guild?.member(user);
 
         if (!member) {
-            const errorEmbed = new ErrorEmbed(context, "Please specify a valid user");
+            const errorEmbed = new ErrorEmbed(context, "User is not in this server");
             errorEmbed.SendToCurrentChannel();
-            return;
+            
+            return {
+                commandContext: context,
+                embeds: [errorEmbed]
+            };
         }
 
         const reasonArgs = context.args;
@@ -37,7 +46,10 @@ export default class Warn extends Command {
         const reason = reasonArgs.join(" ");
 
         if (!context.message.guild?.available) {
-            return;
+            return {
+                commandContext: context,
+                embeds: []
+            };
         }
 
         const logEmbed = new LogEmbed(context, "Member Warned");
@@ -50,5 +62,10 @@ export default class Warn extends Command {
 
         logEmbed.SendToModLogsChannel();
         publicEmbed.SendToCurrentChannel();
+
+        return {
+            commandContext: context,
+            embeds: [logEmbed, publicEmbed]
+        };
     }
 }
