@@ -50,5 +50,12 @@
     "warn": {
         "modrole": "Moderator",
         "logchannel": "mod-logs"
+    },
+    "role": {
+        "assignable": [
+            "Notify",
+            "VotePings",
+            "ProjectUpdates"
+        ]
     }
 }
