@@ -9,10 +9,10 @@
     ],
     "about": {
         "description": "Discord Bot for Vylpes' Den",
-        "version": "2.1.2",
+        "version": "2.1.3",
         "core-ver": "1.0.4",
         "author": "Vylpes",
-        "date": "29-May-21"
+        "date": "22-Jan-22"
     },
     "ban": {
         "modrole": "Moderator",
@@ -50,5 +50,12 @@
     "warn": {
         "modrole": "Moderator",
         "logchannel": "mod-logs"
+    },
+    "role": {
+        "assignable": [
+            "Notify",
+            "VotePings",
+            "ProjectUpdates"
+        ]
     }
 }
