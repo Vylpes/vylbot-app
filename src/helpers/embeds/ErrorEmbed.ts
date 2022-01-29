@@ -2,7 +2,7 @@ import { MessageEmbed } from "discord.js";
 import { ICommandContext } from "../../contracts/ICommandContext";
 
 export default class ErrorEmbed extends MessageEmbed {
-    private _context: ICommandContext;
+    public context: ICommandContext;
 
     constructor(context: ICommandContext, message: String) {
         super();
@@ -10,10 +10,10 @@ export default class ErrorEmbed extends MessageEmbed {
         super.setColor(process.env.EMBED_COLOUR_ERROR!);
         super.setDescription(message);
 
-        this._context = context;
+        this.context = context;
     }
 
     public SendToCurrentChannel() {
-        this._context.message.channel.send(this);
+        this.context.message.channel.send(this);
     }
 }
