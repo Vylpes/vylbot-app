@@ -1,7 +1,9 @@
 import { Events } from "../../src/client/events";
-
-import { Message, Client, TextChannel, Guild, SnowflakeUtil, DMChannel } from "discord.js";
+import { Message } from "discord.js";
 import { Util } from "../../src/client/util";
+import ICommandItem from "../../src/contracts/ICommandItem";
+import { Command } from "../../src/type/command";
+import { mock } from "jest-mock-extended";
 
 jest.mock("../../src/client/util");
 
@@ -27,10 +29,19 @@ describe('OnMessage', () => {
             },
             content: "!test first",
         } as unknown as Message;
+
+        const cmd = mock<Command>();
+
+        const commandItem: ICommandItem = {
+            Name: "test",
+            Command: cmd
+        };
+
+        const commands: ICommandItem[] = [ commandItem ];
     
         const events = new Events();
     
-        const result = await events.onMessage(message);
+        const result = await events.onMessage(message, commands);
     
         expect(result.valid).toBeTruthy();
     
@@ -58,10 +69,19 @@ describe('OnMessage', () => {
             },
             content: "!test first",
         } as unknown as Message;
+
+        const cmd = mock<Command>();
+
+        const commandItem: ICommandItem = {
+            Name: "test",
+            Command: cmd
+        };
+
+        const commands: ICommandItem[] = [ commandItem ];
     
         const events = new Events();
     
-        const result = await events.onMessage(message);
+        const result = await events.onMessage(message, commands);
     
         expect(result.valid).toBeFalsy();
         expect(result.message).toBe("Message was not sent in a guild, ignoring.");
@@ -84,10 +104,19 @@ describe('OnMessage', () => {
             },
             content: "!test first",
         } as unknown as Message;
+
+        const cmd = mock<Command>();
+
+        const commandItem: ICommandItem = {
+            Name: "test",
+            Command: cmd
+        };
+
+        const commands: ICommandItem[] = [ commandItem ];
     
         const events = new Events();
     
-        const result = await events.onMessage(message);
+        const result = await events.onMessage(message, commands);
     
         expect(result.valid).toBeFalsy();
         expect(result.message).toBe("Message was sent by a bot, ignoring.");
@@ -110,10 +139,19 @@ describe('OnMessage', () => {
             },
             content: "This is a standard message",
         } as unknown as Message;
+
+        const cmd = mock<Command>();
+
+        const commandItem: ICommandItem = {
+            Name: "test",
+            Command: cmd
+        };
+
+        const commands: ICommandItem[] = [ commandItem ];
     
         const events = new Events();
     
-        const result = await events.onMessage(message);
+        const result = await events.onMessage(message, commands);
     
         expect(result.valid).toBeFalsy();
         expect(result.message).toBe("Message was not a command, ignoring.");
@@ -136,10 +174,19 @@ describe('OnMessage', () => {
             },
             content: "!",
         } as unknown as Message;
+
+        const cmd = mock<Command>();
+
+        const commandItem: ICommandItem = {
+            Name: "test",
+            Command: cmd
+        };
+
+        const commands: ICommandItem[] = [ commandItem ];
     
         const events = new Events();
     
-        const result = await events.onMessage(message);
+        const result = await events.onMessage(message, commands);
     
         expect(result.valid).toBeFalsy();
         expect(result.message).toBe("Command name was not found");
@@ -162,10 +209,19 @@ describe('OnMessage', () => {
             },
             content: "!test first",
         } as unknown as Message;
+
+        const cmd = mock<Command>();
+
+        const commandItem: ICommandItem = {
+            Name: "test",
+            Command: cmd
+        };
+
+        const commands: ICommandItem[] = [ commandItem ];
     
         const events = new Events();
     
-        const result = await events.onMessage(message);
+        const result = await events.onMessage(message, commands);
     
         expect(result.valid).toBeFalsy();
         expect(result.message).toBe("Command failed");

@@ -15,6 +15,14 @@ export class CoreClient extends Client {
     private _events: Events;
     private _util: Util;
 
+    public get commandItems(): ICommandItem[] {
+        return this._commandItems;
+    }
+
+    public get eventItems(): IEventItem[] {
+        return this._eventItems;
+    }
+
     constructor() {
         super();
         dotenv.config();

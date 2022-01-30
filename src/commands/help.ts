@@ -3,9 +3,10 @@ import { ICommandContext } from "../contracts/ICommandContext";
 import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
 import PublicEmbed from "../helpers/embeds/PublicEmbed";
 import StringTools from "../helpers/StringTools";
+import ICommandReturnContext from "../contracts/ICommandReturnContext";
 import { Command } from "../type/command";
 
-interface ICommandData {
+export interface ICommandData {
     Exists: boolean;
     Name?: string;
     Category?: string;
@@ -19,17 +20,17 @@ export default class Help extends Command {
         super._category = "General";
     }
 
-    public override execute(context: ICommandContext) {
+    public override execute(context: ICommandContext): ICommandReturnContext {
         if (context.args.length == 0) {
-            this.SendAll(context);
+            return this.SendAll(context);
         } else {
-            this.SendSingle(context);
+            return this.SendSingle(context);
         }
     }
 
-    private SendAll(context: ICommandContext) {
+    public SendAll(context: ICommandContext): ICommandReturnContext {
         const allCommands = this.GetAllCommandData();
-        const cateogries = this.DetermineCategories(allCommands);
+        const cateogries = [...new Set(allCommands.map(x => x.Category!))];;
 
         const embed = new PublicEmbed(context, "Commands", "");
 
@@ -40,15 +41,24 @@ export default class Help extends Command {
         });
 
         embed.SendToCurrentChannel();
+
+	return {
+		commandContext: context,
+		embeds: [ embed ]
+	};
     }
 
-    private SendSingle(context: ICommandContext) {
+    public SendSingle(context: ICommandContext): ICommandReturnContext {
         const command = this.GetCommandData(context.args[0]);
 
         if (!command.Exists) {
             const errorEmbed = new ErrorEmbed(context, "Command does not exist");
             errorEmbed.SendToCurrentChannel();
-            return;
+	    
+            return {
+		    commandContext: context,
+		    embeds: [ errorEmbed ]
+	    };
         }
 
         const embed = new PublicEmbed(context, StringTools.Capitalise(command.Name!), "");
@@ -56,9 +66,14 @@ export default class Help extends Command {
         embed.addField("Required Roles", StringTools.Capitalise(command.Roles!.join(", ")) || "*none*");
 
         embed.SendToCurrentChannel();
+
+	return {
+		commandContext: context,
+		embeds: [ embed ]
+	};
     }
 
-    private GetAllCommandData(): ICommandData[] {
+    public GetAllCommandData(): ICommandData[] {
         const result: ICommandData[] = [];
 
         const folder = process.env.FOLDERS_COMMANDS!;
@@ -82,7 +97,7 @@ export default class Help extends Command {
         return result;
     }
 
-    private GetCommandData(name: string): ICommandData {
+    public GetCommandData(name: string): ICommandData {
         const folder = process.env.FOLDERS_COMMANDS!;
         const path = `${process.cwd()}/${folder}/${name}.ts`;
 
@@ -103,17 +118,5 @@ export default class Help extends Command {
         };
 
         return data;
-    }
-
-    private DetermineCategories(commands: ICommandData[]): string[] {
-        const result: string[] = [];
-
-        commands.forEach(cmd => {
-            if (!result.includes(cmd.Category!)) {
-                result.push(cmd.Category!);
-            }
-        });
-
-        return result;
     }
 }

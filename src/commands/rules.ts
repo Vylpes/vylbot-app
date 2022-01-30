@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from "fs";
 import { ICommandContext } from "../contracts/ICommandContext";
+import ICommandReturnContext from "../contracts/ICommandReturnContext";
 import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
 import PublicEmbed from "../helpers/embeds/PublicEmbed";
 import { Command } from "../type/command";
@@ -21,11 +22,15 @@ export default class Rules extends Command {
         ];
     }
 
-    public override execute(context: ICommandContext) {
-        if (!existsSync(process.env.COMMANDS_RULES_FILE!)) {
+    public override execute(context: ICommandContext): ICommandReturnContext {
+        if (!existsSync(`${process.cwd()}/${process.env.COMMANDS_RULES_FILE!}`)) {
             const errorEmbed = new ErrorEmbed(context, "Rules file doesn't exist");
             errorEmbed.SendToCurrentChannel();
-            return;
+
+            return {
+                commandContext: context,
+                embeds: [errorEmbed]
+            };
         }
 
         const rulesFile = readFileSync(`${process.cwd()}/${process.env.COMMANDS_RULES_FILE}`).toString();
@@ -43,5 +48,10 @@ export default class Rules extends Command {
         });
 
         embeds.forEach(x => x.SendToCurrentChannel());
+
+        return {
+            commandContext: context,
+            embeds: embeds
+        };
     }
 }

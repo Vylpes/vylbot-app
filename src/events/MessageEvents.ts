@@ -1,29 +1,60 @@
 import { Event } from "../type/event";
 import { Message } from "discord.js";
 import EventEmbed from "../helpers/embeds/EventEmbed";
+import IEventReturnContext from "../contracts/IEventReturnContext";
 
 export default class MessageEvents extends Event {
     constructor() {
         super();
     }
 
-    public override messageDelete(message: Message) {
-        if (!message.guild) return;
-        if (message.author.bot) return;
+    public override messageDelete(message: Message): IEventReturnContext {
+        if (!message.guild) {
+            return {
+                embeds: []
+            };
+        }
+
+        if (message.author.bot) {
+            return {
+                embeds: []
+            };
+        }
 
         const embed = new EventEmbed(message.guild, "Message Deleted");
         embed.AddUser("User", message.author, true);
         embed.addField("Channel", message.channel, true);
         embed.addField("Content", `\`\`\`${message.content || "*none*"}\`\`\``);
-        embed.addField("Attachments", `\`\`\`${message.attachments.map(x => x.url).join("\n")}`);
+
+        if (message.attachments.size > 0) {
+            embed.addField("Attachments", `\`\`\`${message.attachments.map(x => x.url).join("\n")}\`\`\``);
+        }
 
         embed.SendToMessageLogsChannel();
+
+        return {
+            embeds: [embed]
+        };
     }
 
-    public override messageUpdate(oldMessage: Message, newMessage: Message) {
-        if (!newMessage.guild) return;
-        if (newMessage.author.bot) return;
-        if (oldMessage.content == newMessage.content) return;
+    public override messageUpdate(oldMessage: Message, newMessage: Message): IEventReturnContext {
+        if (!newMessage.guild){
+            return {
+                embeds: []
+            };
+        }
+
+        if (newMessage.author.bot) {
+            return {
+                embeds: []
+            };
+        }
+
+        if (oldMessage.content == newMessage.content) {
+            return {
+                embeds: []
+            };
+        }
 
         const embed = new EventEmbed(newMessage.guild, "Message Edited");
         embed.AddUser("User", newMessage.author, true);
@@ -32,5 +63,9 @@ export default class MessageEvents extends Event {
         embed.addField("After", `\`\`\`${newMessage.content || "*none*"}\`\`\``);
 
         embed.SendToMessageLogsChannel();
+
+        return {
+            embeds: [embed]
+        };
     }
 }

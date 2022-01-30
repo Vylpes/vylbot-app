@@ -4,7 +4,7 @@ import { ICommandContext } from "../../contracts/ICommandContext";
 import ErrorEmbed from "./ErrorEmbed";
 
 export default class LogEmbed extends MessageEmbed {
-    private _context: ICommandContext;
+    public context: ICommandContext;
 
     constructor(context: ICommandContext, title: string) {
         super();
@@ -12,33 +12,33 @@ export default class LogEmbed extends MessageEmbed {
         super.setColor(process.env.EMBED_COLOUR!);
         super.setTitle(title);
 
-        this._context = context;
+        this.context = context;
     }
 
     // Detail methods
     public AddUser(title: string, user: User, setThumbnail: boolean = false) {
-        super.addField(title, `${user} \`${user.tag}\``, true);
+        this.addField(title, `${user} \`${user.tag}\``, true);
 
         if (setThumbnail) {
-            super.setThumbnail(user.displayAvatarURL());
+            this.setThumbnail(user.displayAvatarURL());
         }
     }
 
     public AddReason(message: String) {
-        super.addField("Reason", message || "*none*");
+        this.addField("Reason", message || "*none*");
     }
 
     // Send methods
     public SendToCurrentChannel() {
-        this._context.message.channel.send(this);
+        this.context.message.channel.send(this);
     }
 
     public SendToChannel(name: string) {
-        const channel = this._context.message.guild?.channels.cache
+        const channel = this.context.message.guild?.channels.cache
             .find(channel => channel.name == name) as TextChannel;
         
         if (!channel) {
-            const errorEmbed = new ErrorEmbed(this._context, ErrorMessages.ChannelNotFound);
+            const errorEmbed = new ErrorEmbed(this.context, ErrorMessages.ChannelNotFound);
             errorEmbed.SendToCurrentChannel();
             return;
         }

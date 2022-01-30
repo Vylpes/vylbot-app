@@ -2,7 +2,7 @@ import { MessageEmbed } from "discord.js";
 import { ICommandContext } from "../../contracts/ICommandContext";
 
 export default class PublicEmbed extends MessageEmbed {
-    private _context: ICommandContext;
+    public context: ICommandContext;
 
     constructor(context: ICommandContext, title: string, description: string) {
         super();
@@ -11,16 +11,16 @@ export default class PublicEmbed extends MessageEmbed {
         super.setTitle(title);
         super.setDescription(description);
 
-        this._context = context;
+        this.context = context;
     }
 
     // Detail methods
     public AddReason(message: String) {
-        super.addField("Reason", message || "*none*");
+        this.addField("Reason", message || "*none*");
     }
 
     // Send methods
     public SendToCurrentChannel() {
-        this._context.message.channel.send(this);
+        this.context.message.channel.send(this);
     }
 }
