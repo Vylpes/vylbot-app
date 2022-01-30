@@ -7,8 +7,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node ./dist/vylbot",
-    "test": "jest",
-    "lint": "tslint -c tslint.json 'src/**/*.ts' 'tests/**/.ts'"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
