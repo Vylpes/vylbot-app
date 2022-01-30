@@ -8,7 +8,7 @@
     "build": "tsc",
     "start": "node ./dist/vylbot",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "tslint -c tslint.json 'src/**/*.ts' 'tests/**/.ts'"
   },
   "repository": {
     "type": "git",
@@ -26,11 +26,11 @@
     "jest": "^27.4.5",
     "jest-mock-extended": "^2.0.4",
     "random-bunny": "^2.0.0",
-    "ts-jest": "^27.1.2"
+    "ts-jest": "^27.1.2",
+    "tslint": "^6.1.3"
   },
   "devDependencies": {
     "@types/node": "^16.11.10",
-    "eslint": "^7.17.0",
     "typescript": "^4.5.2"
   }
 }
