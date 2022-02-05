@@ -38,7 +38,10 @@
             "Please don't bring up drama from other servers, keep that to DMs",
             "",
             "**Bot Abuse**",
-            "Don't abuse the bots or you will be blocked from using them"
+            "Don't abuse the bots or you will be blocked from using them",
+            "",
+            "**Event Spoilers**",
+            "Contents of events and keynotes, such as the Nintendo Direct, must be spoken about in events, this rule applies for up to 24 hours after the event ends. Even though we will only enforce talking there for a set time, please be considerate of those who haven't watched the event yet."
         ]
     },
     {
@@ -77,8 +80,9 @@
             "YouTube: https://www.youtube.com/channel/UCwPlzKwCmP5Q9bCX3fHk2BA",
             "Patreon: https://www.patreon.com/vylpes",
             "Twitch: https://www.twitch.tv/vylpes_",
-            "Twitter: https://twitter.com/vylpes"
+            "Twitter: https://twitter.com/vylpes",
+            "Blog: https://vylpes.xyz"
         ],
-        "footer": "Last updated 22/04/2021"
+        "footer": "Last updated 01/02/2022"
     }
 ]
