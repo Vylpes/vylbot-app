@@ -83,7 +83,7 @@ export default class Mute extends Command {
             };
         }
 
-        await targetMember.roles.add(mutedRole, reason);
+        await targetMember.roles.add(mutedRole, `Moderator: ${context.message.author.tag}, Reason: ${reason || "*none*"}`);
 
         logEmbed.SendToModLogsChannel();
         publicEmbed.SendToCurrentChannel();

@@ -70,7 +70,7 @@ export default class Kick extends Command {
 
         const publicEmbed = new PublicEmbed(context, "", `${targetUser} has been kicked`);
 
-        await targetMember.kick(reason);
+        await targetMember.kick(`Moderator: ${context.message.author.tag}, Reason: ${reason || "*none*"}`);
 
         logEmbed.SendToModLogsChannel();
         publicEmbed.SendToCurrentChannel();

@@ -89,7 +89,80 @@ describe('Execute', () => {
         
         expect(messageChannelSend).toBeCalledTimes(1);
         expect(logChannel.send).toBeCalledTimes(1);
-        expect(mentionedMember.ban).toBeCalledWith({ reason: 'Test Reason' });
+        expect(mentionedMember.ban).toBeCalledWith({ reason: 'Moderator: AUTHORTAG, Reason: Test Reason' });
+    });
+
+    test('Given moderator did not supply a reason, expect default message', async () => {
+        process.env = {
+            ROLES_MODERATOR: 'Moderator',
+            CHANNELS_LOGS_MOD: 'mod-logs'
+        };
+
+        const mentionedUser = {
+            displayAvatarURL: jest.fn(),
+            tag: 'USERTAG'
+        } as unknown as User;
+        const mentionedMember = {
+            bannable: true,
+            ban: jest.fn()
+        } as unknown as GuildMember;
+        const logChannel = {
+            name: 'mod-logs',
+            send: jest.fn()
+        } as unknown as TextChannel;
+
+        const messageChannelSend = jest.fn();
+        const messageMentionsUsersFirst = jest.fn()
+            .mockReturnValue(mentionedUser);
+        const messageGuildMember = jest.fn()
+            .mockReturnValue(mentionedMember);
+        const messageGuildChannelsCacheFind = jest.fn()
+            .mockImplementation((callback): TextChannel | undefined => {
+                const result = callback(logChannel);
+
+                if (!result) {
+                    return undefined;
+                }
+
+                return logChannel;
+            });
+
+        const message = {
+            channel: {
+                send: messageChannelSend
+            },
+            mentions: {
+                users: {
+                    first: messageMentionsUsersFirst
+                }
+            },
+            guild: {
+                member: messageGuildMember ,
+                channels: {
+                    cache: {
+                        find: messageGuildChannelsCacheFind
+                    }
+                },
+                available: true
+            },
+            author: {
+                tag: 'AUTHORTAG'
+            }
+        } as unknown as Message;
+
+        const context: ICommandContext = {
+            name: 'ban',
+            args: ['ban'],
+            message: message
+        };
+
+        const ban = new Ban();
+
+        const result = await ban.execute(context);
+        
+        expect(messageChannelSend).toBeCalledTimes(1);
+        expect(logChannel.send).toBeCalledTimes(1);
+        expect(mentionedMember.ban).toBeCalledWith({ reason: 'Moderator: AUTHORTAG, Reason: *none*' });
     });
 
     test('Given user has permissions, expect embeds to be correct', async () => {
@@ -255,6 +328,91 @@ describe('Execute', () => {
 
         expect(fieldReason.name).toBe('Reason');
         expect(fieldReason.value).toBe('Test Reason');
+    });
+
+    test('Given moderator did not supply a reason, expect reason field to be default message', async () => {
+        process.env = {
+            ROLES_MODERATOR: 'Moderator',
+            CHANNELS_LOGS_MOD: 'mod-logs'
+        };
+
+        const mentionedUser = {
+            displayAvatarURL: jest.fn().mockReturnValue('URL'),
+            tag: 'USERTAG'
+        } as unknown as User;
+        const mentionedMember = {
+            bannable: true,
+            ban: jest.fn()
+        } as unknown as GuildMember;
+        const logChannel = {
+            name: 'mod-logs',
+            send: jest.fn()
+        } as unknown as TextChannel;
+
+        const messageChannelSend = jest.fn();
+        const messageMentionsUsersFirst = jest.fn()
+            .mockReturnValue(mentionedUser);
+        const messageGuildMember = jest.fn()
+            .mockReturnValue(mentionedMember);
+        const messageGuildChannelsCacheFind = jest.fn()
+            .mockImplementation((callback): TextChannel | undefined => {
+                const result = callback(logChannel);
+
+                if (!result) {
+                    return undefined;
+                }
+
+                return logChannel;
+            });
+
+        const message = {
+            channel: {
+                send: messageChannelSend
+            },
+            mentions: {
+                users: {
+                    first: messageMentionsUsersFirst
+                }
+            },
+            guild: {
+                member: messageGuildMember ,
+                channels: {
+                    cache: {
+                        find: messageGuildChannelsCacheFind
+                    }
+                },
+                available: true
+            },
+            author: {
+                tag: 'AUTHORTAG'
+            }
+        } as unknown as Message;
+
+        const context: ICommandContext = {
+            name: 'ban',
+            args: ['ban'],
+            message: message
+        };
+
+        const ban = new Ban();
+
+        const result = await ban.execute(context);
+
+        const logEmbed = result.embeds[0];
+
+        const fieldUser = logEmbed.fields[0];
+        const fieldModerator = logEmbed.fields[1];
+        const fieldReason = logEmbed.fields[2];
+
+        expect(fieldUser.name).toBe("User");
+        expect(fieldUser.value).toBe("[object Object] `USERTAG`");
+        expect(logEmbed.thumbnail?.url).toBe("URL");
+
+        expect(fieldModerator.name).toBe('Moderator');
+        expect(fieldModerator.value).toBe('[object Object] `AUTHORTAG`');
+
+        expect(fieldReason.name).toBe('Reason');
+        expect(fieldReason.value).toBe('*none*');
     });
 
     test('Given user is not mentioned, expect error embed to be sent', async () => {

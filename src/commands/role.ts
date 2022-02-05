@@ -74,7 +74,7 @@ export default class Role extends Command {
     }
 
     public async AddRole(context: ICommandContext, role: DiscordRole): Promise<ICommandReturnContext> {
-        await context.message.member?.roles.add(role);
+        await context.message.member?.roles.add(role, "Toggled with role command");
 
         const embed = new PublicEmbed(context, "", `Gave role: ${role.name}`);
         embed.SendToCurrentChannel();
@@ -86,7 +86,7 @@ export default class Role extends Command {
     }
 
     public async RemoveRole(context: ICommandContext, role: DiscordRole): Promise<ICommandReturnContext> {
-        await context.message.member?.roles.remove(role);
+        await context.message.member?.roles.remove(role, "Toggled with role command");
 
         const embed = new PublicEmbed(context, "", `Removed role: ${role.name}`);
         embed.SendToCurrentChannel();

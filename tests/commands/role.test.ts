@@ -355,7 +355,7 @@ describe('AddRole', () => {
 
         const result = await role.AddRole(context, discordRole);
 
-        expect(guildMemberRoleManager.add).toBeCalledWith(discordRole);
+        expect(guildMemberRoleManager.add).toBeCalledWith(discordRole, "Toggled with role command");
         expect(messageChannelSend).toBeCalled();
 
         expect(result.embeds.length).toBe(1);
@@ -397,7 +397,7 @@ describe('RemoveRole', () => {
 
         const result = await role.RemoveRole(context, discordRole);
 
-        expect(guildMemberRoleManager.remove).toBeCalledWith(discordRole);
+        expect(guildMemberRoleManager.remove).toBeCalledWith(discordRole, "Toggled with role command");
         expect(messageChannelSend).toBeCalled();
 
         expect(result.embeds.length).toBe(1);
