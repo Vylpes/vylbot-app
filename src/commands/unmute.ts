@@ -83,7 +83,7 @@ export default class Unmute extends Command {
             };
         }
 
-        await targetMember.roles.remove(mutedRole, reason);
+        await targetMember.roles.remove(mutedRole, `Moderator: ${context.message.author.tag}, Reason: ${reason || "*none*"}`);
 
         logEmbed.SendToModLogsChannel();
         publicEmbed.SendToCurrentChannel();

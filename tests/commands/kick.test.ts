@@ -94,7 +94,7 @@ describe('Execute', () => {
 
         expect(messageChannelSend).toBeCalledTimes(1);
         expect(logChannel.send).toBeCalledTimes(1);
-        expect(member.kick).toBeCalledWith('Test Reason');
+        expect(member.kick).toBeCalledWith('Moderator: AUTHORTAG, Reason: Test Reason');
 
         expect(result.embeds.length).toBe(2);
 
@@ -122,6 +122,107 @@ describe('Execute', () => {
 
         expect(logEmbedFieldReason.name).toBe('Reason');
         expect(logEmbedFieldReason.value).toBe('Test Reason');
+    });
+
+    test('Given moderator did not supply a reason, expect default reason to be added', async () => {
+        process.env = {
+            CHANNELS_LOGS_MOD: 'mod-logs'
+        };
+
+        const user = {
+            displayAvatarURL: jest.fn(),
+            tag: 'USERTAG'
+        } as unknown as User;
+
+        const member = {
+            kickable: true,
+            kick: jest.fn()
+        } as unknown as GuildMember;
+
+        const logChannel = {
+            name: 'mod-logs',
+            send: jest.fn()
+        } as unknown as TextChannel;
+
+        const messageMentionsUsersFirst = jest.fn()
+            .mockReturnValue(user);
+        const messageGuildMember = jest.fn()
+            .mockReturnValue(member);
+        const messageGuildChannelsCacheFind = jest.fn()
+            .mockImplementation((callback): TextChannel | undefined => {
+                const result = callback(logChannel);
+
+                if (!result) {
+                    return undefined;
+                }
+
+                return logChannel;
+            });
+        const messageChannelSend = jest.fn();
+
+        const message = {
+            channel: {
+                send: messageChannelSend
+            },
+            mentions: {
+                users: {
+                    first: messageMentionsUsersFirst
+                }
+            },
+            guild: {
+                member: messageGuildMember,
+                channels: {
+                    cache: {
+                        find: messageGuildChannelsCacheFind
+                    }
+                },
+                available: true
+            },
+            author: {
+                tag: 'AUTHORTAG'
+            }
+        } as unknown as Message;
+
+        const context: ICommandContext = {
+            name: "kick",
+            args: ["USER"],
+            message: message
+        }
+
+        const kick = new Kick();
+
+        const result = await kick.execute(context);
+
+        expect(messageChannelSend).toBeCalledTimes(1);
+        expect(logChannel.send).toBeCalledTimes(1);
+        expect(member.kick).toBeCalledWith('Moderator: AUTHORTAG, Reason: *none*');
+
+        expect(result.embeds.length).toBe(2);
+
+        // Log Embed
+        const logEmbed = result.embeds[0];
+
+        expect(logEmbed.title).toBe('Member Kicked');
+        expect(logEmbed.fields.length).toBe(3);
+        
+        // Log Embed -> User Field
+        const logEmbedFieldUser = logEmbed.fields[0];
+
+        expect(logEmbedFieldUser.name).toBe('User');
+        expect(logEmbedFieldUser.value).toBe('[object Object] `USERTAG`');
+        expect(logEmbedFieldUser.inline).toBeTruthy();
+
+        // Log Embed -> Moderator Field
+        const logEmbedFieldModerator = logEmbed.fields[1];
+
+        expect(logEmbedFieldModerator.name).toBe('Moderator');
+        expect(logEmbedFieldModerator.value).toBe('[object Object] `AUTHORTAG`');
+
+        // Log Embed -> Reason Field
+        const logEmbedFieldReason = logEmbed.fields[2];
+
+        expect(logEmbedFieldReason.name).toBe('Reason');
+        expect(logEmbedFieldReason.value).toBe('*none*');
     });
 
     test('Given target user is not found, expect user does not exist error', async () => {

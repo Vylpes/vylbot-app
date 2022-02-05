@@ -119,7 +119,7 @@ describe('Execute', () => {
         expect(messageGuildRolesCacheFind).toBeCalledTimes(1);
         expect(messageGuildChannelsCacheFind).toBeCalledTimes(1);
         expect(messageChannelSend).toBeCalledTimes(1);
-        expect(member.roles.remove).toBeCalledWith(role, 'Test Reason');
+        expect(member.roles.remove).toBeCalledWith(role, 'Moderator: AUTHORTAG, Reason: Test Reason');
         
         expect(result.embeds.length).toBe(2);
 
@@ -141,6 +141,146 @@ describe('Execute', () => {
 
         expect(logEmbedModeratorField.name).toBe('Moderator');
         expect(logEmbedModeratorField.value).toBe('[object Object] `AUTHORTAG`');
+
+        // Log Embed -> Reason Field
+        const logEmbedFieldReason = logEmbed.fields[2];
+
+        expect(logEmbedFieldReason.name).toBe('Reason');
+        expect(logEmbedFieldReason.value).toBe('Test Reason');
+
+        // Public Embed
+        const publicEmbed = result.embeds[1];
+
+        expect(publicEmbed.title).toBe('');
+        expect(publicEmbed.description).toBe('[object Object] has been unmuted');
+    });
+
+    test('Given moderator did not supply a reason, expect default reason is used', async () => {
+        process.env = {
+            CHANNELS_LOGS_MOD: 'mod-logs',
+            ROLES_MUTED: 'Muted'
+        };
+
+        const user = {
+            displayAvatarURL: jest.fn(),
+            tag: 'USERTAG'
+        } as unknown as User;
+
+        const messageAuthor = {
+            tag: 'AUTHORTAG'
+        } as unknown as User;
+
+        const member = {
+            manageable: true,
+            roles: {
+                remove: jest.fn()
+            }
+        } as unknown as GuildMember;
+
+        const role = {
+            name: 'Muted'
+        } as unknown as Role;
+
+        const logChannel = {
+            name: 'mod-logs',
+            send: jest.fn()
+        } as unknown as TextChannel;
+
+        const messageMentionsUsersFirst = jest.fn()
+            .mockReturnValue(user);
+        const messageGuildMember = jest.fn()
+            .mockReturnValue(member);
+        const messageGuildRolesCacheFind = jest.fn()
+            .mockImplementation((callback): Role | undefined => {
+                const result = callback(role);
+
+                if (!result) {
+                    return undefined;
+                }
+
+                return role;
+            });
+        const messageChannelSend = jest.fn();
+        const messageGuildChannelsCacheFind = jest.fn()
+            .mockImplementation((callback): TextChannel | undefined => {
+                const result = callback(logChannel);
+
+                if (!result) {
+                    return undefined;
+                }
+
+                return logChannel;
+            });
+
+        const message = {
+            mentions: {
+                users: {
+                    first: messageMentionsUsersFirst
+                }
+            },
+            guild: {
+                member: messageGuildMember,
+                available: true,
+                roles: {
+                    cache: {
+                        find: messageGuildRolesCacheFind
+                    }
+                },
+                channels: {
+                    cache: {
+                        find: messageGuildChannelsCacheFind
+                    }
+                }
+            },
+            channel: {
+                send: messageChannelSend
+            },
+            author: messageAuthor
+        } as unknown as Message;
+
+        const context: ICommandContext = {
+            name: 'mute',
+            args: ['USER'],
+            message: message
+        };
+
+        const mute = new Unmute();
+
+        const result = await mute.execute(context);
+
+        expect(messageMentionsUsersFirst).toBeCalledTimes(1);
+        expect(messageGuildMember).toBeCalledWith(user);
+        expect(messageGuildRolesCacheFind).toBeCalledTimes(1);
+        expect(messageGuildChannelsCacheFind).toBeCalledTimes(1);
+        expect(messageChannelSend).toBeCalledTimes(1);
+        expect(member.roles.remove).toBeCalledWith(role, 'Moderator: AUTHORTAG, Reason: *none*');
+        
+        expect(result.embeds.length).toBe(2);
+
+        // Log Embed
+        const logEmbed = result.embeds[0];
+
+        expect(logEmbed.title).toBe('Member Unmuted');
+        expect(logEmbed.fields.length).toBe(3);
+
+        // Log Embed -> User Field
+        const logEmbedUserField = logEmbed.fields[0];
+
+        expect(logEmbedUserField.name).toBe('User');
+        expect(logEmbedUserField.value).toBe('[object Object] `USERTAG`');
+        expect(logEmbedUserField.inline).toBeTruthy();
+
+        // Log Embed -> Moderator Field
+        const logEmbedModeratorField = logEmbed.fields[1];
+
+        expect(logEmbedModeratorField.name).toBe('Moderator');
+        expect(logEmbedModeratorField.value).toBe('[object Object] `AUTHORTAG`');
+
+        // Log Embed -> Reason Field
+        const logEmbedFieldReason = logEmbed.fields[2];
+
+        expect(logEmbedFieldReason.name).toBe('Reason');
+        expect(logEmbedFieldReason.value).toBe('*none*');
 
         // Public Embed
         const publicEmbed = result.embeds[1];

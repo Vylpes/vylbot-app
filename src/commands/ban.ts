@@ -67,7 +67,7 @@ export default class Ban extends Command {
 
         const publicEmbed = new PublicEmbed(context, "", `${targetUser} has been banned`);
 
-        await targetMember.ban({ reason: reason });
+        await targetMember.ban({ reason: `Moderator: ${context.message.author.tag}, Reason: ${reason || "*none*"}` });
 
         logEmbed.SendToModLogsChannel();
         publicEmbed.SendToCurrentChannel();
