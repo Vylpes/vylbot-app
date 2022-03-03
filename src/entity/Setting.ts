@@ -31,18 +31,4 @@ export default class Setting extends BaseEntity {
 
         return single;
     }
-
-    public static async FetchValueByKeyOrDefault(key: string): Promise<string | undefined> {
-        const connection = getConnection();
-
-        const repository = connection.getRepository(Setting);
-
-        const single = await repository.findOne({ Key: key });
-
-        if (!single) {
-            return DefaultValues.GetValue(key);
-        }
-
-        return single.Value;
-    }
 }
