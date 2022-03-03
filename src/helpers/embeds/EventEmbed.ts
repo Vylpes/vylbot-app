@@ -1,4 +1,6 @@
 import { MessageEmbed, TextChannel, User, Guild } from "discord.js";
+import { ICommandContext } from "../../contracts/ICommandContext";
+import SettingsHelper from "../SettingsHelper";
 
 export default class EventEmbed extends MessageEmbed {
     public guild: Guild;
@@ -38,15 +40,33 @@ export default class EventEmbed extends MessageEmbed {
         channel.send(this);
     }
 
-    public SendToMessageLogsChannel() {
-        this.SendToChannel(process.env.CHANNELS_LOGS_MESSAGE!)
+    public async SendToMessageLogsChannel() {
+        const channelName = await SettingsHelper.GetSetting("channels.logs.message", this.guild.id);
+
+        if (!channelName) {
+            return;
+        }
+
+        this.SendToChannel(channelName);
     }
 
-    public SendToMemberLogsChannel() {
-        this.SendToChannel(process.env.CHANNELS_LOGS_MEMBER!)
+    public async SendToMemberLogsChannel() {
+        const channelName = await SettingsHelper.GetSetting("channels.logs.member", this.guild.id);
+
+        if (!channelName) {
+            return;
+        }
+
+        this.SendToChannel(channelName);
     }
 
-    public SendToModLogsChannel() {
-        this.SendToChannel(process.env.CHANNELS_LOGS_MOD!)
+    public async SendToModLogsChannel() {
+        const channelName = await SettingsHelper.GetSetting("channels.logs.mod", this.guild.id);
+
+        if (!channelName) {
+            return;
+        }
+
+        this.SendToChannel(channelName);
     }
 }

@@ -1,6 +1,6 @@
-import { Column, Entity, getConnection } from "typeorm";
-import DefaultValues from "../constants/DefaultValues";
+import { Column, Entity, getConnection, ManyToOne } from "typeorm";
 import BaseEntity from "../contracts/BaseEntity";
+import Server from "./Server";
 
 @Entity()
 export default class Setting extends BaseEntity {
@@ -16,6 +16,9 @@ export default class Setting extends BaseEntity {
 
     @Column()
     Value: string;
+
+    @ManyToOne(() => Server, x => x.Settings)
+    Server: Server;
 
     public UpdateBasicDetails(key: string, value: string) {
         this.Key = key;

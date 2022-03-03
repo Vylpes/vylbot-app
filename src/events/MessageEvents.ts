@@ -8,7 +8,7 @@ export default class MessageEvents extends Event {
         super();
     }
 
-    public override messageDelete(message: Message): IEventReturnContext {
+    public override async messageDelete(message: Message): Promise<IEventReturnContext> {
         if (!message.guild) {
             return {
                 embeds: []
@@ -30,14 +30,14 @@ export default class MessageEvents extends Event {
             embed.addField("Attachments", `\`\`\`${message.attachments.map(x => x.url).join("\n")}\`\`\``);
         }
 
-        embed.SendToMessageLogsChannel();
+        await embed.SendToMessageLogsChannel();
 
         return {
             embeds: [embed]
         };
     }
 
-    public override messageUpdate(oldMessage: Message, newMessage: Message): IEventReturnContext {
+    public override async messageUpdate(oldMessage: Message, newMessage: Message): Promise<IEventReturnContext> {
         if (!newMessage.guild){
             return {
                 embeds: []
@@ -62,7 +62,7 @@ export default class MessageEvents extends Event {
         embed.addField("Before", `\`\`\`${oldMessage.content || "*none*"}\`\`\``);
         embed.addField("After", `\`\`\`${newMessage.content || "*none*"}\`\`\``);
 
-        embed.SendToMessageLogsChannel();
+        await embed.SendToMessageLogsChannel();
 
         return {
             embeds: [embed]

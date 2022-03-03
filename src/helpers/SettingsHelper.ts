@@ -1,28 +1,37 @@
 import { getConnection } from "typeorm";
 import DefaultValues from "../constants/DefaultValues";
+import Server from "../entity/Server";
 import Setting from "../entity/Setting";
 
 export default class SettingsHelper {
-    public static async GetSetting(key: string): Promise<string | undefined> {
-        const connection = getConnection();
+    public static async GetSetting(key: string, serverId: string): Promise<string | undefined> {
+        const server = await Server.FetchOneById(Server, serverId, [
+            "Settings"
+        ]);
 
-        const repository = connection.getRepository(Setting);
-
-        const single = await repository.findOne({ Key: key });
-
-        if (!single) {
+        if (!server) {
             return DefaultValues.GetValue(key);
         }
 
-        return single.Value;
+        const setting = server.Settings.filter(x => x.Key == key)[0];
+
+        if (!setting) {
+            return DefaultValues.GetValue(key);
+        }
+
+        return setting.Value;
     }
 
-    public static async SetSetting(key: string, value: string): Promise<void> {
-        const connection = getConnection();
+    public static async SetSetting(key: string, serverId: string, value: string): Promise<void> {
+        const server = await Server.FetchOneById(Server, serverId, [
+            "Settings"
+        ]);
 
-        const repository = connection.getRepository(Setting);
+        if (!server) {
+            return;
+        }
 
-        const setting = await repository.findOne({ Key: key });
+        const setting = server.Settings.filter(x => x.Key == key)[0];
 
         if (setting) {
             setting.UpdateBasicDetails(key, value);
@@ -32,6 +41,10 @@ export default class SettingsHelper {
             const newSetting = new Setting(key, value);
 
             await newSetting.Save(Setting, newSetting);
+
+            server.AddSettingToServer(newSetting);
+
+            await server.Save(Server, server);
         }
     }
 }

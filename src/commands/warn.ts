@@ -15,7 +15,7 @@ export default class Warn extends Command {
         ];
     }
 
-    public override execute(context: ICommandContext): ICommandReturnContext {
+    public override async execute(context: ICommandContext): Promise<ICommandReturnContext> {
         const user = context.message.mentions.users.first();
 
         if (!user) {
@@ -60,7 +60,7 @@ export default class Warn extends Command {
         const publicEmbed = new PublicEmbed(context, "", `${user} has been warned`);
         publicEmbed.AddReason(reason);
 
-        logEmbed.SendToModLogsChannel();
+        await logEmbed.SendToModLogsChannel();
         publicEmbed.SendToCurrentChannel();
 
         return {

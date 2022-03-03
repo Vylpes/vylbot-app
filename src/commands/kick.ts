@@ -72,7 +72,7 @@ export default class Kick extends Command {
 
         await targetMember.kick(`Moderator: ${context.message.author.tag}, Reason: ${reason || "*none*"}`);
 
-        logEmbed.SendToModLogsChannel();
+        await logEmbed.SendToModLogsChannel();
         publicEmbed.SendToCurrentChannel();
 
         return {

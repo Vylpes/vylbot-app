@@ -9,37 +9,37 @@ export default class MemberEvents extends Event {
         super();
     }
 
-    public override guildMemberAdd(member: GuildMember): IEventReturnContext {
+    public override async guildMemberAdd(member: GuildMember): Promise<IEventReturnContext> {
         const embed = new EventEmbed(member.guild, "Member Joined");
         embed.AddUser("User", member.user, true);
         embed.addField("Created", member.user.createdAt);
         embed.setFooter(`Id: ${member.user.id}`);
 
-        embed.SendToMemberLogsChannel();
+        await embed.SendToMemberLogsChannel();
 
         return {
             embeds: [embed]
         };
     }
 
-    public override guildMemberRemove(member: GuildMember): IEventReturnContext {
+    public override async guildMemberRemove(member: GuildMember): Promise<IEventReturnContext> {
         const embed = new EventEmbed(member.guild, "Member Left");
         embed.AddUser("User", member.user, true);
         embed.addField("Joined", member.joinedAt);
         embed.setFooter(`Id: ${member.user.id}`);
 
-        embed.SendToMemberLogsChannel();
+        await embed.SendToMemberLogsChannel();
 
         return {
             embeds: [embed]
         };
     }
 
-    public override guildMemberUpdate(oldMember: GuildMember, newMember: GuildMember): IEventReturnContext {
+    public override async guildMemberUpdate(oldMember: GuildMember, newMember: GuildMember): Promise<IEventReturnContext> {
         const handler = new GuildMemberUpdate(oldMember, newMember);
 
         if (oldMember.nickname != newMember.nickname) { // Nickname change
-            handler.NicknameChanged();
+            await handler.NicknameChanged();
         }
 
         return {

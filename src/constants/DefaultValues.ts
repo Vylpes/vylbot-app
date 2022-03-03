@@ -15,17 +15,6 @@ export default class DefaultValues {
 
     private static SetValues() {
         if (this.values.length == 0) {
-            // Bot
-            this.values.push({ Key: "bot.prefix", Value: "v!" });
-            this.values.push({ Key: "bot.version", Value: "3.0" });
-            this.values.push({ Key: "bot.author", Value: "Vylpes" });
-            this.values.push({ Key: "bot.date", Value: "28 Feb 2022" });
-            this.values.push({ Key: "bot.owner", Value: "147392775707426816" });
-
-            // Folders
-            this.values.push({ Key: "folders.commands", Value: "src/commands" });
-            this.values.push({ Key: "folders.events", Value: "src/events" });
-
             // Commands
             this.values.push({ Key: "commands.disabled", Value: "" });
             this.values.push({ Key: "commands.disabled.message", Value: "This command is disabled." });
