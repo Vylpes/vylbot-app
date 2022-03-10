@@ -1,0 +1,18 @@
+USAGE: <key> <set|reset> [value]
+
+===[ KEYS ]===
+commands.disabled: Disabled commands (Default: "")
+commands.disabled.message: The message to show when a disabled command is ran (Default: "This command is disabled.")
+
+role.assignable: List of roles assignable to user (Default: [])
+role.moderator: The moderator role name (Default: "Moderator")
+role.muted: The muted role name (Default: "Muted")
+
+rules.file: The location of the rules file (Default: "data/rules/rules")
+
+embed.colour.info: The HEX value of the info embeds (Default: "0x3050ba")
+embed.colour.error: The HEX value of the error embeds (Default: "0xd52803")
+
+channels.logs.message: The channel message events will be logged to (Default: "message-logs")
+channels.logs.member: The channel member events will be logged to (Default: "member-logs")
+channels.logs.mod: The channel mod events will be logged to (Default: "mod-logs")

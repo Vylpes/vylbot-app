@@ -1,5 +1,5 @@
 export default class DefaultValues {
-    public static readonly values: ISettingValue[];
+    public static readonly values: ISettingValue[] = [];
 
     public static GetValue(key: string): string | undefined {
         this.SetValues();

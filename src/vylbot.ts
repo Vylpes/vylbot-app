@@ -4,16 +4,7 @@ import Register from "./Register";
 
 dotenv.config();
 
-const requiredConfigs = [
-    "EMBED_COLOUR",
-    "EMBED_COLOUR_ERROR",
-    "ROLES_MODERATOR",
-    "ROLES_MUTED",
-    "CHANNELS_LOGS_MESSAGE",
-    "CHANNELS_LOGS_MEMBER",
-    "CHANNELS_LOGS_MOD",
-    "COMMANDS_ROLE_ROLES",
-    "COMMANDS_RULES_FILE"
+const requiredConfigs: string[] = [
 ];
 
 requiredConfigs.forEach(config => {
