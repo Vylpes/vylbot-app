@@ -1,5 +1,6 @@
 import { Guild } from "discord.js";
 import { readFileSync } from "fs";
+import { CommandResponse } from "../constants/CommandResponse";
 import DefaultValues from "../constants/DefaultValues";
 import { ICommandContext } from "../contracts/ICommandContext";
 import ICommandReturnContext from "../contracts/ICommandReturnContext";
@@ -13,6 +14,25 @@ export default class Config extends Command {
     constructor() {
         super();
         super._category = "Administration";
+        super._roles = [
+            "administrator"
+        ]
+    }
+
+    public override async precheckAsync(context: ICommandContext): Promise<CommandResponse> {
+        if (!context.message.guild) {
+            return CommandResponse.ServerNotSetup;
+        }
+
+        const server = await Server.FetchOneById<Server>(Server, context.message.guild?.id, [
+            "Settings",
+        ]);
+
+        if (!server) {
+            return CommandResponse.ServerNotSetup;
+        }
+
+        return CommandResponse.Ok;
     }
 
     public override async execute(context: ICommandContext) {
@@ -25,8 +45,6 @@ export default class Config extends Command {
         ]);
 
         if (!server) {
-            const embed = new ErrorEmbed(context, "This server hasn't been setup yet, please run the setup command");
-            embed.SendToCurrentChannel();
             return;
         }
 

@@ -4,7 +4,7 @@
    "port": 3306,
    "username": "dev",
    "password": "dev",
-   "database": "droplet",
+   "database": "vylbot",
    "synchronize": true,
    "logging": false,
    "entities": [

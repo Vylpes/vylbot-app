@@ -11,7 +11,7 @@ export default class Clear extends Command {
 
         super._category = "Moderation";
         super._roles = [
-            process.env.ROLES_MODERATOR!
+            "moderator"
         ];
     }
 

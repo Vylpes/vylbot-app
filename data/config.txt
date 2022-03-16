@@ -6,6 +6,7 @@ commands.disabled.message: The message to show when a disabled command is ran (D
 
 role.assignable: List of roles assignable to user (Default: [])
 role.moderator: The moderator role name (Default: "Moderator")
+role.administrator: The administrator role name (Default: "Administrator")
 role.muted: The muted role name (Default: "Muted")
 
 rules.file: The location of the rules file (Default: "data/rules/rules")

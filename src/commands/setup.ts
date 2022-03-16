@@ -9,6 +9,9 @@ export default class Setup extends Command {
     constructor() {
         super();
         super._category = "Administration";
+        super._roles = [
+            "moderator"
+        ]
     }
 
     public override async execute(context: ICommandContext) {

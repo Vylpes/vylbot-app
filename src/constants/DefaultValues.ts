@@ -1,5 +1,5 @@
 export default class DefaultValues {
-    public static readonly values: ISettingValue[] = [];
+    public static values: ISettingValue[] = [];
 
     public static GetValue(key: string): string | undefined {
         this.SetValues();
@@ -22,6 +22,7 @@ export default class DefaultValues {
             // Role (Command)
             this.values.push({ Key: "role.assignable", Value: "" });
             this.values.push({ Key: "role.moderator", Value: "Moderator" });
+            this.values.push({ Key: "role.administrator", Value: "Administrator"});
             this.values.push({ Key: "role.muted", Value: "Muted" });
 
             // Rules (Command)

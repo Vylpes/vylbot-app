@@ -18,7 +18,7 @@ export default class Rules extends Command {
 
         super._category = "Admin";
         super._roles = [
-            process.env.ROLES_MODERATOR!
+            "administrator"
         ];
     }
 
