@@ -1,6 +1,8 @@
 USAGE: <key> <set|reset> [value]
 
 ===[ KEYS ]===
+bot.prefix: The bot prefix for the server (Default: "v!")
+
 commands.disabled: Disabled commands (Default: "")
 commands.disabled.message: The message to show when a disabled command is ran (Default: "This command is disabled.")
 

@@ -15,6 +15,9 @@ export default class DefaultValues {
 
     private static SetValues() {
         if (this.values.length == 0) {
+            // Bot
+            this.values.push({ Key: "bot.prefix", Value: "v!" });
+
             // Commands
             this.values.push({ Key: "commands.disabled", Value: "" });
             this.values.push({ Key: "commands.disabled.message", Value: "This command is disabled." });

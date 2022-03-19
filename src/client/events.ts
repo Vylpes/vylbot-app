@@ -1,6 +1,7 @@
 import { Message } from "discord.js";
 import { IBaseResponse } from "../contracts/IBaseResponse";
 import ICommandItem from "../contracts/ICommandItem";
+import SettingsHelper from "../helpers/SettingsHelper";
 import { Util } from "./util";
 
 export interface IEventResponse extends IBaseResponse {
@@ -32,7 +33,14 @@ export class Events {
             message: "Message was sent by a bot, ignoring.",
         };
 
-        const prefix = process.env.BOT_PREFIX as string;
+        const prefix = await SettingsHelper.GetSetting("bot.prefix", message.guild.id);
+
+        if (!prefix) {
+            return {
+                valid: false,
+                message: "Prefix not found",
+            };
+        }
 
         if (message.content.substring(0, prefix.length).toLowerCase() == prefix.toLowerCase()) {
             const args = message.content.substring(prefix.length).split(" ");
