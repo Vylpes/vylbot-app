@@ -39,6 +39,12 @@ export default class DefaultValues {
             this.values.push({ Key: "channels.logs.message", Value: "message-logs" });
             this.values.push({ Key: "channels.logs.member", Value: "member-logs" });
             this.values.push({ Key: "channels.logs.mod", Value: "mod-logs" });
+
+            // Verification
+            this.values.push({ Key: "verification.enabled", Value: "false" });
+            this.values.push({ Key: "verification.channel", Value: "entry" });
+            this.values.push({ Key: "verification.role", Value: "Entry" });
+            this.values.push({ Key: "verification.code", Value: "" });
         }
     }
 }

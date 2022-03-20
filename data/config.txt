@@ -19,3 +19,8 @@ embed.colour.error: The HEX value of the error embeds (Default: "0xd52803")
 channels.logs.message: The channel message events will be logged to (Default: "message-logs")
 channels.logs.member: The channel member events will be logged to (Default: "member-logs")
 channels.logs.mod: The channel mod events will be logged to (Default: "mod-logs")
+
+verification.enabled: Enables/Disables the verification feature (Default: "false")
+verification.channel: The channel to listen to for entry codes (Default: "entry")
+verification.role: The server access role (Default: "Entry")
+verification.code: The entry code for the channel (Default: "")

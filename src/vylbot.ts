@@ -1,6 +1,6 @@
 import { CoreClient } from "./client/client";
 import * as dotenv from "dotenv";
-import Register from "./Register";
+import registry from "./registry";
 
 dotenv.config();
 
@@ -15,7 +15,7 @@ requiredConfigs.forEach(config => {
 
 const client = new CoreClient();
 
-Register.RegisterCommands(client);
-Register.RegisterEvents(client);
+registry.RegisterCommands(client);
+registry.RegisterEvents(client);
 
 client.start();

@@ -2,6 +2,8 @@ import { Event } from "../type/event";
 import { Message } from "discord.js";
 import EventEmbed from "../helpers/embeds/EventEmbed";
 import IEventReturnContext from "../contracts/IEventReturnContext";
+import SettingsHelper from "../helpers/SettingsHelper";
+import OnMessage from "./MessageEvents/OnMessage";
 
 export default class MessageEvents extends Event {
     constructor() {
@@ -67,5 +69,16 @@ export default class MessageEvents extends Event {
         return {
             embeds: [embed]
         };
+    }
+
+    public override async message(message: Message) {
+        if (!message.guild) return;
+        if (message.author.bot) return;
+
+        const isVerificationEnabled = await SettingsHelper.GetSetting("verification.enabled", message.guild.id);
+
+        if (isVerificationEnabled && isVerificationEnabled.toLocaleLowerCase() == "true") {
+            await OnMessage.VerificationCheck(message);
+        }
     }
 }

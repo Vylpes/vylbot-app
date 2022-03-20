@@ -2,6 +2,7 @@ import { CoreClient } from "./client/client";
 import About from "./commands/about";
 import Ban from "./commands/ban";
 import Clear from "./commands/clear";
+import Code from "./commands/code";
 import Config from "./commands/config";
 import Evaluate from "./commands/eval";
 import Help from "./commands/help";
@@ -16,7 +17,7 @@ import Warn from "./commands/warn";
 import MemberEvents from "./events/MemberEvents";
 import MessageEvents from "./events/MessageEvents";
 
-export default class Register {
+export default class Registry {
     public static RegisterCommands(client: CoreClient) {
         client.RegisterCommand("about", new About());
         client.RegisterCommand("ban", new Ban());
@@ -32,6 +33,7 @@ export default class Register {
         client.RegisterCommand("warn", new Warn());
         client.RegisterCommand("setup", new Setup());
         client.RegisterCommand("config", new Config());
+        client.RegisterCommand("code", new Code());
     }
 
     public static RegisterEvents(client: CoreClient) {
