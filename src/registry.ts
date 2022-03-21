@@ -4,6 +4,7 @@ import Ban from "./commands/ban";
 import Clear from "./commands/clear";
 import Code from "./commands/code";
 import Config from "./commands/config";
+import Disable from "./commands/disable";
 import Evaluate from "./commands/eval";
 import Help from "./commands/help";
 import Kick from "./commands/kick";
@@ -34,6 +35,7 @@ export default class Registry {
         client.RegisterCommand("setup", new Setup());
         client.RegisterCommand("config", new Config());
         client.RegisterCommand("code", new Code());
+        client.RegisterCommand("disable", new Disable())
     }
 
     public static RegisterEvents(client: CoreClient) {

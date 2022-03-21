@@ -5,6 +5,11 @@ import registry from "./registry";
 dotenv.config();
 
 const requiredConfigs: string[] = [
+    "BOT_TOKEN",
+    "BOT_VER",
+    "BOT_AUTHOR",
+    "BOT_DATE",
+    "BOT_OWNERID",
 ];
 
 requiredConfigs.forEach(config => {

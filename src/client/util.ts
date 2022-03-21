@@ -28,7 +28,13 @@ export class Util {
             message: "Member is not part of message",
         };
 
-        const disabledCommands = process.env.COMMANDS_DISABLED?.split(',');
+        if (!message.guild) return {
+            valid: false,
+            message: "Message is not part of a guild",
+        };
+
+        const disabledCommandsString = await SettingsHelper.GetSetting("commands.disabled", message.guild?.id);
+        const disabledCommands = disabledCommandsString?.split(",");
 
         if (disabledCommands?.find(x => x == name)) {
             message.reply(process.env.COMMANDS_DISABLED_MESSAGE || "This command is disabled.");

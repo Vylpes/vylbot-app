@@ -37,9 +37,6 @@ export class CoreClient extends Client {
 
     public async start() {
         if (!process.env.BOT_TOKEN) throw "BOT_TOKEN is not defined in .env";
-        if (!process.env.BOT_PREFIX) throw "BOT_PREFIX is not defined in .env";
-        if (!process.env.FOLDERS_COMMANDS) throw "FOLDERS_COMMANDS is not defined in .env";
-        if (!process.env.FOLDERS_EVENTS) throw "FOLDERS_EVENTS is not defined in .env";
 
         await createConnection().catch(e => {
             throw e;
