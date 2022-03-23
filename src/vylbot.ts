@@ -18,7 +18,9 @@ requiredConfigs.forEach(config => {
     }
 });
 
-const client = new CoreClient();
+const devmode = process.argv.find(x => x.toLowerCase() == "--dev") != null;
+
+const client = new CoreClient(devmode);
 
 registry.RegisterCommands(client);
 registry.RegisterEvents(client);

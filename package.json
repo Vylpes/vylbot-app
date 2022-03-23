@@ -6,7 +6,7 @@
   "typings": "./dist",
   "scripts": {
     "build": "tsc",
-    "start": "tsc && node ./dist/vylbot",
+    "start": "node ./dist/vylbot",
     "test": "jest"
   },
   "repository": {

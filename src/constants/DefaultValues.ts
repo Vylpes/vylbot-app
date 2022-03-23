@@ -1,5 +1,6 @@
 export default class DefaultValues {
     public static values: ISettingValue[] = [];
+    public static useDevPrefix: boolean = false;
 
     public static GetValue(key: string): string | undefined {
         this.SetValues();
@@ -16,7 +17,11 @@ export default class DefaultValues {
     private static SetValues() {
         if (this.values.length == 0) {
             // Bot
-            this.values.push({ Key: "bot.prefix", Value: "v!" });
+            if (this.useDevPrefix) {
+                this.values.push({ Key: "bot.prefix", Value: "d!" });
+            } else {
+                this.values.push({ Key: "bot.prefix", Value: "v!" });
+            }
 
             // Commands
             this.values.push({ Key: "commands.disabled", Value: "" });

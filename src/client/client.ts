@@ -1,6 +1,7 @@
 import { Client } from "discord.js";
 import * as dotenv from "dotenv";
 import { createConnection } from "typeorm";
+import DefaultValues from "../constants/DefaultValues";
 import ICommandItem from "../contracts/ICommandItem";
 import IEventItem from "../contracts/IEventItem";
 import { Command } from "../type/command";
@@ -24,9 +25,11 @@ export class CoreClient extends Client {
         return this._eventItems;
     }
 
-    constructor() {
+    constructor(devmode: boolean = false) {
         super();
         dotenv.config();
+
+        DefaultValues.useDevPrefix = devmode;
 
         this._commandItems = [];
         this._eventItems = [];
