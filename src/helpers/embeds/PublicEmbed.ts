@@ -7,7 +7,7 @@ export default class PublicEmbed extends MessageEmbed {
     constructor(context: ICommandContext, title: string, description: string) {
         super();
         
-        super.setColor(process.env.EMBED_COLOUR!);
+        super.setColor(0x3050ba);
         super.setTitle(title);
         super.setDescription(description);
 

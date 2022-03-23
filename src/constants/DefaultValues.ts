@@ -36,10 +36,6 @@ export default class DefaultValues {
             // Rules (Command)
             this.values.push({ Key: "rules.file", Value: "data/rules/rules" });
 
-            // Embed
-            this.values.push({ Key: "embed.colour.info", Value: "0x3050ba" });
-            this.values.push({ Key: "embed.colour.error", Value: "0xd52803" });
-
             // Channels
             this.values.push({ Key: "channels.logs.message", Value: "message-logs" });
             this.values.push({ Key: "channels.logs.member", Value: "member-logs" });

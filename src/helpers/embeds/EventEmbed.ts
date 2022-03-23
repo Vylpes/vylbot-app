@@ -8,7 +8,7 @@ export default class EventEmbed extends MessageEmbed {
     constructor(guild: Guild, title: string) {
         super();
         
-        super.setColor(process.env.EMBED_COLOUR!);
+        super.setColor(0x3050ba);
         super.setTitle(title);
 
         this.guild = guild;
