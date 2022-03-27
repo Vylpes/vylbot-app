@@ -15,7 +15,7 @@ beforeEach(() => {
 });
 
 describe('LoadCommand', () => {
-  test('Given Successful Exection, Expect Successful Result', () => {
+  test('Given Successful Exection, Expect Successful Result', async () => {
     process.env = {
       BOT_TOKEN: 'TOKEN',
       BOT_PREFIX: '!',
@@ -45,13 +45,13 @@ describe('LoadCommand', () => {
   
     const util = new Util();
   
-    const result = util.loadCommand("test", [ "first" ], message, commands);
+    const result = await util.loadCommand("test", [ "first" ], message, commands);
   
     expect(result.valid).toBeTruthy();
     expect(cmd.execute).toBeCalled();
   });
   
-  test('Given Member Is Null, Expect Failed Result', () => {
+  test('Given Member Is Null, Expect Failed Result', async () => {
     process.env = {
       BOT_TOKEN: 'TOKEN',
       BOT_PREFIX: '!',
@@ -74,14 +74,14 @@ describe('LoadCommand', () => {
   
     const util = new Util();
   
-    const result = util.loadCommand("test", [ "first" ], message, commands);
+    const result = await util.loadCommand("test", [ "first" ], message, commands);
   
     expect(result.valid).toBeFalsy();
     expect(result.message).toBe("Member is not part of message");
     expect(cmd.execute).not.toBeCalled();
   });
   
-  test('Given User Does Have Role, Expect Successful Result', () => {
+  test('Given User Does Have Role, Expect Successful Result', async () => {
     process.env = {
       BOT_TOKEN: 'TOKEN',
       BOT_PREFIX: '!',
@@ -111,13 +111,13 @@ describe('LoadCommand', () => {
   
     const util = new Util();
   
-    const result = util.loadCommand("test", [ "first" ], message, commands);
+    const result = await util.loadCommand("test", [ "first" ], message, commands);
   
     expect(result.valid).toBeTruthy();
     expect(cmd.execute).toBeCalled();
   });
   
-  test('Given User Does Not Have Role, Expect Failed Result', () => {
+  test('Given User Does Not Have Role, Expect Failed Result', async () => {
     process.env = {
       BOT_TOKEN: 'TOKEN',
       BOT_PREFIX: '!',
@@ -148,14 +148,14 @@ describe('LoadCommand', () => {
   
     const util = new Util();
   
-    const result = util.loadCommand("test", [ "first" ], message, commands);
+    const result = await util.loadCommand("test", [ "first" ], message, commands);
   
     expect(result.valid).toBeFalsy();
     expect(result.message).toBe("You require the `Moderator` role to run this command");
     expect(cmd.execute).not.toBeCalled();
   });
 
-  test('Given command is set to disabled, Expect command to not fire', () => {
+  test('Given command is set to disabled, Expect command to not fire', async () => {
     process.env = {
       BOT_TOKEN: 'TOKEN',
       BOT_PREFIX: '!',
@@ -189,7 +189,7 @@ describe('LoadCommand', () => {
   
     const util = new Util();
   
-    const result = util.loadCommand("test", [ "first" ], message, commands);
+    const result = await util.loadCommand("test", [ "first" ], message, commands);
   
     expect(result.valid).toBeFalsy();
     expect(result.message).toBe("Command is disabled");
@@ -197,7 +197,7 @@ describe('LoadCommand', () => {
     expect(cmd.execute).not.toBeCalled();
   });
 
-  test('Given command COMMANDS_DISABLED_MESSAGE is empty, Expect default message sent', () => {
+  test('Given command COMMANDS_DISABLED_MESSAGE is empty, Expect default message sent', async () => {
     process.env = {
       BOT_TOKEN: 'TOKEN',
       BOT_PREFIX: '!',
@@ -230,7 +230,7 @@ describe('LoadCommand', () => {
   
     const util = new Util();
   
-    const result = util.loadCommand("test", [ "first" ], message, commands);
+    const result = await util.loadCommand("test", [ "first" ], message, commands);
   
     expect(result.valid).toBeFalsy();
     expect(result.message).toBe("Command is disabled");
@@ -238,7 +238,7 @@ describe('LoadCommand', () => {
     expect(cmd.execute).not.toBeCalled();
   });
 
-  test('Given a different command is disabled, Expect command to still fire', () => {
+  test('Given a different command is disabled, Expect command to still fire', async () => {
     process.env = {
       BOT_TOKEN: 'TOKEN',
       BOT_PREFIX: '!',
@@ -275,14 +275,14 @@ describe('LoadCommand', () => {
   
     const util = new Util();
   
-    const result = util.loadCommand("test", [ "first" ], message, commands);
+    const result = await util.loadCommand("test", [ "first" ], message, commands);
   
     expect(result.valid).toBeTruthy();
     expect(cmd.execute).toBeCalled();
     expect(otherCmd.execute).not.toBeCalled();
   });
 
-  test('Given command is not found in register, expect command not found error', () => {
+  test('Given command is not found in register, expect command not found error', async () => {
     process.env = {
       BOT_TOKEN: 'TOKEN',
       BOT_PREFIX: '!',
@@ -305,7 +305,7 @@ describe('LoadCommand', () => {
   
     const util = new Util();
   
-    const result = util.loadCommand("test", [ "first" ], message, commands);
+    const result = await util.loadCommand("test", [ "first" ], message, commands);
   
     expect(result.valid).toBeFalsy();
     expect(result.message).toBe('Command not found');

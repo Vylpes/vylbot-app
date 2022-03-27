@@ -6,7 +6,7 @@ beforeEach(() => {
 });
 
 describe('MessageDelete', () => {
-    test('Given message was in a guild AND user was NOT a bot, expect message deleted embed to be sent', () => {
+    test('Given message was in a guild AND user was NOT a bot, expect message deleted embed to be sent', async () => {
         process.env = {
             CHANNELS_LOGS_MOD: 'mod-logs'
         }
@@ -57,7 +57,7 @@ describe('MessageDelete', () => {
 
         const messageEvents = new MessageEvents();
 
-        const result = messageEvents.messageDelete(message);
+        const result = await messageEvents.messageDelete(message);
 
         expect(channelSend).toBeCalledTimes(1);
         expect(memberGuildChannelsCacheFind).toBeCalledTimes(1);
@@ -95,7 +95,7 @@ describe('MessageDelete', () => {
         expect(embedFieldAttachments.value).toBe('```image0.png\nimage1.png```');
     });
 
-    test('Given message was not sent in a guild, expect execution stopped', () => {
+    test('Given message was not sent in a guild, expect execution stopped', async () => {
         process.env = {
             CHANNELS_LOGS_MOD: 'mod-logs'
         }
@@ -139,7 +139,7 @@ describe('MessageDelete', () => {
 
         const messageEvents = new MessageEvents();
 
-        const result = messageEvents.messageDelete(message);
+        const result = await messageEvents.messageDelete(message);
 
         expect(channelSend).not.toBeCalled();
         expect(memberGuildChannelsCacheFind).not.toBeCalled();
@@ -147,7 +147,7 @@ describe('MessageDelete', () => {
         expect(result.embeds.length).toBe(0);
     });
 
-    test('Given author is a bot, expect execution stopped', () => {
+    test('Given author is a bot, expect execution stopped', async () => {
         process.env = {
             CHANNELS_LOGS_MOD: 'mod-logs'
         }
@@ -198,7 +198,7 @@ describe('MessageDelete', () => {
 
         const messageEvents = new MessageEvents();
 
-        const result = messageEvents.messageDelete(message);
+        const result = await messageEvents.messageDelete(message);
 
         expect(channelSend).not.toBeCalled();
         expect(memberGuildChannelsCacheFind).not.toBeCalled();
@@ -206,7 +206,7 @@ describe('MessageDelete', () => {
         expect(result.embeds.length).toBe(0);
     });
 
-    test('Given message does not contain any attachments, expect attachments field to be omitted', () => {
+    test('Given message does not contain any attachments, expect attachments field to be omitted', async () => {
         process.env = {
             CHANNELS_LOGS_MOD: 'mod-logs'
         }
@@ -244,7 +244,7 @@ describe('MessageDelete', () => {
 
         const messageEvents = new MessageEvents();
 
-        const result = messageEvents.messageDelete(message);
+        const result = await messageEvents.messageDelete(message);
 
         expect(channelSend).toBeCalledTimes(1);
         expect(memberGuildChannelsCacheFind).toBeCalledTimes(1);
@@ -278,7 +278,7 @@ describe('MessageDelete', () => {
 });
 
 describe('MessageUpdate', () => {
-    test('Given message is in a guild AND user is not a bot AND the content has actually changed, e xpect log embed to be sent', () => {
+    test('Given message is in a guild AND user is not a bot AND the content has actually changed, e xpect log embed to be sent', async () => {
         process.env = {
             CHANNELS_LOGS_MOD: 'mod-logs'
         }
@@ -317,7 +317,7 @@ describe('MessageUpdate', () => {
 
         const messageEvents = new MessageEvents();
 
-        const result = messageEvents.messageUpdate(oldMessage, newMessage);
+        const result = await messageEvents.messageUpdate(oldMessage, newMessage);
 
         expect(channelSend).toBeCalledTimes(1);
         expect(memberGuildChannelsCacheFind).toBeCalledTimes(1);
@@ -357,7 +357,7 @@ describe('MessageUpdate', () => {
         expect(embedFieldAfter.value).toBe('```New Message```');
     });
 
-    test('Given message was not in a guild, expect execution stopped', () => {
+    test('Given message was not in a guild, expect execution stopped', async () => {
         process.env = {
             CHANNELS_LOGS_MOD: 'mod-logs'
         }
@@ -389,7 +389,7 @@ describe('MessageUpdate', () => {
 
         const messageEvents = new MessageEvents();
 
-        const result = messageEvents.messageUpdate(oldMessage, newMessage);
+        const result = await messageEvents.messageUpdate(oldMessage, newMessage);
 
         expect(channelSend).not.toBeCalled();
         expect(memberGuildChannelsCacheFind).not.toBeCalled();
@@ -397,7 +397,7 @@ describe('MessageUpdate', () => {
         expect(result.embeds.length).toBe(0);
     });
 
-    test('Given author is a bot, expect execution stopped', () => {
+    test('Given author is a bot, expect execution stopped', async () => {
         process.env = {
             CHANNELS_LOGS_MOD: 'mod-logs'
         }
@@ -436,7 +436,7 @@ describe('MessageUpdate', () => {
 
         const messageEvents = new MessageEvents();
 
-        const result = messageEvents.messageUpdate(oldMessage, newMessage);
+        const result = await messageEvents.messageUpdate(oldMessage, newMessage);
 
         expect(channelSend).not.toBeCalled();
         expect(memberGuildChannelsCacheFind).not.toBeCalled();
@@ -444,7 +444,7 @@ describe('MessageUpdate', () => {
         expect(result.embeds.length).toBe(0);
     });
 
-    test('Given the message contents are the same, expect execution stopped', () => {
+    test('Given the message contents are the same, expect execution stopped', async () => {
         process.env = {
             CHANNELS_LOGS_MOD: 'mod-logs'
         }
@@ -483,7 +483,7 @@ describe('MessageUpdate', () => {
 
         const messageEvents = new MessageEvents();
 
-        const result = messageEvents.messageUpdate(oldMessage, newMessage);
+        const result = await messageEvents.messageUpdate(oldMessage, newMessage);
 
         expect(channelSend).not.toBeCalled();
         expect(memberGuildChannelsCacheFind).not.toBeCalled();
@@ -491,7 +491,7 @@ describe('MessageUpdate', () => {
         expect(result.embeds.length).toBe(0);
     });
 
-    test('Given Old Message did not have a content, expect field to account for this', () => {
+    test('Given Old Message did not have a content, expect field to account for this', async () => {
         process.env = {
             CHANNELS_LOGS_MOD: 'mod-logs'
         }
@@ -528,7 +528,7 @@ describe('MessageUpdate', () => {
 
         const messageEvents = new MessageEvents();
 
-        const result = messageEvents.messageUpdate(oldMessage, newMessage);
+        const result = await messageEvents.messageUpdate(oldMessage, newMessage);
 
         expect(channelSend).toBeCalledTimes(1);
         expect(memberGuildChannelsCacheFind).toBeCalledTimes(1);
@@ -568,7 +568,7 @@ describe('MessageUpdate', () => {
         expect(embedFieldAfter.value).toBe('```New Message```');
     });
 
-    test('Given New Message does not have a content, expect field to account for this', () => {
+    test('Given New Message does not have a content, expect field to account for this', async () => {
         process.env = {
             CHANNELS_LOGS_MOD: 'mod-logs'
         }
@@ -606,7 +606,7 @@ describe('MessageUpdate', () => {
 
         const messageEvents = new MessageEvents();
 
-        const result = messageEvents.messageUpdate(oldMessage, newMessage);
+        const result = await messageEvents.messageUpdate(oldMessage, newMessage);
 
         expect(channelSend).toBeCalledTimes(1);
         expect(memberGuildChannelsCacheFind).toBeCalledTimes(1);

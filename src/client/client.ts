@@ -39,10 +39,14 @@ export class CoreClient extends Client {
     }
 
     public async start() {
-        if (!process.env.BOT_TOKEN) throw "BOT_TOKEN is not defined in .env";
+        if (!process.env.BOT_TOKEN) {
+            console.error("BOT_TOKEN is not defined in .env");
+            return;
+        }
 
         await createConnection().catch(e => {
-            throw e;
+            console.error(e);
+            return;
         });
 
         super.on("message", (message) => this._events.onMessage(message, this._commandItems));

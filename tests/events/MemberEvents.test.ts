@@ -3,7 +3,7 @@ import MemberEvents from "../../src/events/MemberEvents";
 import GuildMemberUpdate from "../../src/events/MemberEvents/GuildMemberUpdate";
 
 describe('GuildMemberAdd', () => {
-    test('When event is fired, expect embed to be sent to logs channel', () => {
+    test('When event is fired, expect embed to be sent to logs channel', async () => {
         const currentDate = new Date();
 
         const textChannel = {
@@ -34,7 +34,7 @@ describe('GuildMemberAdd', () => {
 
         const memberEvents = new MemberEvents();
 
-        const result = memberEvents.guildMemberAdd(guildMember);
+        const result = await memberEvents.guildMemberAdd(guildMember);
 
         expect(textChannel.send).toBeCalledTimes(1);
         expect(userDisplayAvatarURL).toBeCalledTimes(1);
@@ -63,7 +63,7 @@ describe('GuildMemberAdd', () => {
 });
 
 describe('GuildMemberRemove', () => {
-    test('When event is fired, expect embed to be sent to logs channel', () => {
+    test('When event is fired, expect embed to be sent to logs channel', async () => {
         const currentDate = new Date();
 
         const textChannel = {
@@ -95,7 +95,7 @@ describe('GuildMemberRemove', () => {
 
         const memberEvents = new MemberEvents();
 
-        const result = memberEvents.guildMemberRemove(guildMember);
+        const result = await memberEvents.guildMemberRemove(guildMember);
 
         expect(textChannel.send).toBeCalledTimes(1);
         expect(userDisplayAvatarURL).toBeCalledTimes(1);
@@ -124,7 +124,7 @@ describe('GuildMemberRemove', () => {
 });
 
 describe('GuildMemberUpdate', () => {
-    test('Given nicknames are the same, expect NicknameChanged NOT to be called', () => {
+    test('Given nicknames are the same, expect NicknameChanged NOT to be called', async () => {
         const member = {
             nickname: 'member'
         } as unknown as GuildMember;
@@ -135,13 +135,13 @@ describe('GuildMemberUpdate', () => {
 
         const memberEvents = new MemberEvents();
 
-        const result = memberEvents.guildMemberUpdate(member, member);
+        const result = await memberEvents.guildMemberUpdate(member, member);
 
         expect(result.embeds.length).toBe(0);
         expect(nicknameChanged).not.toBeCalled();
     });
 
-    test('Given nicknames are the different, expect NicknameChanged to be called', () => {
+    test('Given nicknames are the different, expect NicknameChanged to be called', async () => {
         const oldMember = {
             nickname: 'oldMember'
         } as unknown as GuildMember;
@@ -156,7 +156,7 @@ describe('GuildMemberUpdate', () => {
 
         const memberEvents = new MemberEvents();
 
-        const result = memberEvents.guildMemberUpdate(oldMember, newMember);
+        const result = await memberEvents.guildMemberUpdate(oldMember, newMember);
 
         expect(result.embeds.length).toBe(0);
         expect(nicknameChanged).toBeCalledTimes(1);
