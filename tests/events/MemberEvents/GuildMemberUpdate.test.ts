@@ -23,7 +23,7 @@ describe('Constructor', () => {
 });
 
 describe('NicknameChanged', () => {
-    test('Given nickname has changed from one to another, expect embed to be sent with both', () => {
+    test('Given nickname has changed from one to another, expect embed to be sent with both', async () => {
         process.env = {
             CHANNELS_LOGS_MOD: 'mod-logs'
         }
@@ -61,7 +61,7 @@ describe('NicknameChanged', () => {
 
         const guildMemberUpdate = new GuildMemberUpdate(oldMember, newMember);
 
-        const result = guildMemberUpdate.NicknameChanged();
+        const result = await guildMemberUpdate.NicknameChanged();
 
         expect(channelSend).toBeCalledTimes(1);
         expect(memberGuildChannelsCacheFind).toBeCalledTimes(1);
@@ -94,7 +94,7 @@ describe('NicknameChanged', () => {
         expect(embedFieldAfter.value).toBe('New Nickname');
     });
 
-    test('Given old nickname was null, expect embed to say old nickname was none', () => {
+    test('Given old nickname was null, expect embed to say old nickname was none', async () => {
         process.env = {
             CHANNELS_LOGS_MOD: 'mod-logs'
         }
@@ -130,7 +130,7 @@ describe('NicknameChanged', () => {
 
         const guildMemberUpdate = new GuildMemberUpdate(oldMember, newMember);
 
-        const result = guildMemberUpdate.NicknameChanged();
+        const result = await guildMemberUpdate.NicknameChanged();
 
         expect(channelSend).toBeCalledTimes(1);
         expect(memberGuildChannelsCacheFind).toBeCalledTimes(1);
@@ -163,7 +163,7 @@ describe('NicknameChanged', () => {
         expect(embedFieldAfter.value).toBe('New Nickname');
     });
 
-    test('Given new nickname was null, expect embed to say new nickname was none', () => {
+    test('Given new nickname was null, expect embed to say new nickname was none', async () => {
         process.env = {
             CHANNELS_LOGS_MOD: 'mod-logs'
         }
@@ -200,7 +200,7 @@ describe('NicknameChanged', () => {
 
         const guildMemberUpdate = new GuildMemberUpdate(oldMember, newMember);
 
-        const result = guildMemberUpdate.NicknameChanged();
+        const result = await guildMemberUpdate.NicknameChanged();
 
         expect(channelSend).toBeCalledTimes(1);
         expect(memberGuildChannelsCacheFind).toBeCalledTimes(1);

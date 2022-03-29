@@ -1,6 +1,7 @@
 import { MessageEmbed, TextChannel, User } from "discord.js";
 import ErrorMessages from "../../constants/ErrorMessages";
 import { ICommandContext } from "../../contracts/ICommandContext";
+import SettingsHelper from "../SettingsHelper";
 import ErrorEmbed from "./ErrorEmbed";
 
 export default class LogEmbed extends MessageEmbed {
@@ -9,7 +10,7 @@ export default class LogEmbed extends MessageEmbed {
     constructor(context: ICommandContext, title: string) {
         super();
         
-        super.setColor(process.env.EMBED_COLOUR!);
+        super.setColor(0x3050ba);
         super.setTitle(title);
 
         this.context = context;
@@ -46,15 +47,33 @@ export default class LogEmbed extends MessageEmbed {
         channel.send(this);
     }
 
-    public SendToMessageLogsChannel() {
-        this.SendToChannel(process.env.CHANNELS_LOGS_MESSAGE!)
+    public async SendToMessageLogsChannel() {
+        const channelName = await SettingsHelper.GetSetting("channels.logs.message", this.context.message.guild?.id!);
+
+        if (!channelName) {
+            return;
+        }
+
+        this.SendToChannel(channelName);
     }
 
-    public SendToMemberLogsChannel() {
-        this.SendToChannel(process.env.CHANNELS_LOGS_MEMBER!)
+    public async SendToMemberLogsChannel() {
+        const channelName = await SettingsHelper.GetSetting("channels.logs.member", this.context.message.guild?.id!);
+
+        if (!channelName) {
+            return;
+        }
+
+        this.SendToChannel(channelName);
     }
 
-    public SendToModLogsChannel() {
-        this.SendToChannel(process.env.CHANNELS_LOGS_MOD!)
+    public async SendToModLogsChannel() {
+        const channelName = await SettingsHelper.GetSetting("channels.logs.mod", this.context.message.guild?.id!);
+
+        if (!channelName) {
+            return;
+        }
+
+        this.SendToChannel(channelName);
     }
 }

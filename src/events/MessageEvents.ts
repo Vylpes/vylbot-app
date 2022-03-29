@@ -2,13 +2,15 @@ import { Event } from "../type/event";
 import { Message } from "discord.js";
 import EventEmbed from "../helpers/embeds/EventEmbed";
 import IEventReturnContext from "../contracts/IEventReturnContext";
+import SettingsHelper from "../helpers/SettingsHelper";
+import OnMessage from "./MessageEvents/OnMessage";
 
 export default class MessageEvents extends Event {
     constructor() {
         super();
     }
 
-    public override messageDelete(message: Message): IEventReturnContext {
+    public override async messageDelete(message: Message): Promise<IEventReturnContext> {
         if (!message.guild) {
             return {
                 embeds: []
@@ -30,14 +32,14 @@ export default class MessageEvents extends Event {
             embed.addField("Attachments", `\`\`\`${message.attachments.map(x => x.url).join("\n")}\`\`\``);
         }
 
-        embed.SendToMessageLogsChannel();
+        await embed.SendToMessageLogsChannel();
 
         return {
             embeds: [embed]
         };
     }
 
-    public override messageUpdate(oldMessage: Message, newMessage: Message): IEventReturnContext {
+    public override async messageUpdate(oldMessage: Message, newMessage: Message): Promise<IEventReturnContext> {
         if (!newMessage.guild){
             return {
                 embeds: []
@@ -62,10 +64,21 @@ export default class MessageEvents extends Event {
         embed.addField("Before", `\`\`\`${oldMessage.content || "*none*"}\`\`\``);
         embed.addField("After", `\`\`\`${newMessage.content || "*none*"}\`\`\``);
 
-        embed.SendToMessageLogsChannel();
+        await embed.SendToMessageLogsChannel();
 
         return {
             embeds: [embed]
         };
+    }
+
+    public override async message(message: Message) {
+        if (!message.guild) return;
+        if (message.author.bot) return;
+
+        const isVerificationEnabled = await SettingsHelper.GetSetting("verification.enabled", message.guild.id);
+
+        if (isVerificationEnabled && isVerificationEnabled.toLocaleLowerCase() == "true") {
+            await OnMessage.VerificationCheck(message);
+        }
     }
 }

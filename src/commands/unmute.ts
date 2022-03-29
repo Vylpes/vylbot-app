@@ -12,7 +12,7 @@ export default class Unmute extends Command {
 
         super._category = "Moderation";
         super._roles = [
-            process.env.ROLES_MODERATOR!
+            "moderator"
         ];
     }
 
@@ -85,7 +85,7 @@ export default class Unmute extends Command {
 
         await targetMember.roles.remove(mutedRole, `Moderator: ${context.message.author.tag}, Reason: ${reason || "*none*"}`);
 
-        logEmbed.SendToModLogsChannel();
+        await logEmbed.SendToModLogsChannel();
         publicEmbed.SendToCurrentChannel();
 
         return {

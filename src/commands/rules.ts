@@ -18,12 +18,12 @@ export default class Rules extends Command {
 
         super._category = "Admin";
         super._roles = [
-            process.env.ROLES_MODERATOR!
+            "administrator"
         ];
     }
 
     public override execute(context: ICommandContext): ICommandReturnContext {
-        if (!existsSync(`${process.cwd()}/${process.env.COMMANDS_RULES_FILE!}`)) {
+        if (!existsSync(`${process.cwd()}/data/rules/${context.message.guild?.id}.json`)) {
             const errorEmbed = new ErrorEmbed(context, "Rules file doesn't exist");
             errorEmbed.SendToCurrentChannel();
 
@@ -33,7 +33,7 @@ export default class Rules extends Command {
             };
         }
 
-        const rulesFile = readFileSync(`${process.cwd()}/${process.env.COMMANDS_RULES_FILE}`).toString();
+        const rulesFile = readFileSync(`${process.cwd()}/data/rules/${context.message.guild?.id}.json`).toString();
         const rules = JSON.parse(rulesFile) as IRules[];
 
         const embeds: PublicEmbed[] = [];

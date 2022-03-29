@@ -7,7 +7,7 @@ export default class ErrorEmbed extends MessageEmbed {
     constructor(context: ICommandContext, message: String) {
         super();
         
-        super.setColor(process.env.EMBED_COLOUR_ERROR!);
+        super.setColor(0xd52803);
         super.setDescription(message);
 
         this.context = context;

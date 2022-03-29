@@ -12,4 +12,17 @@ export default class StringTools {
 
         return result.join(" ");
     }
+
+    public static RandomString(length: number) {
+        let result = "";
+
+        const characters = 'abcdefghkmnpqrstuvwxyz23456789';
+        const charactersLength = characters.length;
+
+        for ( var i = 0; i < length; i++ ) {
+          result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+
+        return result;
+    }
 }

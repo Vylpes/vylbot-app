@@ -7,6 +7,10 @@ import { Event } from "../type/event";
 import { ICommandContext } from "../contracts/ICommandContext";
 import ICommandItem from "../contracts/ICommandItem";
 import IEventItem from "../contracts/IEventItem";
+import SettingsHelper from "../helpers/SettingsHelper";
+import StringTools from "../helpers/StringTools";
+import { CommandResponse } from "../constants/CommandResponse";
+import ErrorMessages from "../constants/ErrorMessages";
 
 export interface IUtilResponse extends IBaseResponse {
     context?: {
@@ -18,13 +22,19 @@ export interface IUtilResponse extends IBaseResponse {
 
 // Util Class
 export class Util {
-    public loadCommand(name: string, args: string[], message: Message, commands: ICommandItem[]): IUtilResponse {
+    public async loadCommand(name: string, args: string[], message: Message, commands: ICommandItem[]): Promise<IUtilResponse> {
         if (!message.member) return {
             valid: false,
             message: "Member is not part of message",
         };
 
-        const disabledCommands = process.env.COMMANDS_DISABLED?.split(',');
+        if (!message.guild) return {
+            valid: false,
+            message: "Message is not part of a guild",
+        };
+
+        const disabledCommandsString = await SettingsHelper.GetSetting("commands.disabled", message.guild?.id);
+        const disabledCommands = disabledCommandsString?.split(",");
 
         if (disabledCommands?.find(x => x == name)) {
             message.reply(process.env.COMMANDS_DISABLED_MESSAGE || "This command is disabled.");
@@ -51,13 +61,26 @@ export class Util {
         const requiredRoles = item.Command._roles;
 
         for (const i in requiredRoles) {
-            if (!message.member.roles.cache.find(role => role.name == requiredRoles[i])) {
-                message.reply(`You require the \`${requiredRoles[i]}\` role to run this command`);
+            if (message.guild) {
+                const setting = await SettingsHelper.GetSetting(`role.${requiredRoles[i]}`, message.guild?.id);
 
-                return {
-                    valid: false,
-                    message: `You require the \`${requiredRoles[i]}\` role to run this command`
-                };
+                if (!setting) {
+                    message.reply("Unable to verify if you have this role, please contact your bot administrator");
+
+                    return {
+                        valid: false,
+                        message: "Unable to verify if you have this role, please contact your bot administrator"
+                    };
+                }
+
+                if (!message.member.roles.cache.find(role => role.name == setting)) {
+                    message.reply(`You require the \`${StringTools.Capitalise(setting)}\` role to run this command`);
+
+                    return {
+                        valid: false,
+                        message: `You require the \`${StringTools.Capitalise(setting)}\` role to run this command`
+                    };
+                }
             }
         }
 
@@ -66,6 +89,27 @@ export class Util {
             args: args,
             message: message
         };
+
+        const precheckResponse = item.Command.precheck(context);
+        const precheckAsyncResponse = await item.Command.precheckAsync(context);
+
+        if (precheckResponse != CommandResponse.Ok) {
+            message.reply(ErrorMessages.GetErrorMessage(precheckResponse));
+
+            return {
+                valid: false,
+                message: ErrorMessages.GetErrorMessage(precheckResponse)
+            };
+        }
+
+        if (precheckAsyncResponse != CommandResponse.Ok) {
+            message.reply(ErrorMessages.GetErrorMessage(precheckAsyncResponse));
+
+            return {
+                valid: false,
+                message: ErrorMessages.GetErrorMessage(precheckAsyncResponse)
+            };
+        }
 
         item.Command.execute(context);
 

@@ -12,7 +12,7 @@ export default class Ban extends Command {
         
         super._category = "Moderation";
         super._roles = [
-            process.env.ROLES_MODERATOR!
+            "moderator"
         ];
     }
 
@@ -69,7 +69,7 @@ export default class Ban extends Command {
 
         await targetMember.ban({ reason: `Moderator: ${context.message.author.tag}, Reason: ${reason || "*none*"}` });
 
-        logEmbed.SendToModLogsChannel();
+        await logEmbed.SendToModLogsChannel();
         publicEmbed.SendToCurrentChannel();
 
         return {

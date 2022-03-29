@@ -1,6 +1,7 @@
 import { Guild, Message, TextChannel, User } from "discord.js";
 import { ICommandContext } from "../../../src/contracts/ICommandContext";
 import LogEmbed from "../../../src/helpers/embeds/LogEmbed";
+import SettingsHelper from "../../../src/helpers/SettingsHelper";
 
 beforeEach(() => {
     process.env = {};
@@ -32,7 +33,7 @@ describe('Constructor', () => {
 
         const errorEmbed = new LogEmbed(context, 'Log Message');
 
-        expect(errorEmbed.color?.toString()).toBe('13969411'); // 0xd52803 in decimal
+        expect(errorEmbed.color?.toString()).toBe('3166394'); // 0x3050ba in decimal
         expect(errorEmbed.title).toBe('Log Message');
         expect(errorEmbed.context).toBe(context);
     });
@@ -220,112 +221,187 @@ describe('SendToChannel', () => {
 });
 
 describe('SendToMessageLogsChannel', () => {
-    describe('Expect SendToChannel caleld with CHANNELS_LOGS_MESSAGE as parameter', () => {
-        process.env = {
-            EMBED_COLOUR: '0xd52803',
-            CHANNELS_LOGS_MESSAGE: 'message-logs',
-            CHANNELS_LOGS_MEMBER: 'member-logs',
-            CHANNELS_LOGS_MOD: 'mod-logs'
-        }
-
+    test('Given setting is set, expect SendToChannel to be called with value', async () => {
         const sendToChannel = jest.fn();
+        const getSetting = jest.fn().mockResolvedValue("message-logs");
 
-        const guild = {} as unknown as Guild;
-
-        const messageChannelSend = jest.fn();
+        const guild = {
+            id: "guildId"
+        } as unknown as Guild;
 
         const message = {
-            channel: {
-                send: messageChannelSend
-            }
-        } as unknown as Message;
+            guild: guild
+        } as Message;
 
         const context: ICommandContext = {
-            name: 'command',
+            name: 'log',
             args: [],
             message: message
         };
 
-        const errorEmbed = new LogEmbed(context, 'Event Message');
+        SettingsHelper.GetSetting = getSetting;
+
+        const logEmbed = new LogEmbed(context, 'Event Message');
         
-        errorEmbed.SendToChannel = sendToChannel;
+        logEmbed.SendToChannel = sendToChannel;
         
-        errorEmbed.SendToMessageLogsChannel();
+        await logEmbed.SendToMessageLogsChannel();
 
         expect(sendToChannel).toBeCalledWith('message-logs');
+        expect(getSetting).toBeCalledWith("channels.logs.message", "guildId");
+    });
+
+    test('Given setting is not set, expect function to return', async () => {
+        const sendToChannel = jest.fn();
+        const getSetting = jest.fn().mockResolvedValue(undefined);
+
+        const guild = {
+            id: "guildId"
+        } as unknown as Guild;
+
+        const message = {
+            guild: guild
+        } as Message;
+
+        const context: ICommandContext = {
+            name: 'log',
+            args: [],
+            message: message
+        };
+
+        SettingsHelper.GetSetting = getSetting;
+
+        const logEmbed = new LogEmbed(context, 'Event Message');
+        
+        logEmbed.SendToChannel = sendToChannel;
+        
+        await logEmbed.SendToMessageLogsChannel();
+
+        expect(sendToChannel).not.toBeCalled();
+        expect(getSetting).toBeCalledWith("channels.logs.message", "guildId");
     });
 });
 
 describe('SendToMemberLogsChannel', () => {
-    describe('Expect SendToChannel caleld with CHANNELS_LOGS_MEMBER as parameter', () => {
-        process.env = {
-            EMBED_COLOUR: '0xd52803',
-            CHANNELS_LOGS_MESSAGE: 'message-logs',
-            CHANNELS_LOGS_MEMBER: 'member-logs',
-            CHANNELS_LOGS_MOD: 'mod-logs'
-        }
-
+    test('Given setting is set, expect SendToChannel to be called with value', async () => {
         const sendToChannel = jest.fn();
+        const getSetting = jest.fn().mockResolvedValue("member-logs");
 
-        const guild = {} as unknown as Guild;
-
-        const messageChannelSend = jest.fn();
+        const guild = {
+            id: "guildId"
+        } as unknown as Guild;
 
         const message = {
-            channel: {
-                send: messageChannelSend
-            }
-        } as unknown as Message;
+            guild: guild
+        } as Message;
 
         const context: ICommandContext = {
-            name: 'command',
+            name: 'log',
             args: [],
             message: message
         };
 
-        const errorEmbed = new LogEmbed(context, 'Event Message');
+        SettingsHelper.GetSetting = getSetting;
+
+        const logEmbed = new LogEmbed(context, 'Event Message');
         
-        errorEmbed.SendToChannel = sendToChannel;
+        logEmbed.SendToChannel = sendToChannel;
         
-        errorEmbed.SendToMemberLogsChannel();
+        await logEmbed.SendToMemberLogsChannel();
 
         expect(sendToChannel).toBeCalledWith('member-logs');
+        expect(getSetting).toBeCalledWith("channels.logs.member", "guildId");
+    });
+
+    test('Given setting is not set, expect function to return', async () => {
+        const sendToChannel = jest.fn();
+        const getSetting = jest.fn().mockResolvedValue(undefined);
+
+        const guild = {
+            id: "guildId"
+        } as unknown as Guild;
+
+        const message = {
+            guild: guild
+        } as Message;
+
+        const context: ICommandContext = {
+            name: 'log',
+            args: [],
+            message: message
+        };
+
+        SettingsHelper.GetSetting = getSetting;
+
+        const logEmbed = new LogEmbed(context, 'Event Message');
+        
+        logEmbed.SendToChannel = sendToChannel;
+        
+        await logEmbed.SendToMemberLogsChannel();
+
+        expect(sendToChannel).not.toBeCalled();
+        expect(getSetting).toBeCalledWith("channels.logs.member", "guildId");
     });
 });
 
 describe('SendToModLogsChannel', () => {
-    describe('Expect SendToChannel caleld with CHANNELS_LOGS_MOD as parameter', () => {
-        process.env = {
-            EMBED_COLOUR: '0xd52803',
-            CHANNELS_LOGS_MESSAGE: 'message-logs',
-            CHANNELS_LOGS_MEMBER: 'member-logs',
-            CHANNELS_LOGS_MOD: 'mod-logs'
-        }
-
+    test('Given setting is set, expect SendToChannel to be called with value', async () => {
         const sendToChannel = jest.fn();
+        const getSetting = jest.fn().mockResolvedValue("mod-logs");
 
-        const guild = {} as unknown as Guild;
-
-        const messageChannelSend = jest.fn();
+        const guild = {
+            id: "guildId"
+        } as unknown as Guild;
 
         const message = {
-            channel: {
-                send: messageChannelSend
-            }
-        } as unknown as Message;
+            guild: guild
+        } as Message;
 
         const context: ICommandContext = {
-            name: 'command',
+            name: 'log',
             args: [],
             message: message
         };
 
-        const errorEmbed = new LogEmbed(context, 'Event Message');
+        SettingsHelper.GetSetting = getSetting;
+
+        const logEmbed = new LogEmbed(context, 'Event Message');
         
-        errorEmbed.SendToChannel = sendToChannel;
+        logEmbed.SendToChannel = sendToChannel;
         
-        errorEmbed.SendToModLogsChannel();
+        await logEmbed.SendToModLogsChannel();
 
         expect(sendToChannel).toBeCalledWith('mod-logs');
+        expect(getSetting).toBeCalledWith("channels.logs.mod", "guildId");
+    });
+
+    test('Given setting is not set, expect function to return', async () => {
+        const sendToChannel = jest.fn();
+        const getSetting = jest.fn().mockResolvedValue(undefined);
+
+        const guild = {
+            id: "guildId"
+        } as unknown as Guild;
+
+        const message = {
+            guild: guild
+        } as Message;
+
+        const context: ICommandContext = {
+            name: 'log',
+            args: [],
+            message: message
+        };
+
+        SettingsHelper.GetSetting = getSetting;
+
+        const logEmbed = new LogEmbed(context, 'Event Message');
+        
+        logEmbed.SendToChannel = sendToChannel;
+        
+        await logEmbed.SendToModLogsChannel();
+
+        expect(sendToChannel).not.toBeCalled();
+        expect(getSetting).toBeCalledWith("channels.logs.mod", "guildId");
     });
 });

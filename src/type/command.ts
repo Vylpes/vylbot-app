@@ -1,3 +1,4 @@
+import { CommandResponse } from "../constants/CommandResponse";
 import { ICommandContext } from "../contracts/ICommandContext";
 
 export class Command {
@@ -7,6 +8,14 @@ export class Command {
 
     constructor() {
         this._roles = [];
+    }
+
+    public precheck(context: ICommandContext): CommandResponse {
+        return CommandResponse.Ok;
+    }
+
+    public async precheckAsync(context: ICommandContext): Promise<CommandResponse> {
+        return CommandResponse.Ok;
     }
 
     public execute(context: ICommandContext) {

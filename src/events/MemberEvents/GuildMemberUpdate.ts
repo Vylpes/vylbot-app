@@ -11,7 +11,7 @@ export default class GuildMemberUpdate {
         this.newMember = newMember;
     }
 
-    public NicknameChanged(): IEventReturnContext {
+    public async NicknameChanged(): Promise<IEventReturnContext> {
         const oldNickname = this.oldMember.nickname || "*none*";
         const newNickname = this.newMember.nickname || "*none*";
 
@@ -21,7 +21,7 @@ export default class GuildMemberUpdate {
         embed.addField("After", newNickname, true);
         embed.setFooter(`Id: ${this.newMember.user.id}`);
 
-        embed.SendToMemberLogsChannel();
+        await embed.SendToMemberLogsChannel();
 
         return {
             embeds: [embed]

@@ -1,6 +1,7 @@
 import { Message } from "discord.js";
 import { IBaseResponse } from "../contracts/IBaseResponse";
 import ICommandItem from "../contracts/ICommandItem";
+import SettingsHelper from "../helpers/SettingsHelper";
 import { Util } from "./util";
 
 export interface IEventResponse extends IBaseResponse {
@@ -21,7 +22,7 @@ export class Events {
 
     // Emit when a message is sent
     // Used to check for commands
-    public onMessage(message: Message, commands: ICommandItem[]): IEventResponse {
+    public async onMessage(message: Message, commands: ICommandItem[]): Promise<IEventResponse> {
         if (!message.guild) return {
             valid: false,
             message: "Message was not sent in a guild, ignoring.",
@@ -32,7 +33,14 @@ export class Events {
             message: "Message was sent by a bot, ignoring.",
         };
 
-        const prefix = process.env.BOT_PREFIX as string;
+        const prefix = await SettingsHelper.GetSetting("bot.prefix", message.guild.id);
+
+        if (!prefix) {
+            return {
+                valid: false,
+                message: "Prefix not found",
+            };
+        }
 
         if (message.content.substring(0, prefix.length).toLowerCase() == prefix.toLowerCase()) {
             const args = message.content.substring(prefix.length).split(" ");
@@ -43,7 +51,7 @@ export class Events {
                 message: "Command name was not found",
             };
 
-            const res = this._util.loadCommand(name, args, message, commands);
+            const res = await this._util.loadCommand(name, args, message, commands);
 
             if (!res.valid) {
                 return {

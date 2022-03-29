@@ -1,19 +1,15 @@
 import { CoreClient } from "./client/client";
 import * as dotenv from "dotenv";
-import Register from "./Register";
+import registry from "./registry";
 
 dotenv.config();
 
-const requiredConfigs = [
-    "EMBED_COLOUR",
-    "EMBED_COLOUR_ERROR",
-    "ROLES_MODERATOR",
-    "ROLES_MUTED",
-    "CHANNELS_LOGS_MESSAGE",
-    "CHANNELS_LOGS_MEMBER",
-    "CHANNELS_LOGS_MOD",
-    "COMMANDS_ROLE_ROLES",
-    "COMMANDS_RULES_FILE"
+const requiredConfigs: string[] = [
+    "BOT_TOKEN",
+    "BOT_VER",
+    "BOT_AUTHOR",
+    "BOT_DATE",
+    "BOT_OWNERID",
 ];
 
 requiredConfigs.forEach(config => {
@@ -22,9 +18,11 @@ requiredConfigs.forEach(config => {
     }
 });
 
-const client = new CoreClient();
+const devmode = process.argv.find(x => x.toLowerCase() == "--dev") != null;
 
-Register.RegisterCommands(client);
-Register.RegisterEvents(client);
+const client = new CoreClient(devmode);
+
+registry.RegisterCommands(client);
+registry.RegisterEvents(client);
 
 client.start();

@@ -1,5 +1,7 @@
 import { Client } from "discord.js";
 import * as dotenv from "dotenv";
+import { createConnection } from "typeorm";
+import DefaultValues from "../constants/DefaultValues";
 import ICommandItem from "../contracts/ICommandItem";
 import IEventItem from "../contracts/IEventItem";
 import { Command } from "../type/command";
@@ -23,9 +25,11 @@ export class CoreClient extends Client {
         return this._eventItems;
     }
 
-    constructor() {
+    constructor(devmode: boolean = false) {
         super();
         dotenv.config();
+
+        DefaultValues.useDevPrefix = devmode;
 
         this._commandItems = [];
         this._eventItems = [];
@@ -34,11 +38,16 @@ export class CoreClient extends Client {
         this._util = new Util();
     }
 
-    public start() {
-        if (!process.env.BOT_TOKEN) throw "BOT_TOKEN is not defined in .env";
-        if (!process.env.BOT_PREFIX) throw "BOT_PREFIX is not defined in .env";
-        if (!process.env.FOLDERS_COMMANDS) throw "FOLDERS_COMMANDS is not defined in .env";
-        if (!process.env.FOLDERS_EVENTS) throw "FOLDERS_EVENTS is not defined in .env";
+    public async start() {
+        if (!process.env.BOT_TOKEN) {
+            console.error("BOT_TOKEN is not defined in .env");
+            return;
+        }
+
+        await createConnection().catch(e => {
+            console.error(e);
+            return;
+        });
 
         super.on("message", (message) => this._events.onMessage(message, this._commandItems));
         super.on("ready", this._events.onReady);
