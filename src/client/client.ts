@@ -57,10 +57,11 @@ export class CoreClient extends Client {
         this._util.loadEvents(this, this._eventItems);
     }
 
-    public RegisterCommand(name: string, command: Command) {
+    public RegisterCommand(name: string, command: Command, serverId?: string) {
         const item: ICommandItem = {
             Name: name,
             Command: command,
+            ServerId: serverId,
         };
 
         this._commandItems.push(item);

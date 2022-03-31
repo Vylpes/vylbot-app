@@ -35,7 +35,7 @@ export default class Registry {
         client.RegisterCommand("setup", new Setup());
         client.RegisterCommand("config", new Config());
         client.RegisterCommand("code", new Code());
-        client.RegisterCommand("disable", new Disable())
+        client.RegisterCommand("disable", new Disable());
     }
 
     public static RegisterEvents(client: CoreClient) {

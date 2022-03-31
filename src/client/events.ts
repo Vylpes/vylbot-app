@@ -1,17 +1,7 @@
 import { Message } from "discord.js";
-import { IBaseResponse } from "../contracts/IBaseResponse";
 import ICommandItem from "../contracts/ICommandItem";
 import SettingsHelper from "../helpers/SettingsHelper";
 import { Util } from "./util";
-
-export interface IEventResponse extends IBaseResponse {
-    context?: {
-        prefix: string;
-        name: string;
-        args: string[];
-        message: Message;
-    }
-}
 
 export class Events {
     private _util: Util;
@@ -22,58 +12,21 @@ export class Events {
 
     // Emit when a message is sent
     // Used to check for commands
-    public async onMessage(message: Message, commands: ICommandItem[]): Promise<IEventResponse> {
-        if (!message.guild) return {
-            valid: false,
-            message: "Message was not sent in a guild, ignoring.",
-        };
-
-        if (message.author.bot) return {
-            valid: false,
-            message: "Message was sent by a bot, ignoring.",
-        };
+    public async onMessage(message: Message, commands: ICommandItem[]) {
+        if (!message.guild) return;
+        if (message.author.bot) return;
 
         const prefix = await SettingsHelper.GetSetting("bot.prefix", message.guild.id);
 
-        if (!prefix) {
-            return {
-                valid: false,
-                message: "Prefix not found",
-            };
-        }
+        if (!prefix) return;
 
         if (message.content.substring(0, prefix.length).toLowerCase() == prefix.toLowerCase()) {
             const args = message.content.substring(prefix.length).split(" ");
             const name = args.shift();
 
-            if (!name) return {
-                valid: false,
-                message: "Command name was not found",
-            };
+            if (!name) return;
 
-            const res = await this._util.loadCommand(name, args, message, commands);
-
-            if (!res.valid) {
-                return {
-                    valid: false,
-                    message: res.message,
-                };
-            }
-
-            return {
-                valid: true,
-                context: {
-                    prefix: prefix,
-                    name: name,
-                    args: args,
-                    message: message,
-                },
-            };
-        }
-
-        return {
-            valid: false,
-            message: "Message was not a command, ignoring.",
+            await this._util.loadCommand(name, args, message, commands);
         }
     }
 
