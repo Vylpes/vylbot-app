@@ -48,6 +48,10 @@ export default class Registry {
         // Exclusive Commands: MankBot
         client.RegisterCommand("lobby", new Lobby(), "501231711271780357");
         client.RegisterCommand("entry", new Entry(), "501231711271780357");
+
+        // Add Exclusive Commands to Test Server
+        client.RegisterCommand("lobby", new Lobby(), "442730357897429002");
+        client.RegisterCommand("entry", new Entry(), "442730357897429002");
     }
 
     public static RegisterEvents(client: CoreClient) {
