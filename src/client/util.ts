@@ -1,9 +1,5 @@
 // Required Components
 import { Client, Message } from "discord.js";
-import { readdirSync, existsSync } from "fs";
-import { IBaseResponse } from "../contracts/IBaseResponse";
-import { Command } from "../type/command";
-import { Event } from "../type/event";
 import { ICommandContext } from "../contracts/ICommandContext";
 import ICommandItem from "../contracts/ICommandItem";
 import IEventItem from "../contracts/IEventItem";
@@ -12,53 +8,37 @@ import StringTools from "../helpers/StringTools";
 import { CommandResponse } from "../constants/CommandResponse";
 import ErrorMessages from "../constants/ErrorMessages";
 
-export interface IUtilResponse extends IBaseResponse {
-    context?: {
-        name: string;
-        args: string[];
-        message: Message;
-    }
-}
-
 // Util Class
 export class Util {
-    public async loadCommand(name: string, args: string[], message: Message, commands: ICommandItem[]): Promise<IUtilResponse> {
-        if (!message.member) return {
-            valid: false,
-            message: "Member is not part of message",
-        };
-
-        if (!message.guild) return {
-            valid: false,
-            message: "Message is not part of a guild",
-        };
+    public async loadCommand(name: string, args: string[], message: Message, commands: ICommandItem[]) {
+        if (!message.member) return;
+        if (!message.guild) return;
 
         const disabledCommandsString = await SettingsHelper.GetSetting("commands.disabled", message.guild?.id);
         const disabledCommands = disabledCommandsString?.split(",");
 
         if (disabledCommands?.find(x => x == name)) {
             message.reply(process.env.COMMANDS_DISABLED_MESSAGE || "This command is disabled.");
-
-            return {
-                valid: false,
-                message: "Command is disabled",
-            };
+            return;
         }
 
-        const folder = process.env.FOLDERS_COMMANDS;
+        const item = commands.find(x => x.Name == name && !x.ServerId);
+        const itemForServer = commands.find(x => x.Name == name && x.ServerId == message.guild?.id);
 
-        const item = commands.find(x => x.Name == name);
+        let itemToUse: ICommandItem;
 
-        if (!item) {
-            message.reply('Command not found');
+        if (!itemForServer) {
+            if (!item) {
+                message.reply('Command not found');
+                return;
+            }
 
-            return {
-                valid: false,
-                message: "Command not found"
-            };
+            itemToUse = item;
+        } else {
+            itemToUse = itemForServer;
         }
 
-        const requiredRoles = item.Command._roles;
+        const requiredRoles = itemToUse.Command._roles;
 
         for (const i in requiredRoles) {
             if (message.guild) {
@@ -66,20 +46,12 @@ export class Util {
 
                 if (!setting) {
                     message.reply("Unable to verify if you have this role, please contact your bot administrator");
-
-                    return {
-                        valid: false,
-                        message: "Unable to verify if you have this role, please contact your bot administrator"
-                    };
+                    return;
                 }
 
                 if (!message.member.roles.cache.find(role => role.name == setting)) {
                     message.reply(`You require the \`${StringTools.Capitalise(setting)}\` role to run this command`);
-
-                    return {
-                        valid: false,
-                        message: `You require the \`${StringTools.Capitalise(setting)}\` role to run this command`
-                    };
+                    return;
                 }
             }
         }
@@ -90,39 +62,24 @@ export class Util {
             message: message
         };
 
-        const precheckResponse = item.Command.precheck(context);
-        const precheckAsyncResponse = await item.Command.precheckAsync(context);
+        const precheckResponse = itemToUse.Command.precheck(context);
+        const precheckAsyncResponse = await itemToUse.Command.precheckAsync(context);
 
         if (precheckResponse != CommandResponse.Ok) {
             message.reply(ErrorMessages.GetErrorMessage(precheckResponse));
-
-            return {
-                valid: false,
-                message: ErrorMessages.GetErrorMessage(precheckResponse)
-            };
+            return;
         }
 
         if (precheckAsyncResponse != CommandResponse.Ok) {
             message.reply(ErrorMessages.GetErrorMessage(precheckAsyncResponse));
-
-            return {
-                valid: false,
-                message: ErrorMessages.GetErrorMessage(precheckAsyncResponse)
-            };
+            return;
         }
 
-        item.Command.execute(context);
-
-        return {
-            valid: true,
-            context: context
-        }
+        itemToUse.Command.execute(context);
     }
 
     // Load the events
-    loadEvents(client: Client, events: IEventItem[]): IUtilResponse {
-        const folder = process.env.FOLDERS_EVENTS;
-
+    loadEvents(client: Client, events: IEventItem[]) {
         events.forEach((e) => {
             client.on('channelCreate', e.Event.channelCreate);
             client.on('channelDelete', e.Event.channelDelete);
@@ -138,9 +95,5 @@ export class Util {
             client.on('messageUpdate', e.Event.messageUpdate);
             client.on('ready', e.Event.ready);
         });
-
-        return {
-            valid: true
-        }
     }
 }

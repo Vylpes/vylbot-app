@@ -1,4 +1,6 @@
 import { CoreClient } from "./client/client";
+
+// Command Imports
 import About from "./commands/about";
 import Ban from "./commands/ban";
 import Clear from "./commands/clear";
@@ -15,6 +17,12 @@ import Rules from "./commands/rules";
 import Setup from "./commands/setup";
 import Unmute from "./commands/unmute";
 import Warn from "./commands/warn";
+
+// Command Imports: MankBot
+import Entry from "./commands/501231711271780357/entry";
+import Lobby from "./commands/501231711271780357/lobby";
+
+// Event Imports
 import MemberEvents from "./events/MemberEvents";
 import MessageEvents from "./events/MessageEvents";
 
@@ -35,7 +43,15 @@ export default class Registry {
         client.RegisterCommand("setup", new Setup());
         client.RegisterCommand("config", new Config());
         client.RegisterCommand("code", new Code());
-        client.RegisterCommand("disable", new Disable())
+        client.RegisterCommand("disable", new Disable());
+
+        // Exclusive Commands: MankBot
+        client.RegisterCommand("lobby", new Lobby(), "501231711271780357");
+        client.RegisterCommand("entry", new Entry(), "501231711271780357");
+
+        // Add Exclusive Commands to Test Server
+        client.RegisterCommand("lobby", new Lobby(), "442730357897429002");
+        client.RegisterCommand("entry", new Entry(), "442730357897429002");
     }
 
     public static RegisterEvents(client: CoreClient) {
