@@ -1,4 +1,4 @@
-import { Channel, Guild, User, GuildMember, Message, PartialDMChannel, PartialGuildMember, PartialMessage } from "discord.js";
+import { Channel, Guild, GuildMember, Message, PartialDMChannel, PartialGuildMember, PartialMessage, GuildBan } from "discord.js";
 
 export class Event {	
 	public channelCreate(channel: Channel) {
@@ -13,11 +13,11 @@ export class Event {
 		
 	}
 	
-	public guildBanAdd(guild: Guild, user: User) {
+	public guildBanAdd(ban: GuildBan) {
 		
 	}
 	
-	public guildBanRemove(guild: Guild, user: User) {
+	public guildBanRemove(ban: GuildBan) {
 		
 	}
 	

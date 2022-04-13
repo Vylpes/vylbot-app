@@ -1,6 +1,7 @@
 import { CoreClient } from "./client/client";
 import * as dotenv from "dotenv";
 import registry from "./registry";
+import { Intents } from "discord.js";
 
 dotenv.config();
 
@@ -20,7 +21,11 @@ requiredConfigs.forEach(config => {
 
 const devmode = process.argv.find(x => x.toLowerCase() == "--dev") != null;
 
-const client = new CoreClient(devmode);
+const client = new CoreClient([
+    Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_MESSAGES,
+    Intents.FLAGS.GUILD_MEMBERS,
+], devmode);
 
 registry.RegisterCommands(client);
 registry.RegisterEvents(client);

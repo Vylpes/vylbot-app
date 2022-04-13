@@ -19,7 +19,7 @@ export default class GuildMemberUpdate {
         embed.AddUser("User", this.newMember.user, true);
         embed.addField("Before", oldNickname, true);
         embed.addField("After", newNickname, true);
-        embed.setFooter(`Id: ${this.newMember.user.id}`);
+        embed.setFooter({ text: `Id: ${this.newMember.user.id}` });
 
         await embed.SendToMemberLogsChannel();
 

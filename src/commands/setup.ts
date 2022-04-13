@@ -1,5 +1,4 @@
 import { ICommandContext } from "../contracts/ICommandContext";
-import ICommandReturnContext from "../contracts/ICommandReturnContext";
 import Server from "../entity/Server";
 import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
 import PublicEmbed from "../helpers/embeds/PublicEmbed";

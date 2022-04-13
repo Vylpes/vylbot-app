@@ -23,7 +23,7 @@ export default class EventEmbed extends MessageEmbed {
         }
     }
 
-    public AddReason(message: String) {
+    public AddReason(message: string) {
         this.addField("Reason", message || "*none*");
     }
 
@@ -37,7 +37,7 @@ export default class EventEmbed extends MessageEmbed {
             return;
         }
 
-        channel.send(this);
+        channel.send({embeds: [ this ]});
     }
 
     public async SendToMessageLogsChannel() {

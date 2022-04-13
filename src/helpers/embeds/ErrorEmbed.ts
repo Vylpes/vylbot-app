@@ -4,7 +4,7 @@ import { ICommandContext } from "../../contracts/ICommandContext";
 export default class ErrorEmbed extends MessageEmbed {
     public context: ICommandContext;
 
-    constructor(context: ICommandContext, message: String) {
+    constructor(context: ICommandContext, message: string) {
         super();
         
         super.setColor(0xd52803);
@@ -14,6 +14,6 @@ export default class ErrorEmbed extends MessageEmbed {
     }
 
     public SendToCurrentChannel() {
-        this.context.message.channel.send(this);
+        this.context.message.channel.send({ embeds: [ this ]});
     }
 }

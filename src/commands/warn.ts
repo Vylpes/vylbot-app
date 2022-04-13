@@ -28,7 +28,7 @@ export default class Warn extends Command {
             };
         }
 
-        const member = context.message.guild?.member(user);
+        const member = context.message.guild?.members.cache.find(x => x.user.id == user.id);
 
         if (!member) {
             const errorEmbed = new ErrorEmbed(context, "User is not in this server");

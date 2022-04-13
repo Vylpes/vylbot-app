@@ -25,8 +25,8 @@ export class CoreClient extends Client {
         return this._eventItems;
     }
 
-    constructor(devmode: boolean = false) {
-        super();
+    constructor(intents: number[], devmode: boolean = false) {
+        super({ intents: intents });
         dotenv.config();
 
         DefaultValues.useDevPrefix = devmode;
@@ -49,7 +49,10 @@ export class CoreClient extends Client {
             return;
         });
 
-        super.on("message", (message) => this._events.onMessage(message, this._commandItems));
+        super.on("message", (message) => {
+            console.log("hello");
+            this._events.onMessage(message, this._commandItems);
+        });
         super.on("ready", this._events.onReady);
 
         super.login(process.env.BOT_TOKEN);
