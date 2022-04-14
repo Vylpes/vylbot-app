@@ -50,8 +50,7 @@ export class CoreClient extends Client {
         });
 
         super.on("message", (message) => {
-            console.log("hello");
-            this._events.onMessage(message, this._commandItems);
+            this._events.onMessage(message, this._commandItems)
         });
         super.on("ready", this._events.onReady);
 

@@ -13,8 +13,6 @@ export class Events {
     // Emit when a message is sent
     // Used to check for commands
     public async onMessage(message: Message, commands: ICommandItem[]) {
-        console.log("h");
-
         if (!message.guild) return;
         if (message.author.bot) return;
 
