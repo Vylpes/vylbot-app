@@ -25,7 +25,7 @@ export default class MessageEvents extends Event {
 
         const embed = new EventEmbed(message.guild, "Message Deleted");
         embed.AddUser("User", message.author, true);
-        embed.addField("Channel", message.channel, true);
+        embed.addField("Channel", message.channel.toString(), true);
         embed.addField("Content", `\`\`\`${message.content || "*none*"}\`\`\``);
 
         if (message.attachments.size > 0) {
@@ -60,7 +60,7 @@ export default class MessageEvents extends Event {
 
         const embed = new EventEmbed(newMessage.guild, "Message Edited");
         embed.AddUser("User", newMessage.author, true);
-        embed.addField("Channel", newMessage.channel, true);
+        embed.addField("Channel", newMessage.channel.toString(), true);
         embed.addField("Before", `\`\`\`${oldMessage.content || "*none*"}\`\`\``);
         embed.addField("After", `\`\`\`${newMessage.content || "*none*"}\`\`\``);
 

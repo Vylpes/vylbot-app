@@ -15,12 +15,12 @@ export default class PublicEmbed extends MessageEmbed {
     }
 
     // Detail methods
-    public AddReason(message: String) {
+    public AddReason(message: string) {
         this.addField("Reason", message || "*none*");
     }
 
     // Send methods
     public SendToCurrentChannel() {
-        this.context.message.channel.send(this);
+        this.context.message.channel.send({ embeds: [ this ]});
     }
 }

@@ -28,7 +28,7 @@ export default class Ban extends Command {
             };
         }
 
-        const targetMember = context.message.guild?.member(targetUser);
+        const targetMember = context.message.guild?.members.cache.find(x => x.user.id == targetUser.id);
 
         if (!targetMember) {
             const embed = new ErrorEmbed(context, "User is not in this server");

@@ -49,14 +49,14 @@ export default class Poll extends Command {
 
         const embed = new PublicEmbed(context, title, description.join("\n"));
 
-        const message = await context.message.channel.send(embed);
+        const message = await context.message.channel.send({ embeds: [ embed ]});
 
         description.forEach(async (value, index) => {
             await message.react(reactionEmojis[index]);
         });
 
         if (context.message.deletable) {
-            await context.message.delete({ reason: "Poll command" });
+            await context.message.delete();
         }
 
         return {

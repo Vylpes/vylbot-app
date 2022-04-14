@@ -12,8 +12,8 @@ export default class MemberEvents extends Event {
     public override async guildMemberAdd(member: GuildMember): Promise<IEventReturnContext> {
         const embed = new EventEmbed(member.guild, "Member Joined");
         embed.AddUser("User", member.user, true);
-        embed.addField("Created", member.user.createdAt);
-        embed.setFooter(`Id: ${member.user.id}`);
+        embed.addField("Created", member.user.createdAt.toISOString());
+        embed.setFooter({ text: `Id: ${member.user.id}` });
 
         await embed.SendToMemberLogsChannel();
 
@@ -25,8 +25,8 @@ export default class MemberEvents extends Event {
     public override async guildMemberRemove(member: GuildMember): Promise<IEventReturnContext> {
         const embed = new EventEmbed(member.guild, "Member Left");
         embed.AddUser("User", member.user, true);
-        embed.addField("Joined", member.joinedAt);
-        embed.setFooter(`Id: ${member.user.id}`);
+        embed.addField("Joined", member.joinedAt?.toISOString() || "n/a");
+        embed.setFooter({ text: `Id: ${member.user.id}` });
 
         await embed.SendToMemberLogsChannel();
 

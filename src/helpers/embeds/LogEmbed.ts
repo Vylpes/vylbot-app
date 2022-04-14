@@ -25,13 +25,13 @@ export default class LogEmbed extends MessageEmbed {
         }
     }
 
-    public AddReason(message: String) {
+    public AddReason(message: string) {
         this.addField("Reason", message || "*none*");
     }
 
     // Send methods
     public SendToCurrentChannel() {
-        this.context.message.channel.send(this);
+        this.context.message.channel.send({ embeds: [ this ]});
     }
 
     public SendToChannel(name: string) {
@@ -44,7 +44,7 @@ export default class LogEmbed extends MessageEmbed {
             return;
         }
 
-        channel.send(this);
+        channel.send({ embeds: [ this ]});
     }
 
     public async SendToMessageLogsChannel() {
