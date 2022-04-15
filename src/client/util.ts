@@ -90,7 +90,7 @@ export class Util {
             client.on('guildMemberAdd', e.Event.guildMemberAdd);
             client.on('guildMemberRemove', e.Event.guildMemberRemove);
             client.on('guildMemberUpdate', e.Event.guildMemberUpdate);
-            client.on('message', e.Event.message);
+            client.on('messageCreate', e.Event.messageCreate);
             client.on('messageDelete', e.Event.messageDelete);
             client.on('messageUpdate', e.Event.messageUpdate);
             client.on('ready', e.Event.ready);

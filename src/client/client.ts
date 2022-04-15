@@ -49,8 +49,8 @@ export class CoreClient extends Client {
             return;
         });
 
-        super.on("message", (message) => {
-            this._events.onMessage(message, this._commandItems)
+        super.on("messageCreate", (message) => {
+            this._events.onMessageCreate(message, this._commandItems)
         });
         super.on("ready", this._events.onReady);
 

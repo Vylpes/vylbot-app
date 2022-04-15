@@ -37,7 +37,7 @@ export class Event {
 		
 	}
 	
-	public message(message: Message) {
+	public messageCreate(message: Message) {
 		
 	}
 	
