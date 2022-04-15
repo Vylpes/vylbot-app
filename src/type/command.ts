@@ -2,12 +2,11 @@ import { CommandResponse } from "../constants/CommandResponse";
 import { ICommandContext } from "../contracts/ICommandContext";
 
 export class Command {
-    public _roles: string[];
-
-    public _category?: string;
+    public Roles: string[];
+    public Category?: string;
 
     constructor() {
-        this._roles = [];
+        this.Roles = [];
     }
 
     public precheck(context: ICommandContext): CommandResponse {

@@ -13,6 +13,16 @@ export default class StringTools {
         return result.join(" ");
     }
 
+    public static CapitaliseArray(str: string[]): string[] {
+        const res: string[] = [];
+
+        str.forEach(s => {
+            res.push(StringTools.Capitalise(s));
+        });
+
+        return res;
+    }
+
     public static RandomString(length: number) {
         let result = "";
 

@@ -8,7 +8,7 @@ export default class Poll extends Command {
     constructor() {
         super();
         
-        super._category = "General";
+        super.Category = "General";
     }
 
     public override async execute(context: ICommandContext): Promise<ICommandReturnContext> {

@@ -38,7 +38,7 @@ export class Util {
             itemToUse = itemForServer;
         }
 
-        const requiredRoles = itemToUse.Command._roles;
+        const requiredRoles = itemToUse.Command.Roles;
 
         for (const i in requiredRoles) {
             if (message.guild) {

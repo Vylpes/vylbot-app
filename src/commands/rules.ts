@@ -16,8 +16,8 @@ export default class Rules extends Command {
     constructor() {
         super();
 
-        super._category = "Admin";
-        super._roles = [
+        super.Category = "Admin";
+        super.Roles = [
             "administrator"
         ];
     }
