@@ -71,7 +71,7 @@ export default class MessageEvents extends Event {
         };
     }
 
-    public override async message(message: Message) {
+    public override async messageCreate(message: Message) {
         if (!message.guild) return;
         if (message.author.bot) return;
 

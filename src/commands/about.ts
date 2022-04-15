@@ -6,7 +6,7 @@ import { Command } from "../type/command";
 export default class About extends Command {
     constructor() {
         super();
-        super._category = "General";
+        super.Category = "General";
     }
 
     public override execute(context: ICommandContext): ICommandReturnContext {

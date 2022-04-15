@@ -27,7 +27,7 @@ const client = new CoreClient([
     Intents.FLAGS.GUILD_MEMBERS,
 ], devmode);
 
-registry.RegisterCommands(client);
-registry.RegisterEvents(client);
+registry.RegisterCommands();
+registry.RegisterEvents();
 
 client.start();

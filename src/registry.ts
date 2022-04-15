@@ -7,7 +7,6 @@ import Clear from "./commands/clear";
 import Code from "./commands/code";
 import Config from "./commands/config";
 import Disable from "./commands/disable";
-import Evaluate from "./commands/eval";
 import Help from "./commands/help";
 import Kick from "./commands/kick";
 import Mute from "./commands/mute";
@@ -27,35 +26,34 @@ import MemberEvents from "./events/MemberEvents";
 import MessageEvents from "./events/MessageEvents";
 
 export default class Registry {
-    public static RegisterCommands(client: CoreClient) {
-        client.RegisterCommand("about", new About());
-        client.RegisterCommand("ban", new Ban());
-        client.RegisterCommand("clear", new Clear());
-        client.RegisterCommand("eval", new Evaluate());
-        client.RegisterCommand("help", new Help());
-        client.RegisterCommand("kick", new Kick());
-        client.RegisterCommand("mute", new Mute());
-        client.RegisterCommand("poll", new Poll());
-        client.RegisterCommand("role", new Role());
-        client.RegisterCommand("rules", new Rules());
-        client.RegisterCommand("unmute", new Unmute());
-        client.RegisterCommand("warn", new Warn());
-        client.RegisterCommand("setup", new Setup());
-        client.RegisterCommand("config", new Config());
-        client.RegisterCommand("code", new Code());
-        client.RegisterCommand("disable", new Disable());
+    public static RegisterCommands() {
+        CoreClient.RegisterCommand("about", new About());
+        CoreClient.RegisterCommand("ban", new Ban());
+        CoreClient.RegisterCommand("clear", new Clear());
+        CoreClient.RegisterCommand("help", new Help());
+        CoreClient.RegisterCommand("kick", new Kick());
+        CoreClient.RegisterCommand("mute", new Mute());
+        CoreClient.RegisterCommand("poll", new Poll());
+        CoreClient.RegisterCommand("role", new Role());
+        CoreClient.RegisterCommand("rules", new Rules());
+        CoreClient.RegisterCommand("unmute", new Unmute());
+        CoreClient.RegisterCommand("warn", new Warn());
+        CoreClient.RegisterCommand("setup", new Setup());
+        CoreClient.RegisterCommand("config", new Config());
+        CoreClient.RegisterCommand("code", new Code());
+        CoreClient.RegisterCommand("disable", new Disable());
 
         // Exclusive Commands: MankBot
-        client.RegisterCommand("lobby", new Lobby(), "501231711271780357");
-        client.RegisterCommand("entry", new Entry(), "501231711271780357");
+        CoreClient.RegisterCommand("lobby", new Lobby(), "501231711271780357");
+        CoreClient.RegisterCommand("entry", new Entry(), "501231711271780357");
 
         // Add Exclusive Commands to Test Server
-        client.RegisterCommand("lobby", new Lobby(), "442730357897429002");
-        client.RegisterCommand("entry", new Entry(), "442730357897429002");
+        CoreClient.RegisterCommand("lobby", new Lobby(), "442730357897429002");
+        CoreClient.RegisterCommand("entry", new Entry(), "442730357897429002");
     }
 
-    public static RegisterEvents(client: CoreClient) {
-        client.RegisterEvent(new MemberEvents());
-        client.RegisterEvent(new MessageEvents());
+    public static RegisterEvents() {
+        CoreClient.RegisterEvent(new MemberEvents());
+        CoreClient.RegisterEvent(new MessageEvents());
     }
 }

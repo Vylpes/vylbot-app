@@ -7,8 +7,8 @@ import { Command } from "../type/command";
 export default class Setup extends Command {
     constructor() {
         super();
-        super._category = "Administration";
-        super._roles = [
+        super.Category = "Administration";
+        super.Roles = [
             "moderator"
         ]
     }

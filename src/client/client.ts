@@ -11,17 +11,17 @@ import { Events } from "./events";
 import { Util } from "./util";
 
 export class CoreClient extends Client {
-    private _commandItems: ICommandItem[];
-    private _eventItems: IEventItem[];
+    private static _commandItems: ICommandItem[];
+    private static _eventItems: IEventItem[];
     
     private _events: Events;
     private _util: Util;
 
-    public get commandItems(): ICommandItem[] {
+    public static get commandItems(): ICommandItem[] {
         return this._commandItems;
     }
 
-    public get eventItems(): IEventItem[] {
+    public static get eventItems(): IEventItem[] {
         return this._eventItems;
     }
 
@@ -31,8 +31,8 @@ export class CoreClient extends Client {
 
         DefaultValues.useDevPrefix = devmode;
 
-        this._commandItems = [];
-        this._eventItems = [];
+        CoreClient._commandItems = [];
+        CoreClient._eventItems = [];
 
         this._events = new Events();
         this._util = new Util();
@@ -49,31 +49,31 @@ export class CoreClient extends Client {
             return;
         });
 
-        super.on("message", (message) => {
-            this._events.onMessage(message, this._commandItems)
+        super.on("messageCreate", (message) => {
+            this._events.onMessageCreate(message, CoreClient._commandItems)
         });
         super.on("ready", this._events.onReady);
 
         super.login(process.env.BOT_TOKEN);
 
-        this._util.loadEvents(this, this._eventItems);
+        this._util.loadEvents(this, CoreClient._eventItems);
     }
 
-    public RegisterCommand(name: string, command: Command, serverId?: string) {
+    public static RegisterCommand(name: string, command: Command, serverId?: string) {
         const item: ICommandItem = {
             Name: name,
             Command: command,
             ServerId: serverId,
         };
 
-        this._commandItems.push(item);
+        CoreClient._commandItems.push(item);
     }
 
-    public RegisterEvent(event: Event) {
+    public static RegisterEvent(event: Event) {
         const item: IEventItem = {
             Event: event,
         };
 
-        this._eventItems.push(item);
+        CoreClient._eventItems.push(item);
     }
 }

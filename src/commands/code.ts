@@ -10,8 +10,8 @@ export default class Code extends Command {
     constructor() {
         super();
 
-        super._category = "Moderation";
-        super._roles = [
+        super.Category = "Moderation";
+        super.Roles = [
             "moderator"
         ];
     }

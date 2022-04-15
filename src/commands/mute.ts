@@ -10,8 +10,8 @@ export default class Mute extends Command {
     constructor() {
         super();
 
-        super._category = "Moderation";
-        super._roles = [
+        super.Category = "Moderation";
+        super.Roles = [
             "moderator"
         ];
     }
