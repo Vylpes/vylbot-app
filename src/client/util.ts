@@ -40,18 +40,20 @@ export class Util {
 
         const requiredRoles = itemToUse.Command.Roles;
 
-        for (const i in requiredRoles) {
-            if (message.guild) {
-                const setting = await SettingsHelper.GetSetting(`role.${requiredRoles[i]}`, message.guild?.id);
-
-                if (!setting) {
-                    message.reply("Unable to verify if you have this role, please contact your bot administrator");
-                    return;
-                }
-
-                if (!message.member.roles.cache.find(role => role.name == setting)) {
-                    message.reply(`You require the \`${StringTools.Capitalise(setting)}\` role to run this command`);
-                    return;
+        if (message.author.id != process.env.BOT_OWNERID && message.author.id != message.guild.ownerId) {
+            for (const i in requiredRoles) {
+                if (message.guild) {
+                    const setting = await SettingsHelper.GetSetting(`role.${requiredRoles[i]}`, message.guild?.id);
+    
+                    if (!setting) {
+                        message.reply("Unable to verify if you have this role, please contact your bot administrator");
+                        return;
+                    }
+    
+                    if (!message.member.roles.cache.find(role => role.name == setting)) {
+                        message.reply(`You require the \`${StringTools.Capitalise(setting)}\` role to run this command`);
+                        return;
+                    }
                 }
             }
         }
