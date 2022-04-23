@@ -79,7 +79,7 @@ export default class Config extends Command {
     }
 
     private async SendHelpText(context: ICommandContext) {
-        const description = readFileSync(`${process.cwd()}/data/config.txt`).toString();
+        const description = readFileSync(`${process.cwd()}/data/usage/config.txt`).toString();
 
         const embed = new PublicEmbed(context, "Config", description);
 

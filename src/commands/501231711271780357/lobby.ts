@@ -99,7 +99,7 @@ export default class Lobby extends Command {
     }
 
     private SendConfigHelp(context: ICommandContext) {
-        const helpText = readFileSync(`${process.cwd()}/data/lobbyConfig.txt`).toString();
+        const helpText = readFileSync(`${process.cwd()}/data/usage/lobby.txt`).toString();
 
         const embed = new PublicEmbed(context, "Configure Lobby Command", helpText);
         embed.SendToCurrentChannel();

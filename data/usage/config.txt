@@ -5,7 +5,7 @@ bot.prefix: The bot prefix for the server (Default: "v!")
 
 commands.disabled: Disabled commands, separated by commas (Default: "")
 
-role.assignable: List of roles assignable to user (Default: [])
+role.assignable: List of roles assignable to user, separated by commas (Default: "")
 role.moderator: The moderator role name (Default: "Moderator")
 role.administrator: The administrator role name (Default: "Administrator")
 role.muted: The muted role name (Default: "Muted")
