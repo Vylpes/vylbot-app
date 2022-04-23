@@ -1,8 +1,8 @@
-USAGE: config <add|remove> <Channel Name> <Role Name> [cooldown] [Game Name]
+USAGE: config <add|remove> <Channel ID> <Role ID> [cooldown] [Game Name]
 
 ===[ EXAMPLE ]===
 To add a channel:
-- config add game-name role-name 30 Game Name
+- config add 000000000000000000 000000000000000000 30 Game Name
 
 To remove a channel:
-- config remove game-name
+- config remove 000000000000000000

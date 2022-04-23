@@ -106,8 +106,8 @@ export default class Lobby extends Command {
     }
 
     private async AddLobbyConfig(context: ICommandContext) {
-        const channel = context.message.guild!.channels.cache.find(x => x.name == context.args[2]);
-        const role = context.message.guild!.roles.cache.find(x => x.name == context.args[3]);
+        const channel = context.message.guild!.channels.cache.find(x => x.id == context.args[2]);
+        const role = context.message.guild!.roles.cache.find(x => x.id == context.args[3]);
         const cooldown = Number(context.args[4]) || 30;
         const gameName = context.args.splice(5).join(" ");
 
@@ -119,12 +119,12 @@ export default class Lobby extends Command {
         const entity = new eLobby(channel.id, role.id, cooldown, gameName);
         await entity.Save(eLobby, entity);
 
-        const embed = new PublicEmbed(context, "", "Added new lobby channel");
+        const embed = new PublicEmbed(context, "", `Added \`${channel.name}\` as a new lobby channel with a cooldown of \`${cooldown} minutes\` and will ping \`${role.name}\` on use`);
         embed.SendToCurrentChannel();
     }
 
     private async RemoveLobbyConfig(context: ICommandContext) {
-        const channel = context.message.guild!.channels.cache.find(x => x.name == context.args[2]);
+        const channel = context.message.guild!.channels.cache.find(x => x.id == context.args[2]);
 
         if (!channel) {
             this.SendConfigHelp(context);
@@ -137,7 +137,7 @@ export default class Lobby extends Command {
             await BaseEntity.Remove<eLobby>(eLobby, entity);
         }
 
-        const embed = new PublicEmbed(context, "", "Removed lobby channel");
+        const embed = new PublicEmbed(context, "", `Removed \`${channel.name}\` from the list of lobby channels`);
         embed.SendToCurrentChannel();
     }
 }

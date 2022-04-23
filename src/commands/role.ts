@@ -103,7 +103,7 @@ export default class Role extends Command {
     public async AddRole(context: ICommandContext, role: DiscordRole): Promise<ICommandReturnContext> {
         await context.message.member?.roles.add(role, "Toggled with role command");
 
-        const embed = new PublicEmbed(context, "", `Gave role: ${role.name}`);
+        const embed = new PublicEmbed(context, "", `Gave role: \`${role.name}\``);
         embed.SendToCurrentChannel();
 
         return {
@@ -115,7 +115,7 @@ export default class Role extends Command {
     public async RemoveRole(context: ICommandContext, role: DiscordRole): Promise<ICommandReturnContext> {
         await context.message.member?.roles.remove(role, "Toggled with role command");
 
-        const embed = new PublicEmbed(context, "", `Removed role: ${role.name}`);
+        const embed = new PublicEmbed(context, "", `Removed role: \`${role.name}\``);
         embed.SendToCurrentChannel();
 
         return {
@@ -175,7 +175,7 @@ export default class Role extends Command {
 
         await SettingsHelper.SetSetting("role.assignable", context.message.guild!.id, setting);
 
-        const embed = new PublicEmbed(context, "", "Added new assignable role");
+        const embed = new PublicEmbed(context, "", `Added \`${role.name}\` as a new assignable role`);
         embed.SendToCurrentChannel();
     }
 
@@ -203,7 +203,7 @@ export default class Role extends Command {
 
         await SettingsHelper.SetSetting("role.assignable", context.message.guild!.id, setting);
 
-        const embed = new PublicEmbed(context, "", "Removed assignable role");
+        const embed = new PublicEmbed(context, "", `Removed \`${role.name}\` from the list of assignable roles`);
         embed.SendToCurrentChannel();
     }
 }
