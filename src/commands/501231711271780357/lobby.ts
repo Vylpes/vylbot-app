@@ -108,7 +108,7 @@ export default class Lobby extends Command {
     private async AddLobbyConfig(context: ICommandContext) {
         const channel = context.message.guild!.channels.cache.find(x => x.name == context.args[2]);
         const role = context.message.guild!.roles.cache.find(x => x.name == context.args[3]);
-        const cooldown = context.args[4] || "30";
+        const cooldown = Number(context.args[4]) || 30;
         const gameName = context.args.splice(5).join(" ");
 
         if (!channel || !role) {
@@ -116,7 +116,7 @@ export default class Lobby extends Command {
             return;
         }
 
-        const entity = new eLobby(channel.id, role.id, Number.parseInt(cooldown), gameName);
+        const entity = new eLobby(channel.id, role.id, cooldown, gameName);
         await entity.Save(eLobby, entity);
 
         const embed = new PublicEmbed(context, "", "Added new lobby channel");
