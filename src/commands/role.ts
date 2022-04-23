@@ -151,7 +151,7 @@ export default class Role extends Command {
     }
 
     private SendConfigHelp(context: ICommandContext) {
-        const helpText = readFileSync(`${process.cwd()}/data/roleConfig.txt`).toString();
+        const helpText = readFileSync(`${process.cwd()}/data/usage/role.txt`).toString();
 
         const embed = new PublicEmbed(context, "Configure Role Command", helpText);
         embed.SendToCurrentChannel();
