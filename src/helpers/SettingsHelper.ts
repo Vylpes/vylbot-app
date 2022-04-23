@@ -1,4 +1,3 @@
-import { getConnection } from "typeorm";
 import DefaultValues from "../constants/DefaultValues";
 import Server from "../entity/Server";
 import Setting from "../entity/Setting";
@@ -46,5 +45,15 @@ export default class SettingsHelper {
 
             await server.Save(Server, server);
         }
+    }
+
+    public static async GetServerPrefix(serverId: string): Promise<string> {
+        const setting = await this.GetSetting("bot.prefix", serverId);
+
+        if (!setting) {
+            return "v!";
+        }
+
+        return setting;
     }
 }

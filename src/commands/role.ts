@@ -28,14 +28,15 @@ export default class Role extends Command {
         const rolesArray = roles.split(",");
 
         if (context.args.length == 0) {
-            this.SendRolesList(context, rolesArray);
+            await this.SendRolesList(context, rolesArray, context.message.guild.id);
         } else {
             await this.ToggleRole(context, rolesArray);
         }
     }
 
-    public SendRolesList(context: ICommandContext, roles: String[]): ICommandReturnContext {
-        const description = `Do ${process.env.BOT_PREFIX}role <role> to get the role!\n${roles.join('\n')}`;
+    public async SendRolesList(context: ICommandContext, roles: String[], serverId: string): Promise<ICommandReturnContext> {
+        const botPrefix = await SettingsHelper.GetServerPrefix(serverId);
+        const description = `Do ${botPrefix}role <role> to get the role!\n${roles.join('\n')}`;
 
         const embed = new PublicEmbed(context, "Roles", description);
         embed.SendToCurrentChannel();
