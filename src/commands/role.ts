@@ -5,7 +5,7 @@ import { Command } from "../type/command";
 import { ICommandContext } from "../contracts/ICommandContext";
 import ICommandReturnContext from "../contracts/ICommandReturnContext";
 import SettingsHelper from "../helpers/SettingsHelper";
-
+import { readFileSync } from "fs";
 export default class Role extends Command {
     constructor() {
         super();
@@ -16,7 +16,21 @@ export default class Role extends Command {
     public override async execute(context: ICommandContext) {
         if (!context.message.guild) return;
 
-        const roles = await SettingsHelper.GetSetting("role.assignable", context.message.guild.id);
+        switch (context.args[0]) {
+            case "config":
+                await this.UseConfig(context);
+                break;
+            default:
+                await this.UseDefault(context);
+        }
+    }
+
+    // =======
+    // Default
+    // =======
+
+    private async UseDefault(context: ICommandContext) {
+        const roles = await SettingsHelper.GetSetting("role.assignable", context.message.guild!.id);
 
         if (!roles) {
             const errorEmbed = new ErrorEmbed(context, "Unable to find any assignable roles");
@@ -28,7 +42,7 @@ export default class Role extends Command {
         const rolesArray = roles.split(",");
 
         if (context.args.length == 0) {
-            await this.SendRolesList(context, rolesArray, context.message.guild.id);
+            await this.SendRolesList(context, rolesArray, context.message.guild!.id);
         } else {
             await this.ToggleRole(context, rolesArray);
         }
@@ -108,5 +122,88 @@ export default class Role extends Command {
             commandContext: context,
             embeds: [embed]
         };
+    }
+
+    // ======
+    // Config
+    // ======
+
+    private async UseConfig(context: ICommandContext) {
+        const moderatorRole = await SettingsHelper.GetSetting("role.moderator", context.message.guild!.id);
+
+        if (!context.message.member?.roles.cache.find(x => x.name == moderatorRole)) {
+            const errorEmbed = new ErrorEmbed(context, "Sorry, you must be a moderator to be able to configure this command");
+            errorEmbed.SendToCurrentChannel();
+
+            return;
+        }
+
+        switch (context.args[1]) {
+            case "add":
+                await this.AddRoleConfig(context);
+                break;
+            case "remove":
+                await this.RemoveRoleConfig(context);
+                break;
+            default:
+                this.SendConfigHelp(context);
+        }
+    }
+
+    private SendConfigHelp(context: ICommandContext) {
+        const helpText = readFileSync(`${process.cwd()}/data/roleConfig.txt`).toString();
+
+        const embed = new PublicEmbed(context, "Configure Role Command", helpText);
+        embed.SendToCurrentChannel();
+    }
+
+    private async AddRoleConfig(context: ICommandContext) {
+        const role = context.message.guild!.roles.cache.find(x => x.name == context.args[2]);
+
+        if (!role) {
+            this.SendConfigHelp(context);
+            return;
+        }
+        
+        let setting = await SettingsHelper.GetSetting("role.assignable", context.message.guild!.id) || "";
+
+        const settingArray = setting.split(",");
+
+        settingArray.push(role.name);
+
+        setting = settingArray.join(",");
+
+        await SettingsHelper.SetSetting("role.assignable", context.message.guild!.id, setting);
+
+        const embed = new PublicEmbed(context, "", "Added new assignable role");
+        embed.SendToCurrentChannel();
+    }
+
+    private async RemoveRoleConfig(context: ICommandContext) {
+        const role = context.message.guild!.roles.cache.find(x => x.name == context.args[2]);
+
+        if (!role) {
+            this.SendConfigHelp(context);
+            return;
+        }
+
+        let setting = await SettingsHelper.GetSetting("role.assignable", context.message.guild!.id);
+
+        if (!setting) return;
+
+        const settingArray = setting.split(",");
+
+        const index = settingArray.findIndex(x => x == context.args[2]);
+
+        if (index == -1) return;
+
+        settingArray.splice(index, 1);
+
+        setting = settingArray.join(",");
+
+        await SettingsHelper.SetSetting("role.assignable", context.message.guild!.id, setting);
+
+        const embed = new PublicEmbed(context, "", "Removed assignable role");
+        embed.SendToCurrentChannel();
     }
 }

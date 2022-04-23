@@ -1,0 +1,8 @@
+USAGE: config <add|remove> <Role Name> 
+
+===[ EXAMPLE ]===
+To add a role:
+- config add role-name
+
+To remove a role:
+- config remove role-name
