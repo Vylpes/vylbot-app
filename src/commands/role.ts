@@ -4,6 +4,7 @@ import { Role as DiscordRole } from "discord.js";
 import { Command } from "../type/command";
 import { ICommandContext } from "../contracts/ICommandContext";
 import ICommandReturnContext from "../contracts/ICommandReturnContext";
+import SettingsHelper from "../helpers/SettingsHelper";
 
 export default class Role extends Command {
     constructor() {
@@ -13,12 +14,23 @@ export default class Role extends Command {
     }
 
     public override async execute(context: ICommandContext) {
-        const roles = process.env.COMMANDS_ROLE_ROLES!.split(',');
+        if (!context.message.guild) return;
+
+        const roles = await SettingsHelper.GetSetting("role.assignable", context.message.guild.id);
+
+        if (!roles) {
+            const errorEmbed = new ErrorEmbed(context, "Unable to find any assignable roles");
+            errorEmbed.SendToCurrentChannel();
+
+            return;
+        }
+
+        const rolesArray = roles.split(",");
 
         if (context.args.length == 0) {
-            this.SendRolesList(context, roles);
+            this.SendRolesList(context, rolesArray);
         } else {
-            await this.ToggleRole(context, roles);
+            await this.ToggleRole(context, rolesArray);
         }
     }
 
