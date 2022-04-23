@@ -1,8 +1,8 @@
-USAGE: config <add|remove> <Role Name> 
+USAGE: config <add|remove> <Role ID> 
 
 ===[ EXAMPLE ]===
 To add a role:
-- config add role-name
+- config add 000000000000000000
 
 To remove a role:
-- config remove role-name
+- config remove 000000000000000000

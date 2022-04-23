@@ -62,7 +62,7 @@ export default class Role extends Command {
     }
 
     public async ToggleRole(context: ICommandContext, roles: String[]): Promise<ICommandReturnContext> {
-        const requestedRole = context.args[0];
+        const requestedRole = context.args.join(" ");
 
         if (!roles.includes(requestedRole)) {
             const errorEmbed = new ErrorEmbed(context, "This role isn't marked as assignable, to see a list of assignable roles, run this command without any parameters");
@@ -158,7 +158,7 @@ export default class Role extends Command {
     }
 
     private async AddRoleConfig(context: ICommandContext) {
-        const role = context.message.guild!.roles.cache.find(x => x.name == context.args[2]);
+        const role = context.message.guild!.roles.cache.find(x => x.id == context.args[2]);
 
         if (!role) {
             this.SendConfigHelp(context);
@@ -180,7 +180,7 @@ export default class Role extends Command {
     }
 
     private async RemoveRoleConfig(context: ICommandContext) {
-        const role = context.message.guild!.roles.cache.find(x => x.name == context.args[2]);
+        const role = context.message.guild!.roles.cache.find(x => x.id == context.args[2]);
 
         if (!role) {
             this.SendConfigHelp(context);
@@ -193,7 +193,7 @@ export default class Role extends Command {
 
         const settingArray = setting.split(",");
 
-        const index = settingArray.findIndex(x => x == context.args[2]);
+        const index = settingArray.findIndex(x => x == role.name);
 
         if (index == -1) return;
 
