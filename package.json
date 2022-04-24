@@ -1,29 +1,38 @@
 {
   "name": "vylbot-app",
-  "version": "2.1.1",
-  "description": "",
-  "main": "vylbot.js",
+  "version": "3.0",
+  "description": "A discord bot made for Vylpes' Den",
+  "main": "./dist/vylbot",
+  "typings": "./dist",
   "scripts": {
-    "start": "node vylbot.js",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "build": "tsc",
+    "start": "node ./dist/vylbot",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Vylpes/vylbot-app.git"
   },
   "author": "Vylpes",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Vylpes/vylbot-app/issues"
-  },
-  "homepage": "https://github.com/Vylpes/vylbot-app#readme",
+  "license": "MIT",
+  "bugs": "https://github.com/Vylpes/vylbot-app/issues",
+  "homepage": "https://github.com/Vylpes/vylbot-app",
   "dependencies": {
+    "@types/jest": "^27.0.3",
+    "@types/uuid": "^8.3.4",
+    "discord.js": "^13.6.0",
+    "dotenv": "^10.0.0",
     "emoji-regex": "^9.2.0",
-    "random-bunny": "^1.0.0",
-    "vylbot-core": "^1.0.4"
+    "jest": "^27.4.5",
+    "jest-mock-extended": "^2.0.4",
+    "mysql": "^2.18.1",
+    "random-bunny": "^2.0.0",
+    "ts-jest": "^27.1.2",
+    "typeorm": "^0.2.44",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "eslint": "^7.17.0"
+    "@types/node": "^16.11.10",
+    "typescript": "^4.5.2"
   }
 }

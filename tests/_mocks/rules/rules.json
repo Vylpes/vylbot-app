@@ -1,0 +1,13 @@
+[
+    {
+        "image": "IMAGEURL"
+    },
+    {
+        "title": "TITLE 1",
+        "description": [
+            "DESCRIPTION 1A",
+            "DESCRIPTION 1B"
+        ],
+        "footer": "FOOTER 1"
+    }
+]

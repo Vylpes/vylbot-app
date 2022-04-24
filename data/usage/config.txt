@@ -1,0 +1,22 @@
+USAGE: <key> <set|reset> [value]
+
+===[ KEYS ]===
+bot.prefix: The bot prefix for the server (Default: "v!")
+
+commands.disabled: Disabled commands, separated by commas (Default: "")
+
+role.assignable: List of roles assignable to user, separated by commas (Default: "")
+role.moderator: The moderator role name (Default: "Moderator")
+role.administrator: The administrator role name (Default: "Administrator")
+role.muted: The muted role name (Default: "Muted")
+
+rules.file: The location of the rules file (Default: "data/rules/rules")
+
+channels.logs.message: The channel message events will be logged to (Default: "message-logs")
+channels.logs.member: The channel member events will be logged to (Default: "member-logs")
+channels.logs.mod: The channel mod events will be logged to (Default: "mod-logs")
+
+verification.enabled: Enables/Disables the verification feature (Default: "false")
+verification.channel: The channel to listen to for entry codes (Default: "entry")
+verification.role: The server access role (Default: "Entry")
+verification.code: The entry code for the channel (Default: "")

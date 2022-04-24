@@ -1,0 +1,11 @@
+node_modules/
+tests/
+coverage/
+.github/
+.gitlab/
+
+.env.template
+.gitlab-ci.yml
+jest.config.js
+jest.setup.js
+README.md
