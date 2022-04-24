@@ -1,7 +1,6 @@
 import { Event } from "../type/event";
 import { Message } from "discord.js";
 import EventEmbed from "../helpers/embeds/EventEmbed";
-import IEventReturnContext from "../contracts/IEventReturnContext";
 import SettingsHelper from "../helpers/SettingsHelper";
 import OnMessage from "./MessageEvents/OnMessage";
 
@@ -10,18 +9,12 @@ export default class MessageEvents extends Event {
         super();
     }
 
-    public override async messageDelete(message: Message): Promise<IEventReturnContext> {
-        if (!message.guild) {
-            return {
-                embeds: []
-            };
-        }
+    public override async messageDelete(message: Message) {
+        if (!message.guild) return;
+        if (message.author.bot) return;
 
-        if (message.author.bot) {
-            return {
-                embeds: []
-            };
-        }
+        const enabled = await SettingsHelper.GetSetting("event.message.delete.enabled", message.guild.id);
+        if (!enabled || enabled.toLowerCase() != "true") return;
 
         const embed = new EventEmbed(message.guild, "Message Deleted");
         embed.AddUser("User", message.author, true);
@@ -32,31 +25,19 @@ export default class MessageEvents extends Event {
             embed.addField("Attachments", `\`\`\`${message.attachments.map(x => x.url).join("\n")}\`\`\``);
         }
 
-        await embed.SendToMessageLogsChannel();
+        const channel = await SettingsHelper.GetSetting("event.message.delete.channel", message.guild.id);
+        if (!channel || !message.guild.channels.cache.find(x => x.name == channel)) return;
 
-        return {
-            embeds: [embed]
-        };
+        embed.SendToChannel(channel);
     }
 
-    public override async messageUpdate(oldMessage: Message, newMessage: Message): Promise<IEventReturnContext> {
-        if (!newMessage.guild){
-            return {
-                embeds: []
-            };
-        }
+    public override async messageUpdate(oldMessage: Message, newMessage: Message) {
+        if (!newMessage.guild) return;
+        if (newMessage.author.bot) return;
+        if (oldMessage.content == newMessage.content) return;
 
-        if (newMessage.author.bot) {
-            return {
-                embeds: []
-            };
-        }
-
-        if (oldMessage.content == newMessage.content) {
-            return {
-                embeds: []
-            };
-        }
+        const enabled = await SettingsHelper.GetSetting("event.message.update.enabled", newMessage.guild.id);
+        if (!enabled || enabled.toLowerCase() != "true") return;
 
         const embed = new EventEmbed(newMessage.guild, "Message Edited");
         embed.AddUser("User", newMessage.author, true);
@@ -64,11 +45,10 @@ export default class MessageEvents extends Event {
         embed.addField("Before", `\`\`\`${oldMessage.content || "*none*"}\`\`\``);
         embed.addField("After", `\`\`\`${newMessage.content || "*none*"}\`\`\``);
 
-        await embed.SendToMessageLogsChannel();
+        const channel = await SettingsHelper.GetSetting("event.message.update.channel", newMessage.guild.id);
+        if (!channel || !newMessage.guild.channels.cache.find(x => x.name == channel)) return;
 
-        return {
-            embeds: [embed]
-        };
+        embed.SendToChannel(channel);
     }
 
     public override async messageCreate(message: Message) {

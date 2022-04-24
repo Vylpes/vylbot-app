@@ -20,3 +20,18 @@ verification.enabled: Enables/Disables the verification feature (Default: "false
 verification.channel: The channel to listen to for entry codes (Default: "entry")
 verification.role: The server access role (Default: "Entry")
 verification.code: The entry code for the channel (Default: "")
+
+event.message.delete.enabled: Enables/Disables the message delete log event (Default: "false")
+event.message.delete.channel: Sets the channel the bot will log message delete events to (Default: "message-logs")
+
+event.message.update.enabled: Enables/Disables the message delete log event (Default: "false")
+event.message.update.channel: Sets the channel the bot will log message delete events to (Default: "message-logs")
+
+event.member.add.enabled: Enables/Disables the message delete log event (Default: "false")
+event.member.add.channel: Sets the channel the bot will log message delete events to (Default: "member-logs")
+
+event.member.remove.enabled: Enables/Disables the message delete log event (Default: "false")
+event.member.remove.channel: Sets the channel the bot will log message delete events to (Default: "member-logs")
+
+event.member.update.enabled: Enables/Disables the message delete log event (Default: "false")
+event.member.update.channel: Sets the channel the bot will log message delete events to (Default: "member-logs")
