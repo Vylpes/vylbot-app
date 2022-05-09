@@ -116,6 +116,15 @@ export default class Lobby extends Command {
             return;
         }
 
+        const lobby = await eLobby.FetchOneByChannelId(channel.id);
+
+        if (lobby) {
+            const errorEmbed = new ErrorEmbed(context, "This channel has already been setup.");
+            errorEmbed.SendToCurrentChannel();
+            
+            return;
+        }
+
         const entity = new eLobby(channel.id, role.id, cooldown, gameName);
         await entity.Save(eLobby, entity);
 
