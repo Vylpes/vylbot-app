@@ -111,8 +111,17 @@ export default class Lobby extends Command {
         const cooldown = Number(context.args[4]) || 30;
         const gameName = context.args.splice(5).join(" ");
 
-        if (!channel || !role) {
-            this.SendConfigHelp(context);
+        if (!channel) {
+            const errorEmbed = new ErrorEmbed(context, "The channel id you provided is invalid or channel does not exist.");
+            errorEmbed.SendToCurrentChannel();
+
+            return;
+        }
+
+        if (!role) {
+            const errorEmbed = new ErrorEmbed(context, "The role id you provided is invalid or role does not exist.");
+            errorEmbed.SendToCurrentChannel();
+
             return;
         }
 
@@ -133,20 +142,18 @@ export default class Lobby extends Command {
     }
 
     private async RemoveLobbyConfig(context: ICommandContext) {
-        const channel = context.message.guild!.channels.cache.find(x => x.id == context.args[2]);
+        const entity = await eLobby.FetchOneByChannelId(context.args[2]);
 
-        if (!channel) {
-            this.SendConfigHelp(context);
+        if (!entity) {
+            const errorEmbed = new ErrorEmbed(context, "The channel id you provided has not been setup as a lobby, unable to remove.");
+            errorEmbed.SendToCurrentChannel();
+
             return;
         }
+        
+        await BaseEntity.Remove<eLobby>(eLobby, entity);
 
-        const entity = await eLobby.FetchOneByChannelId(channel.id);
-
-        if (entity) {
-            await BaseEntity.Remove<eLobby>(eLobby, entity);
-        }
-
-        const embed = new PublicEmbed(context, "", `Removed \`${channel.name}\` from the list of lobby channels`);
+        const embed = new PublicEmbed(context, "", `Removed <#${context.args[2]}> from the list of lobby channels`);
         embed.SendToCurrentChannel();
     }
 }
