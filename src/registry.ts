@@ -24,11 +24,13 @@ import Lobby from "./commands/501231711271780357/lobby";
 // Event Imports
 import MemberEvents from "./events/MemberEvents";
 import MessageEvents from "./events/MessageEvents";
+import Bunny from "./commands/bunny";
 
 export default class Registry {
     public static RegisterCommands() {
         CoreClient.RegisterCommand("about", new About());
         CoreClient.RegisterCommand("ban", new Ban());
+        CoreClient.RegisterCommand("bunny", new Bunny());
         CoreClient.RegisterCommand("clear", new Clear());
         CoreClient.RegisterCommand("help", new Help());
         CoreClient.RegisterCommand("kick", new Kick());
