@@ -15,20 +15,30 @@ export default class Role extends BaseEntity {
 
     @ManyToOne(() => Server, x => x.Roles)
     Server: Server;
+    
+    public static async FetchOneByRoleId(roleId: string, relations?: string[]): Promise<Role | undefined> {
+        const connection = getConnection();
 
-    public static async FetchOneByServerId(serverId: string, roleId: string): Promise<Role | undefined> {
+        const repository = connection.getRepository(Role);
+
+        const single = await repository.findOne({ RoleId: roleId}, { relations: relations || [] });
+
+        return single;
+    }
+
+    public static async FetchAllByServerId(serverId: string): Promise<Role[]> {
         const connection = getConnection();
 
         const repository = connection.getRepository(Server);
 
-        const single = await repository.findOne(serverId, { relations: [
+        const all = await repository.findOne(serverId, { relations: [
             "Roles",
         ]});
 
-        if (!single) return undefined;
+        if (!all) {
+            return [];
+        }
 
-        const search = single.Roles.find(x => x.Id == roleId);
-
-        return search;
+        return all.Roles;
     }
 }
