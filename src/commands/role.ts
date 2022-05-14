@@ -6,6 +6,9 @@ import { ICommandContext } from "../contracts/ICommandContext";
 import ICommandReturnContext from "../contracts/ICommandReturnContext";
 import SettingsHelper from "../helpers/SettingsHelper";
 import { readFileSync } from "fs";
+import { default as eRole } from "../entity/Role";
+import Server from "../entity/Server";
+
 export default class Role extends Command {
     constructor() {
         super();
@@ -30,27 +33,34 @@ export default class Role extends Command {
     // =======
 
     private async UseDefault(context: ICommandContext) {
-        const roles = await SettingsHelper.GetSetting("role.assignable", context.message.guild!.id);
-
-        if (!roles) {
-            const errorEmbed = new ErrorEmbed(context, "Unable to find any assignable roles");
-            errorEmbed.SendToCurrentChannel();
-
-            return;
-        }
-
-        const rolesArray = roles.split(",");
-
         if (context.args.length == 0) {
-            await this.SendRolesList(context, rolesArray, context.message.guild!.id);
+            await this.SendRolesList(context, context.message.guild!.id);
         } else {
-            await this.ToggleRole(context, rolesArray);
+            await this.ToggleRole(context);
         }
     }
 
-    public async SendRolesList(context: ICommandContext, roles: String[], serverId: string): Promise<ICommandReturnContext> {
+    public async GetRolesList(context: ICommandContext): Promise<string[]> {
+        const rolesArray = await eRole.FetchAllByServerId(context.message.guild!.id);
+
+        const stringArray: string[] = [];
+
+        for (let i = 0; i < rolesArray.length; i++) {
+            const serverRole = context.message.guild!.roles.cache.find(x => x.id == rolesArray[i].RoleId);
+
+            if (serverRole) {
+                stringArray.push(serverRole.name);
+            }
+        }
+
+        return stringArray;
+    }
+
+    public async SendRolesList(context: ICommandContext, serverId: string): Promise<ICommandReturnContext> {
+        const roles = await this.GetRolesList(context);
+
         const botPrefix = await SettingsHelper.GetServerPrefix(serverId);
-        const description = `Do ${botPrefix}role <role> to get the role!\n${roles.join('\n')}`;
+        const description = roles.length == 0 ? "*no roles*" : `Do ${botPrefix}role <role> to get the role!\n\n${roles.join('\n')}`;
 
         const embed = new PublicEmbed(context, "Roles", description);
         embed.SendToCurrentChannel();
@@ -61,7 +71,8 @@ export default class Role extends Command {
         };
     }
 
-    public async ToggleRole(context: ICommandContext, roles: String[]): Promise<ICommandReturnContext> {
+    public async ToggleRole(context: ICommandContext): Promise<ICommandReturnContext> {
+        const roles = await this.GetRolesList(context);
         const requestedRole = context.args.join(" ");
 
         if (!roles.includes(requestedRole)) {
@@ -164,16 +175,33 @@ export default class Role extends Command {
             this.SendConfigHelp(context);
             return;
         }
-        
-        let setting = await SettingsHelper.GetSetting("role.assignable", context.message.guild!.id) || "";
 
-        const settingArray = setting.split(",");
+        const existingRole = await eRole.FetchOneByRoleId(role.id);
 
-        settingArray.push(role.name);
+        if (existingRole) {
+            const errorEmbed = new ErrorEmbed(context, "This role has already been setup");
+            errorEmbed.SendToCurrentChannel();
 
-        setting = settingArray.join(",");
+            return;
+        }
 
-        await SettingsHelper.SetSetting("role.assignable", context.message.guild!.id, setting);
+        const server = await Server.FetchOneById(Server, context.message.guild!.id, [
+            "Roles",
+        ]);
+
+        if (!server) {
+            const errorEmbed = new ErrorEmbed(context, "Server not setup, please request the server owner runs the setup command.");
+            errorEmbed.SendToCurrentChannel();
+
+            return;
+        }
+
+        const roleSetting = new eRole(role.id);
+
+        await roleSetting.Save(eRole, roleSetting);
+
+        server.AddRoleToServer(roleSetting);
+        await server.Save(Server, server);
 
         const embed = new PublicEmbed(context, "", `Added \`${role.name}\` as a new assignable role`);
         embed.SendToCurrentChannel();
@@ -187,21 +215,16 @@ export default class Role extends Command {
             return;
         }
 
-        let setting = await SettingsHelper.GetSetting("role.assignable", context.message.guild!.id);
+        const existingRole = await eRole.FetchOneByRoleId(role.id);
 
-        if (!setting) return;
+        if (!existingRole) {
+            const errorEmbed = new ErrorEmbed(context, "Unable to find this role");
+            errorEmbed.SendToCurrentChannel();
 
-        const settingArray = setting.split(",");
+            return;
+        }
 
-        const index = settingArray.findIndex(x => x == role.name);
-
-        if (index == -1) return;
-
-        settingArray.splice(index, 1);
-
-        setting = settingArray.join(",");
-
-        await SettingsHelper.SetSetting("role.assignable", context.message.guild!.id, setting);
+        await eRole.Remove(eRole, existingRole);
 
         const embed = new PublicEmbed(context, "", `Removed \`${role.name}\` from the list of assignable roles`);
         embed.SendToCurrentChannel();
