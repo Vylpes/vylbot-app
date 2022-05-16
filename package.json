@@ -7,7 +7,9 @@
   "scripts": {
     "build": "tsc",
     "start": "node ./dist/vylbot",
-    "test": "jest"
+    "test": "jest",
+    "db:up": "typeorm migration:run",
+    "db:down": "typeorm migration:revert"
   },
   "repository": {
     "type": "git",
