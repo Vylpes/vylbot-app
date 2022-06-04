@@ -20,10 +20,10 @@ export default class Bunny extends Command {
                 .setURL(`https://reddit.com${result.Result!.Permalink}`)
                 .setFooter({ text: `r/Rabbits · ${result.Result!.Ups} upvotes` });
             
-            embed.SendToCurrentChannel();
+            await embed.SendToCurrentChannel();
         } else {
             const errorEmbed = new ErrorEmbed(context, "There was an error using this command.");
-            errorEmbed.SendToCurrentChannel();
+            await errorEmbed.SendToCurrentChannel();
         }
     }
 }

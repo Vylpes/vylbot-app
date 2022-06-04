@@ -20,7 +20,7 @@ export default class Warn extends Command {
 
         if (!user) {
             const errorEmbed = new ErrorEmbed(context, "User does not exist");
-            errorEmbed.SendToCurrentChannel();
+            await errorEmbed.SendToCurrentChannel();
             
             return {
                 commandContext: context,
@@ -32,7 +32,7 @@ export default class Warn extends Command {
 
         if (!member) {
             const errorEmbed = new ErrorEmbed(context, "User is not in this server");
-            errorEmbed.SendToCurrentChannel();
+            await errorEmbed.SendToCurrentChannel();
             
             return {
                 commandContext: context,
@@ -61,7 +61,7 @@ export default class Warn extends Command {
         publicEmbed.AddReason(reason);
 
         await logEmbed.SendToModLogsChannel();
-        publicEmbed.SendToCurrentChannel();
+        await publicEmbed.SendToCurrentChannel();
 
         return {
             commandContext: context,

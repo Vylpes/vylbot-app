@@ -15,7 +15,7 @@ export default class MemberEvents extends Event {
         const enabled = await SettingsHelper.GetSetting("event.member.add.enabled", member.guild.id);
         if (!enabled || enabled.toLowerCase() != "true") return;
 
-        const embed = new EventEmbed(member.guild, "Member Joined");
+        const embed = new EventEmbed(member.client, member.guild, "Member Joined");
         embed.AddUser("User", member.user, true);
         embed.addField("Created", member.user.createdAt.toISOString());
         embed.setFooter({ text: `Id: ${member.user.id}` });
@@ -23,7 +23,7 @@ export default class MemberEvents extends Event {
         const channel = await SettingsHelper.GetSetting("event.member.add.channel", member.guild.id);
         if (!channel || !member.guild.channels.cache.find(x => x.name == channel)) return;
 
-        embed.SendToChannel(channel);
+        await embed.SendToChannel(channel);
     }
 
     public override async guildMemberRemove(member: GuildMember) {
@@ -32,7 +32,7 @@ export default class MemberEvents extends Event {
         const enabled = await SettingsHelper.GetSetting("event.member.remove.enabled", member.guild.id);
         if (!enabled || enabled.toLowerCase() != "true") return;
 
-        const embed = new EventEmbed(member.guild, "Member Left");
+        const embed = new EventEmbed(member.client, member.guild, "Member Left");
         embed.AddUser("User", member.user, true);
         embed.addField("Joined", member.joinedAt?.toISOString() || "n/a");
         embed.setFooter({ text: `Id: ${member.user.id}` });
@@ -40,7 +40,7 @@ export default class MemberEvents extends Event {
         const channel = await SettingsHelper.GetSetting("event.member.remove.channel", member.guild.id);
         if (!channel || !member.guild.channels.cache.find(x => x.name == channel)) return;
         
-        embed.SendToChannel(channel);
+        await embed.SendToChannel(channel);
     }
 
     public override async guildMemberUpdate(oldMember: GuildMember, newMember: GuildMember) {

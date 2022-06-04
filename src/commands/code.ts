@@ -58,7 +58,7 @@ export default class Code extends Command {
         ].join("\n");
         
         const embed = new PublicEmbed(context, "", description);
-        embed.SendToCurrentChannel();
+        await embed.SendToCurrentChannel();
     }
 
     private async Randomise(context: ICommandContext) {
@@ -71,7 +71,7 @@ export default class Code extends Command {
         await SettingsHelper.SetSetting("verification.code", context.message.guild.id, randomCode);
 
         const embed = new PublicEmbed(context, "Code", `Entry code has been set to \`${randomCode}\``);
-        embed.SendToCurrentChannel();
+        await embed.SendToCurrentChannel();
     }
 
     private async SendEmbed(context: ICommandContext) {
@@ -89,6 +89,6 @@ export default class Code extends Command {
         }
 
         const embed = new PublicEmbed(context, "Entry Code", code!);
-        embed.SendToCurrentChannel();
+        await embed.SendToCurrentChannel();
     }
 }

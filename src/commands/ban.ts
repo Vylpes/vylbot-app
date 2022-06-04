@@ -21,7 +21,8 @@ export default class Ban extends Command {
 
         if (!targetUser) {
             const embed = new ErrorEmbed(context, "User does not exist");
-            embed.SendToCurrentChannel();
+            await embed.SendToCurrentChannel();
+
             return {
                 commandContext: context,
                 embeds: [embed],
@@ -32,7 +33,8 @@ export default class Ban extends Command {
 
         if (!targetMember) {
             const embed = new ErrorEmbed(context, "User is not in this server");
-            embed.SendToCurrentChannel();
+            await embed.SendToCurrentChannel();
+
             return {
                 commandContext: context,
                 embeds: [embed],
@@ -53,7 +55,8 @@ export default class Ban extends Command {
 
         if (!targetMember.bannable) {
             const embed = new ErrorEmbed(context, ErrorMessages.InsufficientBotPermissions);
-            embed.SendToCurrentChannel();
+            await embed.SendToCurrentChannel();
+
             return {
                 commandContext: context,
                 embeds: [embed],
@@ -70,7 +73,7 @@ export default class Ban extends Command {
         await targetMember.ban({ reason: `Moderator: ${context.message.author.tag}, Reason: ${reason || "*none*"}` });
 
         await logEmbed.SendToModLogsChannel();
-        publicEmbed.SendToCurrentChannel();
+        await publicEmbed.SendToCurrentChannel();
 
         return {
             commandContext: context,

@@ -22,7 +22,8 @@ export default class Setup extends Command {
 
         if (server) {
             const embed = new ErrorEmbed(context, "This server has already been setup, please configure using the config command");
-            embed.SendToCurrentChannel();
+            await embed.SendToCurrentChannel();
+
             return;
         }
 
@@ -31,6 +32,6 @@ export default class Setup extends Command {
         await newServer.Save(Server, newServer);
 
         const embed = new PublicEmbed(context, "Success", "Please configure using the config command");
-        embed.SendToCurrentChannel();
+        await embed.SendToCurrentChannel();
     }
 }

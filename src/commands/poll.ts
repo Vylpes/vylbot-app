@@ -17,7 +17,7 @@ export default class Poll extends Command {
 
         if (argsSplit.length < 3 || argsSplit.length > 10) {
             const errorEmbed = new ErrorEmbed(context, "Usage: <title>;<option 1>;<option 2>... (separate options with semicolons), maximum of 9 options");
-            errorEmbed.SendToCurrentChannel();
+            await errorEmbed.SendToCurrentChannel();
             
             return {
                 commandContext: context,

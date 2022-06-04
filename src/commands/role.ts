@@ -63,7 +63,7 @@ export default class Role extends Command {
         const description = roles.length == 0 ? "*no roles*" : `Do ${botPrefix}role <role> to get the role!\n\n${roles.join('\n')}`;
 
         const embed = new PublicEmbed(context, "Roles", description);
-        embed.SendToCurrentChannel();
+        await embed.SendToCurrentChannel();
 
         return {
             commandContext: context,
@@ -77,7 +77,7 @@ export default class Role extends Command {
 
         if (!roles.includes(requestedRole)) {
             const errorEmbed = new ErrorEmbed(context, "This role isn't marked as assignable, to see a list of assignable roles, run this command without any parameters");
-            errorEmbed.SendToCurrentChannel();
+            await errorEmbed.SendToCurrentChannel();
 
             return {
                 commandContext: context,
@@ -89,7 +89,7 @@ export default class Role extends Command {
 
         if (!assignRole) {
             const errorEmbed = new ErrorEmbed(context, "The current server doesn't have this role. Please contact the server's moderators");
-            errorEmbed.SendToCurrentChannel();
+            await errorEmbed.SendToCurrentChannel();
             
             return {
                 commandContext: context,
@@ -115,7 +115,7 @@ export default class Role extends Command {
         await context.message.member?.roles.add(role, "Toggled with role command");
 
         const embed = new PublicEmbed(context, "", `Gave role: \`${role.name}\``);
-        embed.SendToCurrentChannel();
+        await embed.SendToCurrentChannel();
 
         return {
             commandContext: context,
@@ -127,7 +127,7 @@ export default class Role extends Command {
         await context.message.member?.roles.remove(role, "Toggled with role command");
 
         const embed = new PublicEmbed(context, "", `Removed role: \`${role.name}\``);
-        embed.SendToCurrentChannel();
+        await embed.SendToCurrentChannel();
 
         return {
             commandContext: context,
@@ -144,7 +144,7 @@ export default class Role extends Command {
 
         if (!context.message.member?.roles.cache.find(x => x.name == moderatorRole)) {
             const errorEmbed = new ErrorEmbed(context, "Sorry, you must be a moderator to be able to configure this command");
-            errorEmbed.SendToCurrentChannel();
+            await errorEmbed.SendToCurrentChannel();
 
             return;
         }
@@ -157,15 +157,15 @@ export default class Role extends Command {
                 await this.RemoveRoleConfig(context);
                 break;
             default:
-                this.SendConfigHelp(context);
+                await this.SendConfigHelp(context);
         }
     }
 
-    private SendConfigHelp(context: ICommandContext) {
+    private async SendConfigHelp(context: ICommandContext) {
         const helpText = readFileSync(`${process.cwd()}/data/usage/role.txt`).toString();
 
         const embed = new PublicEmbed(context, "Configure Role Command", helpText);
-        embed.SendToCurrentChannel();
+        await embed.SendToCurrentChannel();
     }
 
     private async AddRoleConfig(context: ICommandContext) {
@@ -180,7 +180,7 @@ export default class Role extends Command {
 
         if (existingRole) {
             const errorEmbed = new ErrorEmbed(context, "This role has already been setup");
-            errorEmbed.SendToCurrentChannel();
+            await errorEmbed.SendToCurrentChannel();
 
             return;
         }
@@ -191,7 +191,7 @@ export default class Role extends Command {
 
         if (!server) {
             const errorEmbed = new ErrorEmbed(context, "Server not setup, please request the server owner runs the setup command.");
-            errorEmbed.SendToCurrentChannel();
+            await errorEmbed.SendToCurrentChannel();
 
             return;
         }
@@ -204,7 +204,7 @@ export default class Role extends Command {
         await server.Save(Server, server);
 
         const embed = new PublicEmbed(context, "", `Added \`${role.name}\` as a new assignable role`);
-        embed.SendToCurrentChannel();
+        await embed.SendToCurrentChannel();
     }
 
     private async RemoveRoleConfig(context: ICommandContext) {
@@ -227,6 +227,6 @@ export default class Role extends Command {
         await eRole.Remove(eRole, existingRole);
 
         const embed = new PublicEmbed(context, "", `Removed \`${role.name}\` from the list of assignable roles`);
-        embed.SendToCurrentChannel();
+        await embed.SendToCurrentChannel();
     }
 }
