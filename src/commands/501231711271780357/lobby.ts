@@ -80,7 +80,7 @@ export default class Lobby extends Command {
 
         if (!context.message.member?.roles.cache.find(x => x.name == moderatorRole)) {
             const errorEmbed = new ErrorEmbed(context, "Sorry, you must be a moderator to be able to configure this command");
-            errorEmbed.SendToCurrentChannel();
+            await errorEmbed.SendToCurrentChannel();
 
             return;
         }
@@ -94,15 +94,15 @@ export default class Lobby extends Command {
                 break;
             case "help":
             default:
-                this.SendConfigHelp(context);
+                await this.SendConfigHelp(context);
         }
     }
 
-    private SendConfigHelp(context: ICommandContext) {
+    private async SendConfigHelp(context: ICommandContext) {
         const helpText = readFileSync(`${process.cwd()}/data/usage/lobby.txt`).toString();
 
         const embed = new PublicEmbed(context, "Configure Lobby Command", helpText);
-        embed.SendToCurrentChannel();
+        await embed.SendToCurrentChannel();
     }
 
     private async AddLobbyConfig(context: ICommandContext) {
@@ -138,7 +138,7 @@ export default class Lobby extends Command {
         await entity.Save(eLobby, entity);
 
         const embed = new PublicEmbed(context, "", `Added \`${channel.name}\` as a new lobby channel with a cooldown of \`${cooldown} minutes\` and will ping \`${role.name}\` on use`);
-        embed.SendToCurrentChannel();
+        await embed.SendToCurrentChannel();
     }
 
     private async RemoveLobbyConfig(context: ICommandContext) {
@@ -146,7 +146,7 @@ export default class Lobby extends Command {
 
         if (!entity) {
             const errorEmbed = new ErrorEmbed(context, "The channel id you provided has not been setup as a lobby, unable to remove.");
-            errorEmbed.SendToCurrentChannel();
+            await errorEmbed.SendToCurrentChannel();
 
             return;
         }
@@ -154,6 +154,6 @@ export default class Lobby extends Command {
         await BaseEntity.Remove<eLobby>(eLobby, entity);
 
         const embed = new PublicEmbed(context, "", `Removed <#${context.args[2]}> from the list of lobby channels`);
-        embed.SendToCurrentChannel();
+        await embed.SendToCurrentChannel();
     }
 }

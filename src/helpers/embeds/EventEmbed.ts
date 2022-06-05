@@ -1,17 +1,20 @@
-import { MessageEmbed, TextChannel, User, Guild } from "discord.js";
+import { MessageEmbed, TextChannel, User, Guild, Client, Permissions } from "discord.js";
 import { ICommandContext } from "../../contracts/ICommandContext";
 import SettingsHelper from "../SettingsHelper";
 
 export default class EventEmbed extends MessageEmbed {
     public guild: Guild;
 
-    constructor(guild: Guild, title: string) {
+    private client: Client;
+
+    constructor(client: Client, guild: Guild, title: string) {
         super();
         
         super.setColor(0x3050ba);
         super.setTitle(title);
 
         this.guild = guild;
+        this.client = client;
     }
 
     // Detail methods
@@ -28,7 +31,7 @@ export default class EventEmbed extends MessageEmbed {
     }
 
     // Send methods
-    public SendToChannel(name: string) {
+    public async SendToChannel(name: string) {
         const channel = this.guild.channels.cache
             .find(channel => channel.name == name) as TextChannel;
         
@@ -36,6 +39,14 @@ export default class EventEmbed extends MessageEmbed {
             console.error(`Unable to find channel ${name}`);
             return;
         }
+
+        const botMember = await this.guild.members.fetch({ user: this.client.user! });
+
+        if (!botMember) return;
+
+        const permissions = channel.permissionsFor(botMember);
+
+        if (!permissions.has(Permissions.FLAGS.SEND_MESSAGES)) return;
 
         channel.send({embeds: [ this ]});
     }

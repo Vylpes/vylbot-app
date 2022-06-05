@@ -38,7 +38,7 @@ export default class Disable extends Command {
         ].join("\n");
         
         const embed = new PublicEmbed(context, "", description);
-        embed.SendToCurrentChannel();
+        await embed.SendToCurrentChannel();
     }
 
     private async Add(context: ICommandContext) {
@@ -61,7 +61,7 @@ export default class Disable extends Command {
         await SettingsHelper.SetSetting("commands.disabled", context.message.guild.id, disabledCommands!.join(","));
 
         const embed = new PublicEmbed(context, "", `Disabled command: ${commandName}`);
-        embed.SendToCurrentChannel();
+        await embed.SendToCurrentChannel();
     }
 
     private async Remove(context: ICommandContext) {
@@ -88,6 +88,6 @@ export default class Disable extends Command {
         await SettingsHelper.SetSetting("commands.disabled", context.message.guild.id, disabledCommands!.join(","));
 
         const embed = new PublicEmbed(context, "", `Enabled command: ${commandName}`);
-        embed.SendToCurrentChannel();
+        await embed.SendToCurrentChannel();
     }
 }

@@ -1,9 +1,7 @@
-import { Guild } from "discord.js";
 import { readFileSync } from "fs";
 import { CommandResponse } from "../constants/CommandResponse";
 import DefaultValues from "../constants/DefaultValues";
 import { ICommandContext } from "../contracts/ICommandContext";
-import ICommandReturnContext from "../contracts/ICommandReturnContext";
 import Server from "../entity/Server";
 import Setting from "../entity/Setting";
 import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
@@ -83,7 +81,7 @@ export default class Config extends Command {
 
         const embed = new PublicEmbed(context, "Config", description);
 
-        embed.SendToCurrentChannel();
+        await embed.SendToCurrentChannel();
     }
 
     private async GetValue(context: ICommandContext, server: Server, key: string) {
@@ -91,10 +89,10 @@ export default class Config extends Command {
 
         if (setting) {
             const embed = new PublicEmbed(context, "", `${key}: ${setting.Value}`);
-            embed.SendToCurrentChannel();
+            await embed.SendToCurrentChannel();
         } else {
             const embed = new PublicEmbed(context, "", `${key}: ${DefaultValues.GetValue(key)} <DEFAULT>`);
-            embed.SendToCurrentChannel();
+            await embed.SendToCurrentChannel();
         }
     }
 
@@ -103,14 +101,15 @@ export default class Config extends Command {
 
         if (!setting) {
             const embed = new PublicEmbed(context, "", "Setting has been reset");
-            embed.SendToCurrentChannel();
+            await embed.SendToCurrentChannel();
+
             return;
         }
 
         await Setting.Remove(Setting, setting);
 
         const embed = new PublicEmbed(context, "", "Setting has been reset");
-        embed.SendToCurrentChannel();
+        await embed.SendToCurrentChannel();
     }
 
     private async SetValue(context: ICommandContext, server: Server, key: string, value: string) {
@@ -131,6 +130,6 @@ export default class Config extends Command {
         }
 
         const embed = new PublicEmbed(context, "", "Setting has been set");
-        embed.SendToCurrentChannel();
+        await embed.SendToCurrentChannel();
     }
 }

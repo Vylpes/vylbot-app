@@ -1,4 +1,4 @@
-import { MessageEmbed, TextChannel, User } from "discord.js";
+import { MessageEmbed, Permissions, TextChannel, User } from "discord.js";
 import ErrorMessages from "../../constants/ErrorMessages";
 import { ICommandContext } from "../../contracts/ICommandContext";
 import SettingsHelper from "../SettingsHelper";
@@ -30,7 +30,16 @@ export default class LogEmbed extends MessageEmbed {
     }
 
     // Send methods
-    public SendToCurrentChannel() {
+    public async SendToCurrentChannel() {
+        const channel = this.context.message.channel as TextChannel;
+        const botMember = await this.context.message.guild?.members.fetch({ user: this.context.message.client.user! });
+
+        if (!botMember) return;
+
+        const permissions = channel.permissionsFor(botMember);
+
+        if (!permissions.has(Permissions.FLAGS.SEND_MESSAGES)) return;
+
         this.context.message.channel.send({ embeds: [ this ]});
     }
 
