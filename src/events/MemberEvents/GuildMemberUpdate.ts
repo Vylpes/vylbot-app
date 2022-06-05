@@ -18,7 +18,7 @@ export default class GuildMemberUpdate {
         const oldNickname = this.oldMember.nickname || "*none*";
         const newNickname = this.newMember.nickname || "*none*";
 
-        const embed = new EventEmbed(this.newMember.guild, "Nickname Changed");
+        const embed = new EventEmbed(this.oldMember.client, this.newMember.guild, "Nickname Changed");
         embed.AddUser("User", this.newMember.user, true);
         embed.addField("Before", oldNickname, true);
         embed.addField("After", newNickname, true);
@@ -27,6 +27,6 @@ export default class GuildMemberUpdate {
         const channel = await SettingsHelper.GetSetting("event.member.update.channel", this.newMember.guild.id);
         if (!channel || channel.toLowerCase() != "true") return;
 
-        embed.SendToChannel(channel);
+        await embed.SendToChannel(channel);
     }
 }

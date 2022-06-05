@@ -1,6 +1,5 @@
 import { existsSync, readFileSync } from "fs";
 import { ICommandContext } from "../contracts/ICommandContext";
-import ICommandReturnContext from "../contracts/ICommandReturnContext";
 import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
 import PublicEmbed from "../helpers/embeds/PublicEmbed";
 import { Command } from "../type/command";
@@ -22,15 +21,12 @@ export default class Rules extends Command {
         ];
     }
 
-    public override execute(context: ICommandContext): ICommandReturnContext {
+    public override async execute(context: ICommandContext) {
         if (!existsSync(`${process.cwd()}/data/rules/${context.message.guild?.id}.json`)) {
             const errorEmbed = new ErrorEmbed(context, "Rules file doesn't exist");
-            errorEmbed.SendToCurrentChannel();
+            await errorEmbed.SendToCurrentChannel();
 
-            return {
-                commandContext: context,
-                embeds: [errorEmbed]
-            };
+            return;
         }
 
         const rulesFile = readFileSync(`${process.cwd()}/data/rules/${context.message.guild?.id}.json`).toString();
@@ -42,16 +38,15 @@ export default class Rules extends Command {
             const embed = new PublicEmbed(context, rule.title || "", rule.description?.join("\n") || "");
 
             embed.setImage(rule.image || "");
-            embed.setFooter(rule.footer || "");
+            embed.setFooter({ text: rule.footer || "" });
 
             embeds.push(embed);
         });
 
-        embeds.forEach(x => x.SendToCurrentChannel());
+        for (let i = 0; i < embeds.length; i++) {
+            const embed = embeds[i];
 
-        return {
-            commandContext: context,
-            embeds: embeds
-        };
+            await embed.SendToCurrentChannel();
+        }
     }
 }

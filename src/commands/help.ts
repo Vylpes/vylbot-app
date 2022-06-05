@@ -20,15 +20,15 @@ export default class Help extends Command {
         super.Category = "General";
     }
 
-    public override execute(context: ICommandContext) {
+    public override async execute(context: ICommandContext) {
         if (context.args.length == 0) {
-            this.SendAll(context);
+            await this.SendAll(context);
         } else {
-            this.SendSingle(context);
+            await this.SendSingle(context);
         }
     }
 
-    public SendAll(context: ICommandContext) {
+    public async SendAll(context: ICommandContext) {
         const allCommands = CoreClient.commandItems
             .filter(x => !x.ServerId || x.ServerId == context.message.guild?.id);
         const cateogries = [...new Set(allCommands.map(x => x.Command.Category))];
@@ -41,10 +41,10 @@ export default class Help extends Command {
             embed.addField(StringTools.Capitalise(category || "Uncategorised"), StringTools.CapitaliseArray(filtered.flatMap(x => x.Name)).join(", "));
         });
 
-        embed.SendToCurrentChannel();
+        await embed.SendToCurrentChannel();
     }
 
-    public SendSingle(context: ICommandContext) {
+    public async SendSingle(context: ICommandContext) {
         const command = CoreClient.commandItems.find(x => x.Name == context.args[0] && !x.ServerId);
         const exclusiveCommand = CoreClient.commandItems.find(x => x.Name == context.args[0] && x.ServerId == context.message.guild?.id);
 
@@ -53,18 +53,16 @@ export default class Help extends Command {
             embed.addField("Category", StringTools.Capitalise(exclusiveCommand.Command.Category || "Uncategorised"));
             embed.addField("Required Roles", StringTools.Capitalise(exclusiveCommand.Command.Roles.join(", ")) || "Everyone");
 
-            embed.SendToCurrentChannel();
+            await embed.SendToCurrentChannel();
         } else if (command) {
             const embed = new PublicEmbed(context, StringTools.Capitalise(command.Name), "");
             embed.addField("Category", StringTools.Capitalise(command.Command.Category || "Uncategorised"));
             embed.addField("Required Roles", StringTools.Capitalise(command.Command.Roles.join(", ")) || "Everyone");
 
-            embed.SendToCurrentChannel();
+            await embed.SendToCurrentChannel();
         } else {
             const errorEmbed = new ErrorEmbed(context, "Command does not exist");
-            errorEmbed.SendToCurrentChannel();
-
-            return;
+            await errorEmbed.SendToCurrentChannel();
         }
     }
 }

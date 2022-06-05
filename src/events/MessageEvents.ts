@@ -16,7 +16,7 @@ export default class MessageEvents extends Event {
         const enabled = await SettingsHelper.GetSetting("event.message.delete.enabled", message.guild.id);
         if (!enabled || enabled.toLowerCase() != "true") return;
 
-        const embed = new EventEmbed(message.guild, "Message Deleted");
+        const embed = new EventEmbed(message.client, message.guild, "Message Deleted");
         embed.AddUser("User", message.author, true);
         embed.addField("Channel", message.channel.toString(), true);
         embed.addField("Content", `\`\`\`${message.content || "*none*"}\`\`\``);
@@ -28,7 +28,7 @@ export default class MessageEvents extends Event {
         const channel = await SettingsHelper.GetSetting("event.message.delete.channel", message.guild.id);
         if (!channel || !message.guild.channels.cache.find(x => x.name == channel)) return;
 
-        embed.SendToChannel(channel);
+        await embed.SendToChannel(channel);
     }
 
     public override async messageUpdate(oldMessage: Message, newMessage: Message) {
@@ -39,7 +39,7 @@ export default class MessageEvents extends Event {
         const enabled = await SettingsHelper.GetSetting("event.message.update.enabled", newMessage.guild.id);
         if (!enabled || enabled.toLowerCase() != "true") return;
 
-        const embed = new EventEmbed(newMessage.guild, "Message Edited");
+        const embed = new EventEmbed(newMessage.client, newMessage.guild, "Message Edited");
         embed.AddUser("User", newMessage.author, true);
         embed.addField("Channel", newMessage.channel.toString(), true);
         embed.addField("Before", `\`\`\`${oldMessage.content || "*none*"}\`\`\``);
@@ -48,7 +48,7 @@ export default class MessageEvents extends Event {
         const channel = await SettingsHelper.GetSetting("event.message.update.channel", newMessage.guild.id);
         if (!channel || !newMessage.guild.channels.cache.find(x => x.name == channel)) return;
 
-        embed.SendToChannel(channel);
+        await embed.SendToChannel(channel);
     }
 
     public override async messageCreate(message: Message) {

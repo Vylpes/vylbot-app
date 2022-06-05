@@ -21,7 +21,7 @@ export default class Kick extends Command {
 
         if (!targetUser) {
             const embed = new ErrorEmbed(context, "User does not exist");
-            embed.SendToCurrentChannel();
+            await embed.SendToCurrentChannel();
 
             return {
                 commandContext: context,
@@ -33,7 +33,7 @@ export default class Kick extends Command {
 
         if (!targetMember) {
             const embed = new ErrorEmbed(context, "User is not in this server");
-            embed.SendToCurrentChannel();
+            await embed.SendToCurrentChannel();
             
             return {
                 commandContext: context,
@@ -55,7 +55,7 @@ export default class Kick extends Command {
 
         if (!targetMember.kickable) {
             const embed = new ErrorEmbed(context, ErrorMessages.InsufficientBotPermissions);
-            embed.SendToCurrentChannel();
+            await embed.SendToCurrentChannel();
             
             return {
                 commandContext: context,
@@ -73,7 +73,7 @@ export default class Kick extends Command {
         await targetMember.kick(`Moderator: ${context.message.author.tag}, Reason: ${reason || "*none*"}`);
 
         await logEmbed.SendToModLogsChannel();
-        publicEmbed.SendToCurrentChannel();
+        await publicEmbed.SendToCurrentChannel();
 
         return {
             commandContext: context,
