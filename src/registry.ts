@@ -8,6 +8,7 @@ import Code from "./commands/code";
 import Config from "./commands/config";
 import Disable from "./commands/disable";
 import Help from "./commands/help";
+import Ignore from "./commands/ignore";
 import Kick from "./commands/kick";
 import Mute from "./commands/mute";
 import Poll from "./commands/poll";
@@ -32,7 +33,11 @@ export default class Registry {
         CoreClient.RegisterCommand("ban", new Ban());
         CoreClient.RegisterCommand("bunny", new Bunny());
         CoreClient.RegisterCommand("clear", new Clear());
+        CoreClient.RegisterCommand("code", new Code());
+        CoreClient.RegisterCommand("config", new Config());
+        CoreClient.RegisterCommand("disable", new Disable());
         CoreClient.RegisterCommand("help", new Help());
+        CoreClient.RegisterCommand("ignore", new Ignore());
         CoreClient.RegisterCommand("kick", new Kick());
         CoreClient.RegisterCommand("mute", new Mute());
         CoreClient.RegisterCommand("poll", new Poll());
@@ -41,9 +46,6 @@ export default class Registry {
         CoreClient.RegisterCommand("unmute", new Unmute());
         CoreClient.RegisterCommand("warn", new Warn());
         CoreClient.RegisterCommand("setup", new Setup());
-        CoreClient.RegisterCommand("config", new Config());
-        CoreClient.RegisterCommand("code", new Code());
-        CoreClient.RegisterCommand("disable", new Disable());
 
         // Exclusive Commands: MankBot
         CoreClient.RegisterCommand("lobby", new Lobby(), "501231711271780357");
