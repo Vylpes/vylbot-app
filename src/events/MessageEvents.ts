@@ -3,6 +3,7 @@ import { Message } from "discord.js";
 import EventEmbed from "../helpers/embeds/EventEmbed";
 import SettingsHelper from "../helpers/SettingsHelper";
 import OnMessage from "./MessageEvents/OnMessage";
+import IgnoredChannel from "../entity/IgnoredChannel";
 
 export default class MessageEvents extends Event {
     constructor() {
@@ -15,6 +16,9 @@ export default class MessageEvents extends Event {
 
         const enabled = await SettingsHelper.GetSetting("event.message.delete.enabled", message.guild.id);
         if (!enabled || enabled.toLowerCase() != "true") return;
+
+        const ignored = await IgnoredChannel.IsChannelIgnored(message.channel.id);
+        if (ignored) return;
 
         const embed = new EventEmbed(message.client, message.guild, "Message Deleted");
         embed.AddUser("User", message.author, true);
@@ -38,6 +42,9 @@ export default class MessageEvents extends Event {
 
         const enabled = await SettingsHelper.GetSetting("event.message.update.enabled", newMessage.guild.id);
         if (!enabled || enabled.toLowerCase() != "true") return;
+
+        const ignored = await IgnoredChannel.IsChannelIgnored(newMessage.channel.id);
+        if (ignored) return;
 
         const embed = new EventEmbed(newMessage.client, newMessage.guild, "Message Edited");
         embed.AddUser("User", newMessage.author, true);
