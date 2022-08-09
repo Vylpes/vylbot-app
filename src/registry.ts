@@ -14,6 +14,7 @@ import Mute from "./commands/mute";
 import Poll from "./commands/poll";
 import Role from "./commands/role";
 import Rules from "./commands/rules";
+import Say from "./commands/say";
 import Setup from "./commands/setup";
 import Unmute from "./commands/unmute";
 import Warn from "./commands/warn";
@@ -46,6 +47,7 @@ export default class Registry {
         CoreClient.RegisterCommand("unmute", new Unmute());
         CoreClient.RegisterCommand("warn", new Warn());
         CoreClient.RegisterCommand("setup", new Setup());
+        CoreClient.RegisterCommand("say", new Say());
 
         // Exclusive Commands: MankBot
         CoreClient.RegisterCommand("lobby", new Lobby(), "501231711271780357");
