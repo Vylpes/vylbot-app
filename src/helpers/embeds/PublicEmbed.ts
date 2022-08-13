@@ -1,4 +1,4 @@
-import { MessageEmbed, Permissions, TextChannel } from "discord.js";
+import { MessageEmbed, MessageOptions, Permissions, TextChannel } from "discord.js";
 import { ICommandContext } from "../../contracts/ICommandContext";
 
 export default class PublicEmbed extends MessageEmbed {
@@ -20,7 +20,7 @@ export default class PublicEmbed extends MessageEmbed {
     }
 
     // Send methods
-    public async SendToCurrentChannel() {
+    public async SendToCurrentChannel(options?: MessageOptions) {
         const channel = this.context.message.channel as TextChannel;
         const botMember = await this.context.message.guild?.members.fetch({ user: this.context.message.client.user! });
 
@@ -30,6 +30,6 @@ export default class PublicEmbed extends MessageEmbed {
 
         if (!permissions.has(Permissions.FLAGS.SEND_MESSAGES)) return;
 
-        this.context.message.channel.send({ embeds: [ this ]});
+        this.context.message.channel.send({ embeds: [ this ], ...options});
     }
 }
