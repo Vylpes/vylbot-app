@@ -12,13 +12,24 @@ export default class Bunny extends Command {
     }
 
     public override async execute(context: ICommandContext) {
-        const result = await randomBunny('rabbits', 'hot');
+        const subreddits = [
+            'rabbits',
+            'bunnieswithhats',
+            'buncomfortable',
+            'bunnytongues',
+            'dutchbunnymafia',
+        ];
+
+        const random = Math.floor(Math.random() * subreddits.length);
+        const selectedSubreddit = subreddits[random];
+
+        const result = await randomBunny(selectedSubreddit, 'hot');
 
         if (result.IsSuccess) {
             const embed = new PublicEmbed(context, result.Result!.Title, "")
                 .setImage(result.Result!.Url)
                 .setURL(`https://reddit.com${result.Result!.Permalink}`)
-                .setFooter({ text: `r/Rabbits · ${result.Result!.Ups} upvotes` });
+                .setFooter({ text: `r/${selectedSubreddit} · ${result.Result!.Ups} upvotes` });
             
             await embed.SendToCurrentChannel();
         } else {
