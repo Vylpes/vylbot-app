@@ -1,6 +1,9 @@
+import { AuditType } from "../constants/AuditType";
 import ErrorMessages from "../constants/ErrorMessages";
 import { ICommandContext } from "../contracts/ICommandContext";
 import ICommandReturnContext from "../contracts/ICommandReturnContext";
+import Audit from "../entity/Audit";
+import Server from "../entity/Server";
 import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
 import LogEmbed from "../helpers/embeds/LogEmbed";
 import PublicEmbed from "../helpers/embeds/PublicEmbed";
@@ -87,6 +90,17 @@ export default class Mute extends Command {
 
         await logEmbed.SendToModLogsChannel();
         await publicEmbed.SendToCurrentChannel();
+        
+        if (context.message.guild) {
+            const server = await Server.FetchOneById(Server, context.message.guild.id);
+
+            if (server) {
+                const audit = new Audit(targetUser.id, AuditType.Mute, reason, context.message.author.id);
+                audit.AssignToServer(server);
+
+                await audit.Save(Audit, audit);
+            }
+        }
 
         return {
             commandContext: context,
