@@ -1,5 +1,6 @@
 import { Entity, OneToMany } from "typeorm";
 import BaseEntity from "../contracts/BaseEntity";
+import Audit from "./Audit";
 import Role from "./Role";
 import Setting from "./Setting";
 
@@ -16,6 +17,9 @@ export default class Server extends BaseEntity {
 
     @OneToMany(() => Role, x => x.Server)
     Roles: Role[];
+
+    @OneToMany(() => Audit, x => x.Server)
+    Audits: Audit[];
 
     public AddSettingToServer(setting: Setting) {
         this.Settings.push(setting);
