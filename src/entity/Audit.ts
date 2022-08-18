@@ -2,11 +2,10 @@ import { Column, Entity, getConnection, ManyToOne } from "typeorm";
 import { AuditType } from "../constants/AuditType";
 import BaseEntity from "../contracts/BaseEntity";
 import StringTools from "../helpers/StringTools";
-import Server from "./Server";
 
 @Entity()
 export default class Audit extends BaseEntity {
-    constructor(userId: string, auditType: AuditType, reason: string, moderatorId: string) {
+    constructor(userId: string, auditType: AuditType, reason: string, moderatorId: string, serverId: string) {
         super();
 
         this.AuditId = StringTools.RandomString(5).toUpperCase();
@@ -14,6 +13,7 @@ export default class Audit extends BaseEntity {
         this.AuditType = auditType;
         this.Reason = reason;
         this.ModeratorId = moderatorId;
+        this.ServerId = serverId;
     }
 
     @Column()
@@ -31,19 +31,15 @@ export default class Audit extends BaseEntity {
     @Column()
     ModeratorId: string;
 
-    @ManyToOne(() => Server, x => x.Audits)
-    Server: Server;
+    @Column()
+    ServerId: string;
 
-    public AssignToServer(server: Server) {
-        this.Server = server;
-    }
-
-    public static async FetchAuditsByUserId(userId: string): Promise<Audit[] | undefined> {
+    public static async FetchAuditsByUserId(userId: string, serverId: string): Promise<Audit[] | undefined> {
         const connection = getConnection();
 
         const repository = connection.getRepository(Audit);
 
-        const all = await repository.find({ UserId: userId });
+        const all = await repository.find({ UserId: userId, ServerId: serverId });
 
         return all;
     }

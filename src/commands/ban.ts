@@ -82,8 +82,7 @@ export default class Ban extends Command {
             const server = await Server.FetchOneById(Server, context.message.guild.id);
 
             if (server) {
-                const audit = new Audit(targetUser.id, AuditType.Ban, reason, context.message.author.id);
-                audit.AssignToServer(server);
+                const audit = new Audit(targetUser.id, AuditType.Ban, reason, context.message.author.id, context.message.guild.id);
 
                 await audit.Save(Audit, audit);
             }

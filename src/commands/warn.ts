@@ -70,8 +70,7 @@ export default class Warn extends Command {
             const server = await Server.FetchOneById(Server, context.message.guild.id);
 
             if (server) {
-                const audit = new Audit(user.id, AuditType.Warn, reason, context.message.author.id);
-                audit.AssignToServer(server);
+                const audit = new Audit(user.id, AuditType.Warn, reason, context.message.author.id, context.message.guild.id);
 
                 await audit.Save(Audit, audit);
             }

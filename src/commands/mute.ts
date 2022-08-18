@@ -95,8 +95,7 @@ export default class Mute extends Command {
             const server = await Server.FetchOneById(Server, context.message.guild.id);
 
             if (server) {
-                const audit = new Audit(targetUser.id, AuditType.Mute, reason, context.message.author.id);
-                audit.AssignToServer(server);
+                const audit = new Audit(targetUser.id, AuditType.Mute, reason, context.message.author.id, context.message.guild.id);
 
                 await audit.Save(Audit, audit);
             }

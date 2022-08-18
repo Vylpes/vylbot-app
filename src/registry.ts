@@ -2,6 +2,7 @@ import { CoreClient } from "./client/client";
 
 // Command Imports
 import About from "./commands/about";
+import Audits from "./commands/audits";
 import Ban from "./commands/ban";
 import Clear from "./commands/clear";
 import Code from "./commands/code";
@@ -48,6 +49,7 @@ export default class Registry {
         CoreClient.RegisterCommand("warn", new Warn());
         CoreClient.RegisterCommand("setup", new Setup());
         CoreClient.RegisterCommand("say", new Say());
+        CoreClient.RegisterCommand("audits", new Audits());
 
         // Exclusive Commands: MankBot
         CoreClient.RegisterCommand("lobby", new Lobby(), "501231711271780357");

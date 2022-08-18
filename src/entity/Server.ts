@@ -18,9 +18,6 @@ export default class Server extends BaseEntity {
     @OneToMany(() => Role, x => x.Server)
     Roles: Role[];
 
-    @OneToMany(() => Audit, x => x.Server)
-    Audits: Audit[];
-
     public AddSettingToServer(setting: Setting) {
         this.Settings.push(setting);
     }
