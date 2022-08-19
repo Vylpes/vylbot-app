@@ -4,6 +4,7 @@ import AuditTools from "../helpers/AuditTools";
 import PublicEmbed from "../helpers/embeds/PublicEmbed";
 import { Command } from "../type/command";
 import  SettingsHelper from "../helpers/SettingsHelper";
+import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
 
 export default class Audits extends Command {
     constructor() {
@@ -22,6 +23,9 @@ export default class Audits extends Command {
             case "user":
                 await this.SendAuditForUser(context);
                 break;
+            case "view":
+                await this.SendAudit(context);
+                break;
             default:
                 await this.SendUsage(context);
         }
@@ -32,6 +36,7 @@ export default class Audits extends Command {
 
         const description = [
             `\`${prefix}audits user <id>\` - Send the audits for this user`,
+            `\`${prefix}audits view <id>\` - Send information about an audit`,
         ]
 
         const publicEmbed = new PublicEmbed(context, "Usage", description.join("\n"));
@@ -55,6 +60,32 @@ export default class Audits extends Command {
         for (let audit of audits) {
             publicEmbed.addField(`${audit.AuditId} // ${AuditTools.TypeToFriendlyText(audit.AuditType)}`, audit.WhenCreated.toString());
         }
+
+        await publicEmbed.SendToCurrentChannel();
+    }
+
+    private async SendAudit(context: ICommandContext) {
+        const auditId = context.args[1];
+
+        if (!auditId) {
+            await this.SendUsage(context);
+            return;
+        }
+
+        const audit = await Audit.FetchAuditByAuditId(auditId.toUpperCase(), context.message.guild!.id);
+
+        if (!audit) {
+            const errorEmbed = new ErrorEmbed(context, "This audit can not be found.");
+            await errorEmbed.SendToCurrentChannel();
+
+            return;
+        }
+
+        const publicEmbed = new PublicEmbed(context, `Audit ${audit.AuditId.toUpperCase()}`, "");
+
+        publicEmbed.addField("Reason", audit.Reason, true);
+        publicEmbed.addField("Type", AuditTools.TypeToFriendlyText(audit.AuditType), true);
+        publicEmbed.addField("Moderator", `<@${audit.ModeratorId}>`, true);
 
         await publicEmbed.SendToCurrentChannel();
     }

@@ -44,12 +44,12 @@ export default class Audit extends BaseEntity {
         return all;
     }
 
-    public static async FetchAuditByAuditId(auditId: string): Promise<Audit | undefined> {
+    public static async FetchAuditByAuditId(auditId: string, serverId: string): Promise<Audit | undefined> {
         const connection = getConnection();
 
         const repository = connection.getRepository(Audit);
 
-        const single = await repository.findOne({ AuditId: auditId });
+        const single = await repository.findOne({ AuditId: auditId, ServerId: serverId });
 
         return single;
     }
