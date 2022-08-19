@@ -29,6 +29,9 @@ export default class Audits extends Command {
             case "clear":
                 await this.ClearAudit(context);
                 break;
+            case "add":
+                await this.AddAudit(context);
+                break;
             default:
                 await this.SendUsage(context);
         }
@@ -41,6 +44,7 @@ export default class Audits extends Command {
             `\`${prefix}audits user <id>\` - Send the audits for this user`,
             `\`${prefix}audits view <id>\` - Send information about an audit`,
             `\`${prefix}audits clear <id>\` - Clears an audit for a user by audit id`,
+            `\`${prefix}audits add <userid> <type> [reason]\` - Manually add an audit for a user`,
         ]
 
         const publicEmbed = new PublicEmbed(context, "Usage", description.join("\n"));
@@ -114,6 +118,27 @@ export default class Audits extends Command {
         await Audit.Remove(Audit, audit);
 
         const publicEmbed = new PublicEmbed(context, "", "Audit cleared");
+        await publicEmbed.SendToCurrentChannel();
+    }
+
+    private async AddAudit(context: ICommandContext) {
+        const userId = context.args[1];
+        const typeString = context.args[2];
+        const reason = context.args.splice(3)
+            .join(" ");
+        
+        if (!userId || !typeString) {
+            await this.SendUsage(context);
+            return;
+        }
+
+        const type = AuditTools.StringToType(typeString);
+
+        const audit = new Audit(userId, type, reason, context.message.author.id, context.message.guild!.id);
+
+        await audit.Save(Audit, audit);
+
+        const publicEmbed = new PublicEmbed(context, "", `Created new audit with ID \`${audit.AuditId}\``);
         await publicEmbed.SendToCurrentChannel();
     }
 }

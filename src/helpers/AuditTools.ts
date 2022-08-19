@@ -17,4 +17,21 @@ export default class AuditTools {
                 return "Other";
         }
     }
+
+    public static StringToType(str: string): AuditType {
+        switch (str.toLowerCase()) {
+            case "general":
+                return AuditType.General;
+            case "warn":
+                return AuditType.Warn;
+            case "mute":
+                return AuditType.Mute;
+            case "kick":
+                return AuditType.Kick;
+            case "ban":
+                return AuditType.Ban;
+            default:
+                return AuditType.General;
+        }
+    }
 }
