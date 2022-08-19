@@ -26,6 +26,9 @@ export default class Audits extends Command {
             case "view":
                 await this.SendAudit(context);
                 break;
+            case "clear":
+                await this.ClearAudit(context);
+                break;
             default:
                 await this.SendUsage(context);
         }
@@ -37,6 +40,7 @@ export default class Audits extends Command {
         const description = [
             `\`${prefix}audits user <id>\` - Send the audits for this user`,
             `\`${prefix}audits view <id>\` - Send information about an audit`,
+            `\`${prefix}audits clear <id>\` - Clears an audit for a user by audit id`,
         ]
 
         const publicEmbed = new PublicEmbed(context, "Usage", description.join("\n"));
@@ -87,6 +91,29 @@ export default class Audits extends Command {
         publicEmbed.addField("Type", AuditTools.TypeToFriendlyText(audit.AuditType), true);
         publicEmbed.addField("Moderator", `<@${audit.ModeratorId}>`, true);
 
+        await publicEmbed.SendToCurrentChannel();
+    }
+
+    private async ClearAudit(context: ICommandContext) {
+        const auditId = context.args[1];
+
+        if (!auditId) {
+            await this.SendUsage(context);
+            return;
+        }
+
+        const audit = await Audit.FetchAuditByAuditId(auditId.toUpperCase(), context.message.guild!.id);
+
+        if (!audit) {
+            const errorEmbed = new ErrorEmbed(context, "This audit can not be found.");
+            await errorEmbed.SendToCurrentChannel();
+
+            return;
+        }
+
+        await Audit.Remove(Audit, audit);
+
+        const publicEmbed = new PublicEmbed(context, "", "Audit cleared");
         await publicEmbed.SendToCurrentChannel();
     }
 }
