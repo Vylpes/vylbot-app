@@ -91,7 +91,7 @@ export default class Audits extends Command {
 
         const publicEmbed = new PublicEmbed(context, `Audit ${audit.AuditId.toUpperCase()}`, "");
 
-        publicEmbed.addField("Reason", audit.Reason, true);
+        publicEmbed.addField("Reason", audit.Reason || "*none*", true);
         publicEmbed.addField("Type", AuditTools.TypeToFriendlyText(audit.AuditType), true);
         publicEmbed.addField("Moderator", `<@${audit.ModeratorId}>`, true);
 
