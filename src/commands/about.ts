@@ -22,11 +22,19 @@ export default class About extends Command {
         const row = new MessageActionRow();
 
         if (repoLink) {
-            row.addComponents(new MessageButton().setURL(repoLink).setLabel("Repo").setStyle(MessageButtonStyles.LINK));
+            row.addComponents(
+                new MessageButton()
+                    .setURL(repoLink)
+                    .setLabel("Repo")
+                    .setStyle(MessageButtonStyles.LINK));
         }
 
         if (fundingLink) {
-            row.addComponents(new MessageButton().setURL(fundingLink).setLabel("Funding").setStyle(MessageButtonStyles.LINK));
+            row.addComponents(
+                new MessageButton()
+                    .setURL(fundingLink)
+                    .setLabel("Funding")
+                    .setStyle(MessageButtonStyles.LINK));
         }
         
         await embed.SendToCurrentChannel({ components: [row] });
