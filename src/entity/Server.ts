@@ -1,6 +1,5 @@
 import { Entity, OneToMany } from "typeorm";
 import BaseEntity from "../contracts/BaseEntity";
-import Audit from "./Audit";
 import Role from "./Role";
 import Setting from "./Setting";
 

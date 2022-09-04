@@ -1,4 +1,4 @@
-import { Emoji, MessageActionRow, MessageButton } from "discord.js";
+import { MessageActionRow, MessageButton } from "discord.js";
 import { MessageButtonStyles } from "discord.js/typings/enums";
 import { ICommandContext } from "../contracts/ICommandContext";
 import PublicEmbed from "../helpers/embeds/PublicEmbed";
@@ -22,11 +22,19 @@ export default class About extends Command {
         const row = new MessageActionRow();
 
         if (repoLink) {
-            row.addComponents(new MessageButton().setURL(repoLink).setLabel("Repo").setStyle(MessageButtonStyles.LINK));
+            row.addComponents(
+                new MessageButton()
+                    .setURL(repoLink)
+                    .setLabel("Repo")
+                    .setStyle(MessageButtonStyles.LINK));
         }
 
         if (fundingLink) {
-            row.addComponents(new MessageButton().setURL(fundingLink).setLabel("Funding").setStyle(MessageButtonStyles.LINK));
+            row.addComponents(
+                new MessageButton()
+                    .setURL(fundingLink)
+                    .setLabel("Funding")
+                    .setStyle(MessageButtonStyles.LINK));
         }
         
         await embed.SendToCurrentChannel({ components: [row] });

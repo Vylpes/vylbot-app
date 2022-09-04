@@ -7,7 +7,6 @@ import { ICommandContext } from "../contracts/ICommandContext";
 import ICommandReturnContext from "../contracts/ICommandReturnContext";
 import Audit from "../entity/Audit";
 import { AuditType } from "../constants/AuditType";
-import Server from "../entity/Server";
 
 export default class Ban extends Command {
     constructor() {
@@ -79,13 +78,9 @@ export default class Ban extends Command {
         await publicEmbed.SendToCurrentChannel();
 
         if (context.message.guild) {
-            const server = await Server.FetchOneById(Server, context.message.guild.id);
+            const audit = new Audit(targetUser.id, AuditType.Ban, reason, context.message.author.id, context.message.guild.id);
 
-            if (server) {
-                const audit = new Audit(targetUser.id, AuditType.Ban, reason, context.message.author.id, context.message.guild.id);
-
-                await audit.Save(Audit, audit);
-            }
+            await audit.Save(Audit, audit);
         }
 
         return {

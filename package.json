@@ -13,12 +13,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://gitea.vylpes.xyz/rabbitlabs/vylbot-app"
+    "url": "https://github.com/Vylpes/vylbot-app"
   },
   "author": "Vylpes",
   "license": "MIT",
-  "bugs": "https://gitea.vylpes.xyz/rabbitlabs/vylbot-app/issues",
-  "homepage": "https://gitea.vylpes.xyz/rabbitlabs/vylbot-app",
+  "bugs": "https://github.com/Vylpes/vylbot-app/issues",
+  "homepage": "https://github.com/Vylpes/vylbot-app",
+  "funding": "https://ko-fi.com/vylpes",
   "dependencies": {
     "@types/jest": "^27.0.3",
     "@types/uuid": "^8.3.4",
