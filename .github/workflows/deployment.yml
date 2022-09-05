@@ -1,0 +1,28 @@
+name: deployment
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and Test
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+      - run: yarn install --frozen-lockfile
+      - run: yarn build
+      - run: yarn test
+      - name: Deploy Production
+        uses: D3rHase/ssh-command-action@v0.2.1
+        with:
+          HOST: ${{secrets.HOST}}
+          PORT: ${{secrets.PORT}}
+          USER: ${{secrets.USER}}
+          PRIVATE_SSH_KEY: ${{secrets.PRIVATE_SSH_KEY}}
+          COMMAND: ${{secrets.PROD_COMMAND}}
