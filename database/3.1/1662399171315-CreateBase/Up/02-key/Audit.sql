@@ -1,0 +1,2 @@
+ALTER TABLE `audit`
+  ADD PRIMARY KEY (`Id`);
