@@ -17,7 +17,10 @@
   },
   "author": "Vylpes",
   "license": "MIT",
-  "bugs": "https://github.com/Vylpes/vylbot-app/issues",
+  "bugs": {
+    "url": "https://github.com/Vylpes/vylbot-app/issues",
+    "email": "helpdesk@vylpes.com"
+  },
   "homepage": "https://github.com/Vylpes/vylbot-app",
   "funding": "https://ko-fi.com/vylpes",
   "dependencies": {
