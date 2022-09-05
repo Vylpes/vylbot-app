@@ -1,6 +1,6 @@
 {
   "name": "vylbot-app",
-  "version": "3.0.4",
+  "version": "3.1.0",
   "description": "A discord bot made for Vylpes' Den",
   "main": "./dist/vylbot",
   "typings": "./dist",
@@ -13,11 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Vylpes/vylbot-app.git"
+    "url": "https://github.com/Vylpes/vylbot-app"
   },
   "author": "Vylpes",
   "license": "MIT",
-  "bugs": "https://github.com/Vylpes/vylbot-app/issues",
+  "bugs": {
+    "url": "https://github.com/Vylpes/vylbot-app/issues",
+    "email": "helpdesk@vylpes.com"
+  },
   "homepage": "https://github.com/Vylpes/vylbot-app",
   "dependencies": {
     "@types/jest": "^27.0.3",
