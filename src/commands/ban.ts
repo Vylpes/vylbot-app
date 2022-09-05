@@ -5,6 +5,8 @@ import PublicEmbed from "../helpers/embeds/PublicEmbed";
 import { Command } from "../type/command";
 import { ICommandContext } from "../contracts/ICommandContext";
 import ICommandReturnContext from "../contracts/ICommandReturnContext";
+import Audit from "../entity/Audit";
+import { AuditType } from "../constants/AuditType";
 
 export default class Ban extends Command {
     constructor() {
@@ -74,6 +76,12 @@ export default class Ban extends Command {
 
         await logEmbed.SendToModLogsChannel();
         await publicEmbed.SendToCurrentChannel();
+
+        if (context.message.guild) {
+            const audit = new Audit(targetUser.id, AuditType.Ban, reason, context.message.author.id, context.message.guild.id);
+
+            await audit.Save(Audit, audit);
+        }
 
         return {
             commandContext: context,

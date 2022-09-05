@@ -1,4 +1,4 @@
-import { Emoji, MessageActionRow, MessageButton } from "discord.js";
+import { MessageActionRow, MessageButton } from "discord.js";
 import { MessageButtonStyles } from "discord.js/typings/enums";
 import { ICommandContext } from "../contracts/ICommandContext";
 import PublicEmbed from "../helpers/embeds/PublicEmbed";

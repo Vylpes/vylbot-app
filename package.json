@@ -22,6 +22,7 @@
     "email": "helpdesk@vylpes.com"
   },
   "homepage": "https://github.com/Vylpes/vylbot-app",
+  "funding": "https://ko-fi.com/vylpes",
   "dependencies": {
     "@types/jest": "^27.0.3",
     "@types/uuid": "^8.3.4",
