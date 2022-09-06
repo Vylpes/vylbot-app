@@ -1,9 +1,9 @@
 #! /bin/bash
 
-source "$HOME/.ssh/environment"
-
 export PATH="$HOME/.yarn/bin:$PATH"
 export PATH="$HOME/.nvm/versions/node/v16.17.0/bin/:$PATH"
+
+export BOT_TOKEN=$(cat $HOME/scripts/vylbot/prod_key.txt)
 
 cd ~/apps/vylbot/vylbot_stage \
 && git checkout develop \
@@ -20,4 +20,4 @@ cd ~/apps/vylbot/vylbot_stage \
 && echo "Sleeping for 10 seconds to let database load..." \
 && sleep 10 \
 && yarn run db:up \
-&& NODE_ENV=production BOT_TOKEN=$BOT_TOKEN_STAGE pm2 start --name vylbot_stage dist/vylbot.js
+&& NODE_ENV=production pm2 start --name vylbot_stage dist/vylbot.js
