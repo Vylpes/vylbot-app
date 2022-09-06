@@ -1,5 +1,7 @@
 #! /bin/bash
 
+source "$HOME/.ssh/environment"
+
 export PATH="$HOME/.yarn/bin:$PATH"
 export PATH="$HOME/.nvm/versions/node/v16.17.0/bin/:$PATH"
 
