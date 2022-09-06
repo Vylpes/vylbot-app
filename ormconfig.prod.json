@@ -1,9 +1,9 @@
 {
    "type": "mysql",
    "host": "localhost",
-   "port": 3306,
-   "username": "dev",
-   "password": "dev",
+   "port": 3121,
+   "username": "prod",
+   "password": "prod",
    "database": "vylbot",
    "synchronize": false,
    "logging": false,

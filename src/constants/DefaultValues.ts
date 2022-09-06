@@ -17,11 +17,7 @@ export default class DefaultValues {
     private static SetValues() {
         if (this.values.length == 0) {
             // Bot
-            if (this.useDevPrefix) {
-                this.values.push({ Key: "bot.prefix", Value: "d!" });
-            } else {
-                this.values.push({ Key: "bot.prefix", Value: "v!" });
-            }
+            this.values.push({ Key: "bot.prefix", Value: process.env.BOT_PREFIX || "v!" })
 
             // Commands
             this.values.push({ Key: "commands.disabled", Value: "" });

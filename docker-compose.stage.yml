@@ -1,7 +1,7 @@
 version: "3.9"
 
 volumes:
-  dev_database_data:
+  stage_database_data:
 
 services:
   # discord:
@@ -13,19 +13,19 @@ services:
     restart: always
     environment:
       - MYSQL_DATABASE=vylbot
-      - MYSQL_USER=dev
-      - MYSQL_PASSWORD=dev
+      - MYSQL_USER=stage
+      - MYSQL_PASSWORD=stage
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_ROOT_HOST=0.0.0.0
     ports:
-      - "3101:3306"
+      - "3111:3306"
     volumes:
-      - dev_database_data:/var/lib/mysql
+      - stage_database_data:/var/lib/mysql
 
   phpmyadmin:
     image: phpmyadmin
     restart: always
     ports:
-      - "3102:80"
+      - "3112:80"
     environment:
       - PMA_ARBITRARY=1
