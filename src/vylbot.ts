@@ -19,13 +19,11 @@ requiredConfigs.forEach(config => {
     }
 });
 
-const devmode = process.argv.find(x => x.toLowerCase() == "--dev") != null;
-
 const client = new CoreClient([
     Intents.FLAGS.GUILDS,
     Intents.FLAGS.GUILD_MESSAGES,
     Intents.FLAGS.GUILD_MEMBERS,
-], devmode);
+]);
 
 registry.RegisterCommands();
 registry.RegisterEvents();

@@ -25,11 +25,9 @@ export class CoreClient extends Client {
         return this._eventItems;
     }
 
-    constructor(intents: number[], devmode: boolean = false) {
+    constructor(intents: number[]) {
         super({ intents: intents });
         dotenv.config();
-
-        DefaultValues.useDevPrefix = devmode;
 
         CoreClient._commandItems = [];
         CoreClient._eventItems = [];
