@@ -3,7 +3,7 @@
 export PATH="$HOME/.yarn/bin:$PATH"
 export PATH="$HOME/.nvm/versions/node/v16.17.0/bin/:$PATH"
 
-export BOT_TOKEN=$(cat $HOME/scripts/vylbot/prod_key.txt)
+export BOT_TOKEN=$(cat $HOME/scripts/vylbot/stage_key.txt)
 
 cd ~/apps/vylbot/vylbot_stage \
 && git checkout develop \
