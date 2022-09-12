@@ -57,16 +57,16 @@ export default class Audits extends Command {
         const audits = await Audit.FetchAuditsByUserId(userId, context.message.guild!.id);
 
         if (!audits || audits.length == 0) {
-            const publicEmbed = new PublicEmbed(context, "", "There are no audits logged for this user.");
+            const publicEmbed = new PublicEmbed(context, "Audits", "There are no audits logged for this user.");
             await publicEmbed.SendToCurrentChannel();
 
             return;
         }
 
-        const publicEmbed = new PublicEmbed(context, "Audit Log", "");
+        const publicEmbed = new PublicEmbed(context, "Audit Log", `Audits: ${audits.length}`);
 
         for (let audit of audits) {
-            publicEmbed.addField(`${audit.AuditId} // ${AuditTools.TypeToFriendlyText(audit.AuditType)}`, audit.WhenCreated.toString());
+            publicEmbed.AddField(`${audit.AuditId} // ${AuditTools.TypeToFriendlyText(audit.AuditType)}`, audit.WhenCreated.toString());
         }
 
         await publicEmbed.SendToCurrentChannel();
@@ -89,11 +89,11 @@ export default class Audits extends Command {
             return;
         }
 
-        const publicEmbed = new PublicEmbed(context, `Audit ${audit.AuditId.toUpperCase()}`, "");
+        const publicEmbed = new PublicEmbed(context, "Audit", audit.AuditId.toUpperCase());
 
-        publicEmbed.addField("Reason", audit.Reason || "*none*", true);
-        publicEmbed.addField("Type", AuditTools.TypeToFriendlyText(audit.AuditType), true);
-        publicEmbed.addField("Moderator", `<@${audit.ModeratorId}>`, true);
+        publicEmbed.AddField("Reason", audit.Reason || "*none*", true);
+        publicEmbed.AddField("Type", AuditTools.TypeToFriendlyText(audit.AuditType), true);
+        publicEmbed.AddField("Moderator", `<@${audit.ModeratorId}>`, true);
 
         await publicEmbed.SendToCurrentChannel();
     }
@@ -117,7 +117,7 @@ export default class Audits extends Command {
 
         await Audit.Remove(Audit, audit);
 
-        const publicEmbed = new PublicEmbed(context, "", "Audit cleared");
+        const publicEmbed = new PublicEmbed(context, "Audit", "Audit cleared");
         await publicEmbed.SendToCurrentChannel();
     }
 
@@ -138,7 +138,7 @@ export default class Audits extends Command {
 
         await audit.Save(Audit, audit);
 
-        const publicEmbed = new PublicEmbed(context, "", `Created new audit with ID \`${audit.AuditId}\``);
+        const publicEmbed = new PublicEmbed(context, "Audit", `Created new audit with ID \`${audit.AuditId}\``);
         await publicEmbed.SendToCurrentChannel();
     }
 }

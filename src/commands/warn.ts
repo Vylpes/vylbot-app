@@ -1,6 +1,5 @@
 import { AuditType } from "../constants/AuditType";
 import { ICommandContext } from "../contracts/ICommandContext";
-import ICommandReturnContext from "../contracts/ICommandReturnContext";
 import Audit from "../entity/Audit";
 import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
 import LogEmbed from "../helpers/embeds/LogEmbed";
@@ -17,17 +16,14 @@ export default class Warn extends Command {
         ];
     }
 
-    public override async execute(context: ICommandContext): Promise<ICommandReturnContext> {
+    public override async execute(context: ICommandContext) {
         const user = context.message.mentions.users.first();
 
         if (!user) {
             const errorEmbed = new ErrorEmbed(context, "User does not exist");
             await errorEmbed.SendToCurrentChannel();
             
-            return {
-                commandContext: context,
-                embeds: [errorEmbed]
-            };
+            return;
         }
 
         const member = context.message.guild?.members.cache.find(x => x.user.id == user.id);
@@ -36,10 +32,7 @@ export default class Warn extends Command {
             const errorEmbed = new ErrorEmbed(context, "User is not in this server");
             await errorEmbed.SendToCurrentChannel();
             
-            return {
-                commandContext: context,
-                embeds: [errorEmbed]
-            };
+            return;
         }
 
         const reasonArgs = context.args;
@@ -47,12 +40,7 @@ export default class Warn extends Command {
 
         const reason = reasonArgs.join(" ");
 
-        if (!context.message.guild?.available) {
-            return {
-                commandContext: context,
-                embeds: []
-            };
-        }
+        if (!context.message.guild?.available) return;
 
         const logEmbed = new LogEmbed(context, "Member Warned");
         logEmbed.AddUser("User", user, true);
@@ -70,10 +58,5 @@ export default class Warn extends Command {
 
             await audit.Save(Audit, audit);
         }
-
-        return {
-            commandContext: context,
-            embeds: [logEmbed, publicEmbed]
-        };
     }
 }

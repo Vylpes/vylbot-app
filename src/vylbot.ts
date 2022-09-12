@@ -1,7 +1,7 @@
 import { CoreClient } from "./client/client";
 import * as dotenv from "dotenv";
 import registry from "./registry";
-import { Intents } from "discord.js";
+import { IntentsBitField } from "discord.js";
 
 dotenv.config();
 
@@ -20,9 +20,10 @@ requiredConfigs.forEach(config => {
 });
 
 const client = new CoreClient([
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_MEMBERS,
+    IntentsBitField.Flags.Guilds,
+    IntentsBitField.Flags.GuildMessages,
+    IntentsBitField.Flags.GuildMembers,
+    IntentsBitField.Flags.MessageContent,
 ]);
 
 registry.RegisterCommands();

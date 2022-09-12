@@ -26,10 +26,11 @@ export default class Bunny extends Command {
         const result = await randomBunny(selectedSubreddit, 'hot');
 
         if (result.IsSuccess) {
-            const embed = new PublicEmbed(context, result.Result!.Title, "")
-                .setImage(result.Result!.Url)
-                .setURL(`https://reddit.com${result.Result!.Permalink}`)
-                .setFooter({ text: `r/${selectedSubreddit} · ${result.Result!.Ups} upvotes` });
+            const embed = new PublicEmbed(context, result.Result!.Title, "");
+
+            embed.SetImage(result.Result!.Url)
+            embed.SetURL(`https://reddit.com${result.Result!.Permalink}`)
+            embed.SetFooter(`r/${selectedSubreddit} · ${result.Result!.Ups} upvotes`);
             
             await embed.SendToCurrentChannel();
         } else {

@@ -22,11 +22,11 @@ export default class MessageEvents extends Event {
 
         const embed = new EventEmbed(message.client, message.guild, "Message Deleted");
         embed.AddUser("User", message.author, true);
-        embed.addField("Channel", message.channel.toString(), true);
-        embed.addField("Content", `\`\`\`${message.content || "*none*"}\`\`\``);
+        embed.AddField("Channel", message.channel.toString(), true);
+        embed.AddField("Content", `\`\`\`${message.content || "*none*"}\`\`\``);
 
         if (message.attachments.size > 0) {
-            embed.addField("Attachments", `\`\`\`${message.attachments.map(x => x.url).join("\n")}\`\`\``);
+            embed.AddField("Attachments", `\`\`\`${message.attachments.map(x => x.url).join("\n")}\`\`\``);
         }
 
         const channel = await SettingsHelper.GetSetting("event.message.delete.channel", message.guild.id);
@@ -48,9 +48,9 @@ export default class MessageEvents extends Event {
 
         const embed = new EventEmbed(newMessage.client, newMessage.guild, "Message Edited");
         embed.AddUser("User", newMessage.author, true);
-        embed.addField("Channel", newMessage.channel.toString(), true);
-        embed.addField("Before", `\`\`\`${oldMessage.content || "*none*"}\`\`\``);
-        embed.addField("After", `\`\`\`${newMessage.content || "*none*"}\`\`\``);
+        embed.AddField("Channel", newMessage.channel.toString(), true);
+        embed.AddField("Before", `\`\`\`${oldMessage.content || "*none*"}\`\`\``);
+        embed.AddField("After", `\`\`\`${newMessage.content || "*none*"}\`\`\``);
 
         const channel = await SettingsHelper.GetSetting("event.message.update.channel", newMessage.guild.id);
         if (!channel || !newMessage.guild.channels.cache.find(x => x.name == channel)) return;

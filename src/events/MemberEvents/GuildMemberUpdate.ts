@@ -20,9 +20,9 @@ export default class GuildMemberUpdate {
 
         const embed = new EventEmbed(this.oldMember.client, this.newMember.guild, "Nickname Changed");
         embed.AddUser("User", this.newMember.user, true);
-        embed.addField("Before", oldNickname, true);
-        embed.addField("After", newNickname, true);
-        embed.setFooter({ text: `Id: ${this.newMember.user.id}` });
+        embed.AddField("Before", oldNickname, true);
+        embed.AddField("After", newNickname, true);
+        embed.SetFooter(`Id: ${this.newMember.user.id}`);
     
         const channel = await SettingsHelper.GetSetting("event.member.update.channel", this.newMember.guild.id);
         if (!channel || channel.toLowerCase() != "true") return;

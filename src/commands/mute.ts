@@ -1,7 +1,6 @@
 import { AuditType } from "../constants/AuditType";
 import ErrorMessages from "../constants/ErrorMessages";
 import { ICommandContext } from "../contracts/ICommandContext";
-import ICommandReturnContext from "../contracts/ICommandReturnContext";
 import Audit from "../entity/Audit";
 import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
 import LogEmbed from "../helpers/embeds/LogEmbed";
@@ -18,17 +17,14 @@ export default class Mute extends Command {
         ];
     }
 
-    public override async execute(context: ICommandContext): Promise<ICommandReturnContext> {
+    public override async execute(context: ICommandContext) {
         const targetUser = context.message.mentions.users.first();
 
         if (!targetUser) {
             const embed = new ErrorEmbed(context, "User does not exist");
             await embed.SendToCurrentChannel();
-            
-            return {
-                commandContext: context,
-                embeds: [embed]
-            };
+
+            return;
         }
 
         const targetMember = context.message.guild?.members.cache.find(x => x.user.id == targetUser.id);
@@ -37,10 +33,7 @@ export default class Mute extends Command {
             const embed = new ErrorEmbed(context, "User is not in this server");
             await embed.SendToCurrentChannel();
             
-            return {
-                commandContext: context,
-                embeds: [embed]
-            };
+            return;
         }
 
         const reasonArgs = context.args;
@@ -48,21 +41,13 @@ export default class Mute extends Command {
 
         const reason = reasonArgs.join(" ");
 
-        if (!context.message.guild?.available) {
-            return {
-                commandContext: context,
-                embeds: []
-            };
-        }
+        if (!context.message.guild?.available) return;
 
         if (!targetMember.manageable) {
             const embed = new ErrorEmbed(context, ErrorMessages.InsufficientBotPermissions);
             await embed.SendToCurrentChannel();
             
-            return {
-                commandContext: context,
-                embeds: [embed]
-            };
+            return;
         }
 
         const logEmbed = new LogEmbed(context, "Member Muted");
@@ -79,10 +64,7 @@ export default class Mute extends Command {
             const embed = new ErrorEmbed(context, ErrorMessages.RoleNotFound);
             await embed.SendToCurrentChannel();
             
-            return {
-                commandContext: context,
-                embeds: [embed]
-            };
+            return;
         }
 
         await targetMember.roles.add(mutedRole, `Moderator: ${context.message.author.tag}, Reason: ${reason || "*none*"}`);
@@ -95,10 +77,5 @@ export default class Mute extends Command {
 
             await audit.Save(Audit, audit);
         }
-
-        return {
-            commandContext: context,
-            embeds: [logEmbed, publicEmbed]
-        };
     }
 }

@@ -3,7 +3,6 @@ import { TextChannel } from "discord.js";
 import PublicEmbed from "../helpers/embeds/PublicEmbed";
 import { Command } from "../type/command";
 import { ICommandContext } from "../contracts/ICommandContext";
-import ICommandReturnContext from "../contracts/ICommandReturnContext";
 
 export default class Clear extends Command {
     constructor() {
@@ -15,15 +14,12 @@ export default class Clear extends Command {
         ];
     }
 
-    public override async execute(context: ICommandContext): Promise<ICommandReturnContext> {
+    public override async execute(context: ICommandContext) {
         if (context.args.length == 0) {
             const errorEmbed = new ErrorEmbed(context, "Please specify an amount between 1 and 100");
             await errorEmbed.SendToCurrentChannel();
 
-            return {
-                commandContext: context,
-                embeds: [errorEmbed]
-            };
+            return;
         }
 
         const totalToClear = Number.parseInt(context.args[0]);
@@ -31,20 +27,13 @@ export default class Clear extends Command {
         if (!totalToClear || totalToClear <= 0 || totalToClear > 100) {
             const errorEmbed = new ErrorEmbed(context, "Please specify an amount between 1 and 100");
             await errorEmbed.SendToCurrentChannel();
-            return {
-                commandContext: context,
-                embeds: [errorEmbed]
-            };
+
+            return;
         }
 
         await (context.message.channel as TextChannel).bulkDelete(totalToClear);
 
         const embed = new PublicEmbed(context, "", `${totalToClear} message(s) were removed`);
         await embed.SendToCurrentChannel();
-
-        return {
-            commandContext: context,
-            embeds: [embed]
-        };
     }
 }

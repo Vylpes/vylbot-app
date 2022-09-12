@@ -37,8 +37,8 @@ export default class Rules extends Command {
         rules.forEach(rule => {
             const embed = new PublicEmbed(context, rule.title || "", rule.description?.join("\n") || "");
 
-            embed.setImage(rule.image || "");
-            embed.setFooter({ text: rule.footer || "" });
+            embed.SetImage(rule.image || "");
+            embed.SetFooter(rule.footer || "");
 
             embeds.push(embed);
         });

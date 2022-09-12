@@ -1,5 +1,4 @@
 import { ICommandContext } from "../contracts/ICommandContext";
-import ICommandReturnContext from "../contracts/ICommandReturnContext";
 import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
 import PublicEmbed from "../helpers/embeds/PublicEmbed";
 import { Command } from "../type/command";
@@ -11,7 +10,7 @@ export default class Poll extends Command {
         super.Category = "General";
     }
 
-    public override async execute(context: ICommandContext): Promise<ICommandReturnContext> {
+    public override async execute(context: ICommandContext) {
         const argsJoined = context.args.join(" ");
         const argsSplit = argsJoined.split(";");
 
@@ -49,7 +48,9 @@ export default class Poll extends Command {
 
         const embed = new PublicEmbed(context, title, description.join("\n"));
 
-        const message = await context.message.channel.send({ embeds: [ embed ]});
+        const message = await embed.SendToCurrentChannel();
+
+        if (!message) return;
 
         description.forEach(async (value, index) => {
             await message.react(reactionEmojis[index]);

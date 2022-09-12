@@ -1,36 +1,72 @@
-import { MessageEmbed, Permissions, TextChannel, User } from "discord.js";
+import { TextChannel, User, EmbedBuilder, PermissionsBitField, Message } from "discord.js";
 import ErrorMessages from "../../constants/ErrorMessages";
 import { ICommandContext } from "../../contracts/ICommandContext";
 import SettingsHelper from "../SettingsHelper";
 import ErrorEmbed from "./ErrorEmbed";
 
-export default class LogEmbed extends MessageEmbed {
+export default class LogEmbed {
     public context: ICommandContext;
 
+    private _embedBuilder: EmbedBuilder;
+
     constructor(context: ICommandContext, title: string) {
-        super();
-        
-        super.setColor(0x3050ba);
-        super.setTitle(title);
+        this._embedBuilder = new EmbedBuilder()
+            .setColor(0x3050ba)
+            .setTitle(title);
 
         this.context = context;
     }
 
     // Detail methods
+    public AddField(name: string, value: string, inline: boolean = false) {
+        this._embedBuilder.addFields([
+            {
+                name,
+                value,
+                inline
+            }
+        ])
+    }
+
+    public SetFooter(text: string) {
+        this._embedBuilder.setFooter({
+            text
+        });
+    }
+
+    public SetImage(imageUrl: string) {
+        this._embedBuilder.setImage(imageUrl);
+    }
+
     public AddUser(title: string, user: User, setThumbnail: boolean = false) {
-        this.addField(title, `${user} \`${user.tag}\``, true);
+        this._embedBuilder.addFields([
+            {
+                name: title,
+                value: `${user} \`${user.tag}\``,
+                inline: true,
+            }
+        ]);
 
         if (setThumbnail) {
-            this.setThumbnail(user.displayAvatarURL());
+            this._embedBuilder.setThumbnail(user.displayAvatarURL());
         }
     }
 
     public AddReason(message: string) {
-        this.addField("Reason", message || "*none*");
+        this._embedBuilder.addFields([
+            {
+                name: "Reason",
+                value: message || "*none*",
+            }
+        ])
+    }
+
+    public SetURL(url: string) {
+        this._embedBuilder.setURL(url);
     }
 
     // Send methods
-    public async SendToCurrentChannel() {
+    public async SendToCurrentChannel(): Promise<Message | undefined> {
         const channel = this.context.message.channel as TextChannel;
         const botMember = await this.context.message.guild?.members.fetch({ user: this.context.message.client.user! });
 
@@ -38,51 +74,52 @@ export default class LogEmbed extends MessageEmbed {
 
         const permissions = channel.permissionsFor(botMember);
 
-        if (!permissions.has(Permissions.FLAGS.SEND_MESSAGES)) return;
+        if (!permissions.has(PermissionsBitField.Flags.SendMessages)) return;
 
-        this.context.message.channel.send({ embeds: [ this ]});
+        return this.context.message.channel.send({ embeds: [ this._embedBuilder ]});
     }
 
-    public SendToChannel(name: string) {
+    public async SendToChannel(name: string): Promise<Message | undefined> {
         const channel = this.context.message.guild?.channels.cache
             .find(channel => channel.name == name) as TextChannel;
         
         if (!channel) {
             const errorEmbed = new ErrorEmbed(this.context, ErrorMessages.ChannelNotFound);
             errorEmbed.SendToCurrentChannel();
+
             return;
         }
 
-        channel.send({ embeds: [ this ]});
+        return await channel.send({ embeds: [ this._embedBuilder ]});
     }
 
-    public async SendToMessageLogsChannel() {
+    public async SendToMessageLogsChannel(): Promise<Message | undefined> {
         const channelName = await SettingsHelper.GetSetting("channels.logs.message", this.context.message.guild?.id!);
 
         if (!channelName) {
             return;
         }
 
-        this.SendToChannel(channelName);
+        return this.SendToChannel(channelName);
     }
 
-    public async SendToMemberLogsChannel() {
+    public async SendToMemberLogsChannel(): Promise<Message | undefined> {
         const channelName = await SettingsHelper.GetSetting("channels.logs.member", this.context.message.guild?.id!);
 
         if (!channelName) {
             return;
         }
 
-        this.SendToChannel(channelName);
+        return this.SendToChannel(channelName);
     }
 
-    public async SendToModLogsChannel() {
+    public async SendToModLogsChannel(): Promise<Message | undefined> {
         const channelName = await SettingsHelper.GetSetting("channels.logs.mod", this.context.message.guild?.id!);
 
         if (!channelName) {
             return;
         }
 
-        this.SendToChannel(channelName);
+        return this.SendToChannel(channelName);
     }
 }

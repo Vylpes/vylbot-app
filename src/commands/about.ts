@@ -1,5 +1,4 @@
-import { MessageActionRow, MessageButton } from "discord.js";
-import { MessageButtonStyles } from "discord.js/typings/enums";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 import { ICommandContext } from "../contracts/ICommandContext";
 import PublicEmbed from "../helpers/embeds/PublicEmbed";
 import { Command } from "../type/command";
@@ -14,29 +13,30 @@ export default class About extends Command {
         const fundingLink = process.env.ABOUT_FUNDING;
         const repoLink = process.env.ABOUT_REPO;
 
-        const embed = new PublicEmbed(context, "About", "")
-            .addField("Version", process.env.BOT_VER!, true)
-            .addField("Author", process.env.BOT_AUTHOR!, true)
-            .addField("Date", process.env.BOT_DATE!, true);
+        const embed = new PublicEmbed(context, "About", "Discord Bot made by Vylpes");
 
-        const row = new MessageActionRow();
+        embed.AddField("Version", process.env.BOT_VER!, true);
+        embed.AddField("Author", process.env.BOT_AUTHOR!, true);
+        embed.AddField("Date", process.env.BOT_DATE!, true);
+
+        const row = new ActionRowBuilder<ButtonBuilder>();
 
         if (repoLink) {
             row.addComponents(
-                new MessageButton()
+                new ButtonBuilder()
                     .setURL(repoLink)
                     .setLabel("Repo")
-                    .setStyle(MessageButtonStyles.LINK));
+                    .setStyle(ButtonStyle.Link));
         }
 
         if (fundingLink) {
             row.addComponents(
-                new MessageButton()
+                new ButtonBuilder()
                     .setURL(fundingLink)
                     .setLabel("Funding")
-                    .setStyle(MessageButtonStyles.LINK));
+                    .setStyle(ButtonStyle.Link));
         }
         
-        await embed.SendToCurrentChannel({ components: [row] });
+        await embed.SendToCurrentChannel({ components: [ row ] });
     }
 }

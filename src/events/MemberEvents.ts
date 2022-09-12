@@ -17,8 +17,8 @@ export default class MemberEvents extends Event {
 
         const embed = new EventEmbed(member.client, member.guild, "Member Joined");
         embed.AddUser("User", member.user, true);
-        embed.addField("Created", member.user.createdAt.toISOString());
-        embed.setFooter({ text: `Id: ${member.user.id}` });
+        embed.AddField("Created", member.user.createdAt.toISOString());
+        embed.SetFooter(`Id: ${member.user.id}`);
 
         const channel = await SettingsHelper.GetSetting("event.member.add.channel", member.guild.id);
         if (!channel || !member.guild.channels.cache.find(x => x.name == channel)) return;
@@ -34,8 +34,8 @@ export default class MemberEvents extends Event {
 
         const embed = new EventEmbed(member.client, member.guild, "Member Left");
         embed.AddUser("User", member.user, true);
-        embed.addField("Joined", member.joinedAt?.toISOString() || "n/a");
-        embed.setFooter({ text: `Id: ${member.user.id}` });
+        embed.AddField("Joined", member.joinedAt?.toISOString() || "n/a");
+        embed.SetFooter(`Id: ${member.user.id}`);
 
         const channel = await SettingsHelper.GetSetting("event.member.remove.channel", member.guild.id);
         if (!channel || !member.guild.channels.cache.find(x => x.name == channel)) return;

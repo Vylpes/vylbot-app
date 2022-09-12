@@ -1,4 +1,3 @@
-import { existsSync, readdirSync } from "fs";
 import { CoreClient } from "../client/client";
 import { ICommandContext } from "../contracts/ICommandContext";
 import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
@@ -33,12 +32,12 @@ export default class Help extends Command {
             .filter(x => !x.ServerId || x.ServerId == context.message.guild?.id);
         const cateogries = [...new Set(allCommands.map(x => x.Command.Category))];
 
-        const embed = new PublicEmbed(context, "Commands", "");
+        const embed = new PublicEmbed(context, "Commands", `Commands: ${allCommands.length}`);
 
         cateogries.forEach(category => {
             let filtered = allCommands.filter(x => x.Command.Category == category);
 
-            embed.addField(StringTools.Capitalise(category || "Uncategorised"), StringTools.CapitaliseArray(filtered.flatMap(x => x.Name)).join(", "));
+            embed.AddField(StringTools.Capitalise(category || "Uncategorised"), StringTools.CapitaliseArray(filtered.flatMap(x => x.Name)).join(", "));
         });
 
         await embed.SendToCurrentChannel();
@@ -49,15 +48,15 @@ export default class Help extends Command {
         const exclusiveCommand = CoreClient.commandItems.find(x => x.Name == context.args[0] && x.ServerId == context.message.guild?.id);
 
         if (exclusiveCommand) {
-            const embed = new PublicEmbed(context, StringTools.Capitalise(exclusiveCommand.Name), "");
-            embed.addField("Category", StringTools.Capitalise(exclusiveCommand.Command.Category || "Uncategorised"));
-            embed.addField("Required Roles", StringTools.Capitalise(exclusiveCommand.Command.Roles.join(", ")) || "Everyone");
+            const embed = new PublicEmbed(context, StringTools.Capitalise(exclusiveCommand.Name), "Coming Soon");
+            embed.AddField("Category", StringTools.Capitalise(exclusiveCommand.Command.Category || "Uncategorised"));
+            embed.AddField("Required Roles", StringTools.Capitalise(exclusiveCommand.Command.Roles.join(", ")) || "Everyone");
 
             await embed.SendToCurrentChannel();
         } else if (command) {
-            const embed = new PublicEmbed(context, StringTools.Capitalise(command.Name), "");
-            embed.addField("Category", StringTools.Capitalise(command.Command.Category || "Uncategorised"));
-            embed.addField("Required Roles", StringTools.Capitalise(command.Command.Roles.join(", ")) || "Everyone");
+            const embed = new PublicEmbed(context, StringTools.Capitalise(command.Name), "Coming Soon");
+            embed.AddField("Category", StringTools.Capitalise(command.Command.Category || "Uncategorised"));
+            embed.AddField("Required Roles", StringTools.Capitalise(command.Command.Roles.join(", ")) || "Everyone");
 
             await embed.SendToCurrentChannel();
         } else {

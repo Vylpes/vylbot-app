@@ -1,7 +1,10 @@
 import { CommandResponse } from "../constants/CommandResponse";
 import { ICommandContext } from "../contracts/ICommandContext";
+import { SlashCommandBuilder } from "discord.js";
 
 export class Command {
+    public SlashCommandBuilder: SlashCommandBuilder;
+
     public Roles: string[];
     public Category?: string;
 
