@@ -13,6 +13,7 @@ export default class Clear extends Command {
                 option
                     .setName('count')
                     .setDescription('The amount to delete')
+                    .setRequired(true)
                     .setMinValue(1)
                     .setMaxValue(100));
     }

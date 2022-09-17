@@ -21,7 +21,8 @@ export default class Config extends Command {
                     .addStringOption(option =>
                         option
                             .setName('key')
-                            .setDescription('The key')))
+                            .setDescription('The key')
+                            .setRequired(true)))
             .addSubcommand(subcommand =>
                 subcommand
                     .setName('get')
@@ -29,7 +30,8 @@ export default class Config extends Command {
                     .addStringOption(option =>
                         option
                             .setName('key')
-                            .setDescription('The key')))
+                            .setDescription('The key')
+                            .setRequired(true)))
             .addSubcommand(subcommand =>
                 subcommand
                     .setName('set')
@@ -37,11 +39,13 @@ export default class Config extends Command {
                     .addStringOption(option =>
                         option
                             .setName('key')
-                            .setDescription('The key'))
+                            .setDescription('The key')
+                            .setRequired(true))
                     .addStringOption(option =>
                         option
                             .setName('value')
-                            .setDescription('The value')))
+                            .setDescription('The value')
+                            .setRequired(true)))
             .addSubcommand(subcommand =>
                 subcommand
                     .setName('list')

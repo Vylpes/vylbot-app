@@ -14,7 +14,8 @@ export default class RemoveLobby extends Command {
             .addChannelOption(option =>
                 option
                     .setName('channel')
-                    .setDescription('The channel'));
+                    .setDescription('The channel')
+                    .setRequired(true));
     }
 
     public override async execute(interaction: CommandInteraction) {
@@ -34,6 +35,6 @@ export default class RemoveLobby extends Command {
         
         await BaseEntity.Remove<eLobby>(eLobby, entity);
 
-        await interaction.reply(`Removed <#${channel.channel.name}> from the list of lobby channels`);
+        await interaction.reply(`Removed <#${channel.channel.id}> from the list of lobby channels`);
     }
 }

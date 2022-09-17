@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder, GuildMember, GuildMemberRoleManager, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, EmbedBuilder, GuildMemberRoleManager, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../type/command";
 import { default as eRole } from "../../entity/Role";
 import EmbedColours from "../../constants/EmbedColours";
@@ -69,7 +69,6 @@ export default class Role extends Command {
         }
 
         const roleManager = interaction.member.roles as GuildMemberRoleManager;
-        const member = interaction.member as GuildMember;
 
         const userRole = roleManager.cache.find(x => x.name == requestedRole.role!.name);
         const assignRole = interaction.guild.roles.cache.find(x => x.id == requestedRole.role!.id);

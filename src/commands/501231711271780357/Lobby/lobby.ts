@@ -36,6 +36,6 @@ export default class Lobby extends Command {
         lobby.MarkAsUsed();
         await lobby.Save(eLobby, lobby);
 
-        await interaction.reply(`${interaction.user} would like to organise a lobby of **${lobby.Name}**! <@${lobby.RoleId}>`);
+        await interaction.reply(`${interaction.user} would like to organise a lobby of **${lobby.Name}**! <@&${lobby.RoleId}>`);
     }
 }

@@ -13,19 +13,23 @@ export default class AddRole extends Command {
             .addChannelOption(option =>
                 option
                     .setName('channel')
-                    .setDescription('The channel'))
+                    .setDescription('The channel')
+                    .setRequired(true))
             .addRoleOption(option =>
                 option
                     .setName('role')
-                    .setDescription('The role to ping on request'))
+                    .setDescription('The role to ping on request')
+                    .setRequired(true))
             .addNumberOption(option =>
                 option
                     .setName('cooldown')
-                    .setDescription('The cooldown in minutes'))
+                    .setDescription('The cooldown in minutes')
+                    .setRequired(true))
             .addStringOption(option =>
                 option
                     .setName('name')
-                    .setDescription('The game name'));
+                    .setDescription('The game name')
+                    .setRequired(true));
     }
 
     public override async execute(interaction: CommandInteraction) {
@@ -49,6 +53,6 @@ export default class AddRole extends Command {
         const entity = new eLobby(channel.channel.id, role.role.id, cooldown.value as number, gameName.value as string);
         await entity.Save(eLobby, entity);
 
-        await interaction.reply(`Added \`${channel.name}\` as a new lobby channel with a cooldown of \`${cooldown} minutes \` and will ping \`${role.name}\` on use`);
+        await interaction.reply(`Added \`${channel.name}\` as a new lobby channel with a cooldown of \`${cooldown.value} minutes \` and will ping \`${role.name}\` on use`);
     }
 }

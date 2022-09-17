@@ -49,7 +49,7 @@ export class CoreClient extends Client {
         super.on("interactionCreate", this._events.onInteractionCreate);
         super.on("ready", this._events.onReady);
 
-        super.login(process.env.BOT_TOKEN);
+        await super.login(process.env.BOT_TOKEN);
 
         this._util.loadEvents(this, CoreClient._eventItems);
         this._util.loadSlashCommands(this);
