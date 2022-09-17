@@ -1,11 +1,9 @@
-import { TextChannel } from "discord.js";
+import { CommandInteraction, GuildMemberRoleManager, SlashCommandBuilder, TextChannel } from "discord.js";
 import { ICommandContext } from "../../contracts/ICommandContext";
 import { Command } from "../../type/command";
 import { default as eLobby } from "../../entity/501231711271780357/Lobby";
 import SettingsHelper from "../../helpers/SettingsHelper";
-import PublicEmbed from "../../helpers/embeds/PublicEmbed";
 import { readFileSync } from "fs";
-import ErrorEmbed from "../../helpers/embeds/ErrorEmbed";
 import BaseEntity from "../../contracts/BaseEntity";
 
 export default class Lobby extends Command {
@@ -13,32 +11,60 @@ export default class Lobby extends Command {
         super();
 
         super.Category = "General";
+
+        super.CommandBuilder = new SlashCommandBuilder()
+            .setName('lobby')
+            .setDescription('Attempt to organise a lobby')
+            .addSubcommand(subcommand =>
+                subcommand
+                    .setName('config')
+                    .setDescription('Configure the lobby command (mods only)')
+                    .addStringOption(option =>
+                        option
+                            .setName('action')
+                            .setDescription('Add or remove a channel to the lobby list')
+                            .addChoices(
+                                { name: 'add', value: 'add' },
+                                { name: 'remove', value: 'remove' },
+                            ))
+                    .addChannelOption(option =>
+                        option
+                            .setName('channel')
+                            .setDescription('The channel'))
+                    .addRoleOption(option =>
+                        option
+                            .setName('role')
+                            .setDescription('The role to ping on request'))
+                    .addNumberOption(option =>
+                        option
+                            .setName('cooldown')
+                            .setDescription('The cooldown in minutes'))
+                    .addStringOption(option =>
+                        option
+                            .setName('name')
+                            .setDescription('The game name')));
     }
 
-    public override async execute(context: ICommandContext) {
-        if (!context.message.guild) return;
+    public override async execute(interaction: CommandInteraction) {
+        if (!interaction.isChatInputCommand()) return;
 
-        switch (context.args[0]) {
+        switch (interaction.options.getSubcommand()) {
             case "config":
-                await this.UseConfig(context);
+                await this.Configure(interaction);
                 break;
-            default:
-                await this.UseDefault(context);
+            case "request":
+                await this.Request(interaction);
+                break;
         }
     }
 
-    // =======
-    // Default
-    // =======
-
-    private async UseDefault(context: ICommandContext) {
-        const channel = context.message.channel as TextChannel;
-        const channelId = channel.id;
-
-        const lobby = await eLobby.FetchOneByChannelId(channelId);
+    private async Request(interaction: CommandInteraction) {
+        if (!interaction.channelId) return;
+    
+        const lobby = await eLobby.FetchOneByChannelId(interaction.channelId);
 
         if (!lobby) {
-            this.SendDisabled(context);
+            await interaction.reply('This channel is disabled from using the lobby command.');
             return;
         }
 
@@ -48,112 +74,91 @@ export default class Lobby extends Command {
 
         // If it was less than x minutes ago
         if (lobby.LastUsed.getTime() > timeAgo) {
-            this.SendOnCooldown(context, timeLength, new Date(timeNow), lobby.LastUsed);
+            const timeLeft = Math.ceil((timeLength - (timeNow - lobby.LastUsed.getTime())) / 1000 / 60);
+
+            await interaction.reply(`Requesting a lobby for this game is on cooldown! Please try again in **${timeLeft} minutes**.`);
             return;
         }
 
-        await this.RequestLobby(context, lobby);
-    }
-
-    private async RequestLobby(context: ICommandContext, lobby: eLobby) {
         lobby.MarkAsUsed();
         await lobby.Save(eLobby, lobby);
 
-        context.message.channel.send(`${context.message.author} would like to organise a lobby of **${lobby.Name}**! <@&${lobby.RoleId}>`);
+        await interaction.reply(`${interaction.user} would like to organise a lobby of **${lobby.Name}**! <@${lobby.RoleId}>`);
     }
 
-    private SendOnCooldown(context: ICommandContext, timeLength: number, timeNow: Date, timeUsed: Date) {
-        const timeLeft = Math.ceil((timeLength - (timeNow.getTime() - timeUsed.getTime())) / 1000 / 60);
+    private async Configure(interaction: CommandInteraction) {
+        if (!interaction.guildId) return;
+        if (!interaction.member) return;
 
-        context.message.reply(`Requesting a lobby for this game is on cooldown! Please try again in **${timeLeft} minutes**.`);
-    }
+        const moderatorRole = await SettingsHelper.GetSetting("role.moderator", interaction.guildId);
 
-    private SendDisabled(context: ICommandContext) {
-        context.message.reply("This channel hasn't been setup for lobbies.");
-    }
+        const roleManager = interaction.member.roles as GuildMemberRoleManager;
 
-    // ======
-    // Config
-    // ======
-    private async UseConfig(context: ICommandContext) {
-        const moderatorRole = await SettingsHelper.GetSetting("role.moderator", context.message.guild!.id);
-
-        if (!context.message.member?.roles.cache.find(x => x.name == moderatorRole)) {
-            const errorEmbed = new ErrorEmbed(context, "Sorry, you must be a moderator to be able to configure this command");
-            await errorEmbed.SendToCurrentChannel();
-
+        if (!roleManager.cache.find(x => x.name == moderatorRole)) {
+            await interaction.reply('Sorry, you must be a moderator to be able to configure this command.');
             return;
         }
 
-        switch (context.args[1]) {
+        const action = interaction.options.get('action');
+
+        if (!action || !action.value) {
+            await interaction.reply('Action is required.');
+            return;
+        }
+
+        switch (action.value) {
             case "add":
-                await this.AddLobbyConfig(context);
+                await this.AddLobbyConfig(interaction);
                 break;
             case "remove":
-                await this.RemoveLobbyConfig(context);
+                await this.RemoveLobbyConfig(interaction);
                 break;
-            case "help":
             default:
-                await this.SendConfigHelp(context);
+                await interaction.reply('Action not found.');
         }
     }
 
-    private async SendConfigHelp(context: ICommandContext) {
-        const helpText = readFileSync(`${process.cwd()}/data/usage/lobby.txt`).toString();
+    private async AddLobbyConfig(interaction: CommandInteraction) {
+        const channel = interaction.options.get('channel');
+        const role = interaction.options.get('role');
+        const cooldown = interaction.options.get('cooldown');
+        const gameName = interaction.options.get('name');
 
-        const embed = new PublicEmbed(context, "Configure Lobby Command", helpText);
-        await embed.SendToCurrentChannel();
-    }
-
-    private async AddLobbyConfig(context: ICommandContext) {
-        const channel = context.message.guild!.channels.cache.find(x => x.id == context.args[2]);
-        const role = context.message.guild!.roles.cache.find(x => x.id == context.args[3]);
-        const cooldown = Number(context.args[4]) || 30;
-        const gameName = context.args.splice(5).join(" ");
-
-        if (!channel) {
-            const errorEmbed = new ErrorEmbed(context, "The channel id you provided is invalid or channel does not exist.");
-            errorEmbed.SendToCurrentChannel();
-
+        if (!channel || !channel.channel || !role || !role.role || !cooldown || !cooldown.value || !gameName || !gameName.value) {
+            await interaction.reply('Fields are required.');
             return;
         }
 
-        if (!role) {
-            const errorEmbed = new ErrorEmbed(context, "The role id you provided is invalid or role does not exist.");
-            errorEmbed.SendToCurrentChannel();
-
-            return;
-        }
-
-        const lobby = await eLobby.FetchOneByChannelId(channel.id);
+        const lobby = await eLobby.FetchOneByChannelId(channel.channel.id);
 
         if (lobby) {
-            const errorEmbed = new ErrorEmbed(context, "This channel has already been setup.");
-            errorEmbed.SendToCurrentChannel();
-            
+            await interaction.reply('This channel has already been setup.');
             return;
         }
 
-        const entity = new eLobby(channel.id, role.id, cooldown, gameName);
+        const entity = new eLobby(channel.channel.id, role.role.id, cooldown.value as number, gameName.value as string);
         await entity.Save(eLobby, entity);
 
-        const embed = new PublicEmbed(context, "", `Added \`${channel.name}\` as a new lobby channel with a cooldown of \`${cooldown} minutes\` and will ping \`${role.name}\` on use`);
-        await embed.SendToCurrentChannel();
+        await interaction.reply(`Added \`${channel.name}\` as a new lobby channel with a cooldown of \`${cooldown} minutes \` and will ping \`${role.name}\` on use`);
     }
 
-    private async RemoveLobbyConfig(context: ICommandContext) {
-        const entity = await eLobby.FetchOneByChannelId(context.args[2]);
+    private async RemoveLobbyConfig(interaraction: CommandInteraction) {
+        const channel = interaraction.options.get('channel');
+
+        if (!channel || !channel.channel) {
+            await interaraction.reply('Channel is required.');
+            return;
+        }
+
+        const entity = await eLobby.FetchOneByChannelId(channel.channel.id);
 
         if (!entity) {
-            const errorEmbed = new ErrorEmbed(context, "The channel id you provided has not been setup as a lobby, unable to remove.");
-            await errorEmbed.SendToCurrentChannel();
-
+            await interaraction.reply('Channel not found.');
             return;
         }
         
         await BaseEntity.Remove<eLobby>(eLobby, entity);
 
-        const embed = new PublicEmbed(context, "", `Removed <#${context.args[2]}> from the list of lobby channels`);
-        await embed.SendToCurrentChannel();
+        await interaraction.reply(`Removed <#${channel.channel.name}> from the list of lobby channels`);
     }
 }

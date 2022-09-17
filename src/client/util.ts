@@ -1,5 +1,5 @@
 // Required Components
-import { Client, Message } from "discord.js";
+import { Client, Message, REST, Routes, SlashCommandBuilder } from "discord.js";
 import { ICommandContext } from "../contracts/ICommandContext";
 import ICommandItem from "../contracts/ICommandItem";
 import IEventItem from "../contracts/IEventItem";
@@ -7,77 +7,51 @@ import SettingsHelper from "../helpers/SettingsHelper";
 import StringTools from "../helpers/StringTools";
 import { CommandResponse } from "../constants/CommandResponse";
 import ErrorMessages from "../constants/ErrorMessages";
+import { CoreClient } from "./client";
 
 // Util Class
 export class Util {
-    public async loadCommand(name: string, args: string[], message: Message, commands: ICommandItem[]) {
-        if (!message.member) return;
-        if (!message.guild) return;
+    public loadSlashCommands(client: Client) {
+        const registeredCommands = CoreClient.commandItems;
 
-        const disabledCommandsString = await SettingsHelper.GetSetting("commands.disabled", message.guild?.id);
-        const disabledCommands = disabledCommandsString?.split(",");
+        const globalCommands = registeredCommands.filter(x => !x.ServerId);
+        const guildCommands = registeredCommands.filter(x => x.ServerId);
 
-        if (disabledCommands?.find(x => x == name)) {
-            message.reply(process.env.COMMANDS_DISABLED_MESSAGE || "This command is disabled.");
-            return;
-        }
+        const globalCommandData: SlashCommandBuilder[] = globalCommands
+            .filter(x => x.Command.CommandBuilder)
+            .flatMap(x => x.Command.CommandBuilder);
 
-        const item = commands.find(x => x.Name == name && !x.ServerId);
-        const itemForServer = commands.find(x => x.Name == name && x.ServerId == message.guild?.id);
+        const guildIds: string[] = [];
 
-        let itemToUse: ICommandItem;
-
-        if (!itemForServer) {
-            if (!item) {
-                message.reply('Command not found');
-                return;
+        for (let command of guildCommands) {
+            if (!guildIds.find(x => x == command.ServerId)) {
+                guildIds.push(command.ServerId!);
             }
-
-            itemToUse = item;
-        } else {
-            itemToUse = itemForServer;
         }
 
-        const requiredRoles = itemToUse.Command.Roles;
+        const rest = new REST({ version: '10' }).setToken(process.env.BOT_TOKEN!);
 
-        if (message.author.id != process.env.BOT_OWNERID && message.author.id != message.guild.ownerId) {
-            for (const i in requiredRoles) {
-                if (message.guild) {
-                    const setting = await SettingsHelper.GetSetting(`role.${requiredRoles[i]}`, message.guild?.id);
-    
-                    if (!setting) {
-                        message.reply("Unable to verify if you have this role, please contact your bot administrator");
-                        return;
-                    }
-    
-                    if (!message.member.roles.cache.find(role => role.name == setting)) {
-                        message.reply(`You require the \`${StringTools.Capitalise(setting)}\` role to run this command`);
-                        return;
-                    }
+        rest.put(
+            Routes.applicationCommands(process.env.BOT_CLIENTID!),
+            {
+                body: globalCommandData
+            }
+        );
+
+        for (let guild of guildIds) {
+            const guildCommandData = guildCommands.filter(x => x.ServerId == guild)
+                .filter(x => x.Command.CommandBuilder)
+                .flatMap(x => x.Command.CommandBuilder);
+
+            if (!client.guilds.cache.has(guild)) continue;
+            
+            rest.put(
+                Routes.applicationGuildCommands(process.env.BOT_CLIENTID!, guild),
+                {
+                    body: guildCommandData
                 }
-            }
+            )
         }
-
-        const context: ICommandContext = {
-            name: name,
-            args: args,
-            message: message
-        };
-
-        const precheckResponse = itemToUse.Command.precheck(context);
-        const precheckAsyncResponse = await itemToUse.Command.precheckAsync(context);
-
-        if (precheckResponse != CommandResponse.Ok) {
-            message.reply(ErrorMessages.GetErrorMessage(precheckResponse));
-            return;
-        }
-
-        if (precheckAsyncResponse != CommandResponse.Ok) {
-            message.reply(ErrorMessages.GetErrorMessage(precheckAsyncResponse));
-            return;
-        }
-
-        itemToUse.Command.execute(context);
     }
 
     // Load the events

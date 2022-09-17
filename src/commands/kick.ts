@@ -1,71 +1,81 @@
-import { AuditType } from "../constants/AuditType";
 import ErrorMessages from "../constants/ErrorMessages";
+import { Command } from "../type/command";
 import { ICommandContext } from "../contracts/ICommandContext";
 import Audit from "../entity/Audit";
-import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
-import LogEmbed from "../helpers/embeds/LogEmbed";
-import PublicEmbed from "../helpers/embeds/PublicEmbed";
-import { Command } from "../type/command";
+import { AuditType } from "../constants/AuditType";
+import { CommandInteraction, EmbedBuilder, GuildMember, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
+import EmbedColours from "../constants/EmbedColours";
+import SettingsHelper from "../helpers/SettingsHelper";
 
 export default class Kick extends Command {
     constructor() {
         super();
-
+        
         super.Category = "Moderation";
         super.Roles = [
             "moderator"
         ];
+
+        super.CommandBuilder = new SlashCommandBuilder()
+            .setName("kick")
+            .setDescription("Kick a member from the server with an optional reason")
+            .setDefaultMemberPermissions(PermissionsBitField.Flags.KickMembers)
+            .addUserOption(option =>
+                option
+                    .setName('target')
+                    .setDescription('The user')
+                    .setRequired(true))
+            .addStringOption(option =>
+                option
+                    .setName('reason')
+                    .setDescription('The reason'));
     }
 
-    public override async execute(context: ICommandContext) {
-        const targetUser = context.message.mentions.users.first();
+    public override async execute(interaction: CommandInteraction) {
+        if (!interaction.isChatInputCommand()) return;
+        if (!interaction.guildId) return;
+        if (!interaction.guild) return;
 
-        if (!targetUser) {
-            const embed = new ErrorEmbed(context, "User does not exist");
-            await embed.SendToCurrentChannel();
+        const targetUser = interaction.options.get('target');
+        const reasonInput = interaction.options.get('reason');
 
+        if (!targetUser || !targetUser.user || !targetUser.member) {
+            await interaction.reply("User not found.");
             return;
         }
 
-        const targetMember = context.message.guild?.members.cache.find(x => x.user.id == targetUser.id);
+        const member = targetUser.member as GuildMember;
+        const reason = reasonInput && reasonInput.value ? reasonInput.value.toString() : "*none*";
 
-        if (!targetMember) {
-            const embed = new ErrorEmbed(context, "User is not in this server");
-            await embed.SendToCurrentChannel();
-            
-            return;
+        const logEmbed = new EmbedBuilder()
+            .setColor(EmbedColours.Ok)
+            .setTitle("Member Kicked")
+            .setDescription(`<@${targetUser.user.id}> \`${targetUser.user.tag}\``)
+            .addFields([
+                {
+                    name: "Moderator",
+                    value: `<@${interaction.user.id}>`,
+                },
+                {
+                    name: "Reason",
+                    value: reason,
+                },
+            ]);
+
+        await member.kick();
+        await interaction.reply(`\`${targetUser.user.tag}\` has been kicked.`);
+
+        const channelName = await SettingsHelper.GetSetting('channels.logs.mod', interaction.guildId);
+
+        if (!channelName) return;
+
+        const channel = interaction.guild.channels.cache.find(x => x.name == channelName) as TextChannel;
+
+        if (channel) {
+            await channel.send({ embeds: [ logEmbed ]});
         }
 
-        const reasonArgs = context.args;
-        reasonArgs.splice(0, 1)
-        
-        const reason = reasonArgs.join(" ");
-        
-        if (!context.message.guild?.available) return;
-
-        if (!targetMember.kickable) {
-            const embed = new ErrorEmbed(context, ErrorMessages.InsufficientBotPermissions);
-            await embed.SendToCurrentChannel();
-            
-            return;
-        }
-
-        const logEmbed = new LogEmbed(context, "Member Kicked");
-        logEmbed.AddUser("User", targetUser, true);
-        logEmbed.AddUser("Moderator", context.message.author);
-        logEmbed.AddReason(reason);
-
-        const publicEmbed = new PublicEmbed(context, "", `${targetUser} has been kicked`);
-
-        await targetMember.kick(`Moderator: ${context.message.author.tag}, Reason: ${reason || "*none*"}`);
-
-        await logEmbed.SendToModLogsChannel();
-        await publicEmbed.SendToCurrentChannel();
-        
-        if (context.message.guild) {
-            const audit = new Audit(targetUser.id, AuditType.Kick, reason, context.message.author.id, context.message.guild.id);
-
-            await audit.Save(Audit, audit);
-        }
+        const audit = new Audit(targetUser.user.id, AuditType.Kick, reason, interaction.user.id, interaction.guildId);
+        await audit.Save(Audit, audit);
     }
 }

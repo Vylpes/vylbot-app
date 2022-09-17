@@ -1,205 +1,164 @@
-import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
-import PublicEmbed from "../helpers/embeds/PublicEmbed";
-import { Role as DiscordRole } from "discord.js";
+import { CommandInteraction, EmbedBuilder, GuildMemberRoleManager, Role as DiscordRole, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 import { ICommandContext } from "../contracts/ICommandContext";
 import SettingsHelper from "../helpers/SettingsHelper";
 import { readFileSync } from "fs";
 import { default as eRole } from "../entity/Role";
 import Server from "../entity/Server";
+import EmbedColours from "../constants/EmbedColours";
 
 export default class Role extends Command {
     constructor() {
         super();
 
         super.Category = "General";
+
+        super.CommandBuilder = new SlashCommandBuilder()
+            .setName('role')
+            .setDescription('Toggle your roles')
+            .addSubcommand(subcommand =>
+                subcommand
+                    .setName('config')
+                    .setDescription('Configure the roles')
+                    .addStringOption(option =>
+                        option
+                            .setName('role')
+                            .setDescription('The role name')
+                            .setRequired(true)))
+            .addSubcommand(subcommand =>
+                subcommand
+                    .setName('toggle')
+                    .setDescription('Toggle your role')
+                    .addStringOption(option =>
+                        option
+                            .setName('role')
+                            .setDescription('The role name')
+                            .setRequired(true)))
+            .addSubcommand(subcommand =>
+                subcommand
+                    .setName('list')
+                    .setDescription('List togglable roles'));
     }
 
-    public override async execute(context: ICommandContext) {
-        if (!context.message.guild) return;
+    public override async execute(interaction: CommandInteraction) {
+        if (!interaction.isChatInputCommand()) return;
 
-        switch (context.args[0]) {
-            case "config":
-                await this.UseConfig(context);
+        switch (interaction.options.getSubcommand()) {
+            case 'config':
+                await this.Configure(interaction);
+                break;
+            case 'toggle':
+                await this.ToggleRole(interaction);
+                break;
+            case 'list':
+                await this.SendRolesList(interaction);
                 break;
             default:
-                await this.UseDefault(context);
+                await interaction.reply('Subcommand not found.');
         }
     }
 
-    // =======
-    // Default
-    // =======
+    private async SendRolesList(interaction: CommandInteraction) {
+        const roles = await this.GetRolesList(interaction);
 
-    private async UseDefault(context: ICommandContext) {
-        if (context.args.length == 0) {
-            await this.SendRolesList(context, context.message.guild!.id);
-        } else {
-            await this.ToggleRole(context);
-        }
+        const embed = new EmbedBuilder()
+            .setColor(EmbedColours.Ok)
+            .setTitle("Roles")
+            .setDescription(`Roles: ${roles.length}\n\n${roles.join("\n")}`);
+        
+        await interaction.reply({ embeds: [ embed ]});
     }
 
-    public async GetRolesList(context: ICommandContext): Promise<string[]> {
-        const rolesArray = await eRole.FetchAllByServerId(context.message.guild!.id);
+    private async ToggleRole(interaction: CommandInteraction) {
+        if (!interaction.guild) return;
+        if (!interaction.member) return;
 
-        const stringArray: string[] = [];
+        const roles = await this.GetRolesList(interaction);
+        const requestedRole = interaction.options.get('role');
 
-        for (let i = 0; i < rolesArray.length; i++) {
-            const serverRole = context.message.guild!.roles.cache.find(x => x.id == rolesArray[i].RoleId);
-
-            if (serverRole) {
-                stringArray.push(serverRole.name);
-            }
-        }
-
-        return stringArray;
-    }
-
-    public async SendRolesList(context: ICommandContext, serverId: string) {
-        const roles = await this.GetRolesList(context);
-
-        const botPrefix = await SettingsHelper.GetServerPrefix(serverId);
-        const description = roles.length == 0 ? "*no roles*" : `Do ${botPrefix}role <role> to get the role!\n\n${roles.join('\n')}`;
-
-        const embed = new PublicEmbed(context, "Roles", description);
-        await embed.SendToCurrentChannel();
-    }
-
-    public async ToggleRole(context: ICommandContext) {
-        const roles = await this.GetRolesList(context);
-        const requestedRole = context.args.join(" ");
-
-        if (!roles.includes(requestedRole)) {
-            const errorEmbed = new ErrorEmbed(context, "This role isn't marked as assignable, to see a list of assignable roles, run this command without any parameters");
-            await errorEmbed.SendToCurrentChannel();
-
+        if (!requestedRole || !requestedRole.value) {
+            await interaction.reply('Fields are required.');
             return;
         }
 
-        const assignRole = context.message.guild?.roles.cache.find(x => x.name == requestedRole);
+        if (!roles.includes(requestedRole.value.toString())) {
+            await interaction.reply('This role isn\'t marked as assignable.');
+            return;
+        }
+
+        const assignRole = interaction.guild.roles.cache.find(x => x.name == requestedRole.value);
 
         if (!assignRole) {
-            const errorEmbed = new ErrorEmbed(context, "The current server doesn't have this role. Please contact the server's moderators");
-            await errorEmbed.SendToCurrentChannel();
-            
+            await interaction.reply('The current server doesn\'t have this role. Please contact the server\'s moderators');
             return;
         }
 
-        const role = context.message.member?.roles.cache.find(x => x.name == requestedRole)
+        const roleManager = interaction.member.roles as GuildMemberRoleManager;
+
+        const role = roleManager.cache.find(x => x.name == requestedRole.value);
 
         if (!role) {
-            await this.AddRole(context, assignRole);
+            await roleManager.add(assignRole);
+            await interaction.reply(`Gave role: \`${assignRole.name}\``);
         } else {
-            await this.RemoveRole(context, assignRole);
+            await roleManager.remove(assignRole);
+            await interaction.reply(`Removed role: \`${assignRole.name}\``);
         }
     }
 
-    public async AddRole(context: ICommandContext, role: DiscordRole) {
-        await context.message.member?.roles.add(role, "Toggled with role command");
+    private async Configure(interaction: CommandInteraction) {
+        if (!interaction.guildId || !interaction.guild) return;
+        if (!interaction.member) return;
 
-        const embed = new PublicEmbed(context, "", `Gave role: \`${role.name}\``);
-        await embed.SendToCurrentChannel();
-    }
+        const roleName = interaction.options.get('role');
 
-    public async RemoveRole(context: ICommandContext, role: DiscordRole) {
-        await context.message.member?.roles.remove(role, "Toggled with role command");
-
-        const embed = new PublicEmbed(context, "", `Removed role: \`${role.name}\``);
-        await embed.SendToCurrentChannel();
-    }
-
-    // ======
-    // Config
-    // ======
-
-    private async UseConfig(context: ICommandContext) {
-        const moderatorRole = await SettingsHelper.GetSetting("role.moderator", context.message.guild!.id);
-
-        if (!context.message.member?.roles.cache.find(x => x.name == moderatorRole)) {
-            const errorEmbed = new ErrorEmbed(context, "Sorry, you must be a moderator to be able to configure this command");
-            await errorEmbed.SendToCurrentChannel();
-
+        if (!roleName || !roleName.value) {
+            await interaction.reply('Fields are required.');
             return;
         }
 
-        switch (context.args[1]) {
-            case "add":
-                await this.AddRoleConfig(context);
-                break;
-            case "remove":
-                await this.RemoveRoleConfig(context);
-                break;
-            default:
-                await this.SendConfigHelp(context);
+        const roleManager = interaction.member.roles as GuildMemberRoleManager;
+
+        const moderatorRole = await SettingsHelper.GetSetting("role.moderator", interaction.guildId);
+
+        if (!roleManager.cache.find(x => x.name == moderatorRole)) {
+            await interaction.reply('Sorry, you must be a moderator to be able to configure this command.');
+            return;
         }
-    }
 
-    private async SendConfigHelp(context: ICommandContext) {
-        const helpText = readFileSync(`${process.cwd()}/data/usage/role.txt`).toString();
-
-        const embed = new PublicEmbed(context, "Configure Role Command", helpText);
-        await embed.SendToCurrentChannel();
-    }
-
-    private async AddRoleConfig(context: ICommandContext) {
-        const role = context.message.guild!.roles.cache.find(x => x.id == context.args[2]);
+        const role = interaction.guild.roles.cache.find(x => x.name == roleName.value);
 
         if (!role) {
-            this.SendConfigHelp(context);
+            await interaction.reply('Unable to find role.');
             return;
         }
 
         const existingRole = await eRole.FetchOneByRoleId(role.id);
 
         if (existingRole) {
-            const errorEmbed = new ErrorEmbed(context, "This role has already been setup");
-            await errorEmbed.SendToCurrentChannel();
-
-            return;
+            await eRole.Remove(eRole, existingRole);
+            await interaction.reply('Removed role from configuration.');
+        } else {
+            const newRole = new eRole(role.id);
+            await newRole.Save(eRole, newRole);
         }
-
-        const server = await Server.FetchOneById(Server, context.message.guild!.id, [
-            "Roles",
-        ]);
-
-        if (!server) {
-            const errorEmbed = new ErrorEmbed(context, "Server not setup, please request the server owner runs the setup command.");
-            await errorEmbed.SendToCurrentChannel();
-
-            return;
-        }
-
-        const roleSetting = new eRole(role.id);
-
-        await roleSetting.Save(eRole, roleSetting);
-
-        server.AddRoleToServer(roleSetting);
-        await server.Save(Server, server);
-
-        const embed = new PublicEmbed(context, "", `Added \`${role.name}\` as a new assignable role`);
-        await embed.SendToCurrentChannel();
     }
 
-    private async RemoveRoleConfig(context: ICommandContext) {
-        const role = context.message.guild!.roles.cache.find(x => x.id == context.args[2]);
+    private async GetRolesList(interaction: CommandInteraction): Promise<string[]> {
+        if (!interaction.guildId || !interaction.guild) return [];
 
-        if (!role) {
-            this.SendConfigHelp(context);
-            return;
+        const rolesArray = await eRole.FetchAllByServerId(interaction.guildId);
+
+        const roles: string[] = [];
+
+        for (let i = 0; i < rolesArray.length; i++) {
+            const serverRole = interaction.guild.roles.cache.find(x => x.id == rolesArray[i].RoleId);
+
+            if (serverRole) {
+                roles.push(serverRole.name);
+            }
         }
 
-        const existingRole = await eRole.FetchOneByRoleId(role.id);
-
-        if (!existingRole) {
-            const errorEmbed = new ErrorEmbed(context, "Unable to find this role");
-            errorEmbed.SendToCurrentChannel();
-
-            return;
-        }
-
-        await eRole.Remove(eRole, existingRole);
-
-        const embed = new PublicEmbed(context, "", `Removed \`${role.name}\` from the list of assignable roles`);
-        await embed.SendToCurrentChannel();
+        return roles;
     }
 }

@@ -1,6 +1,4 @@
-import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
-import { TextChannel } from "discord.js";
-import PublicEmbed from "../helpers/embeds/PublicEmbed";
+import { CommandInteraction, SlashCommandBuilder, TextChannel } from "discord.js";
 import { Command } from "../type/command";
 import { ICommandContext } from "../contracts/ICommandContext";
 
@@ -12,28 +10,31 @@ export default class Clear extends Command {
         super.Roles = [
             "moderator"
         ];
+
+        super.CommandBuilder = new SlashCommandBuilder()
+            .setName("clear")
+            .setDescription("Clears the channel of messages")
+            .addNumberOption(option =>
+                option
+                    .setName('count')
+                    .setDescription('The amount to delete')
+                    .setMinValue(1)
+                    .setMaxValue(100));
     }
 
-    public override async execute(context: ICommandContext) {
-        if (context.args.length == 0) {
-            const errorEmbed = new ErrorEmbed(context, "Please specify an amount between 1 and 100");
-            await errorEmbed.SendToCurrentChannel();
+    public override async execute(interaction: CommandInteraction) {
+        if (!interaction.isChatInputCommand()) return;
 
-            return;
-        }
-
-        const totalToClear = Number.parseInt(context.args[0]);
+        const totalToClear = interaction.options.getNumber('count');
 
         if (!totalToClear || totalToClear <= 0 || totalToClear > 100) {
-            const errorEmbed = new ErrorEmbed(context, "Please specify an amount between 1 and 100");
-            await errorEmbed.SendToCurrentChannel();
-
+            await interaction.reply('Please specify an amount between 1 and 100.');
             return;
         }
 
-        await (context.message.channel as TextChannel).bulkDelete(totalToClear);
+        const channel = interaction.channel as TextChannel;
+        await channel.bulkDelete(totalToClear);
 
-        const embed = new PublicEmbed(context, "", `${totalToClear} message(s) were removed`);
-        await embed.SendToCurrentChannel();
+        await interaction.reply(`${totalToClear} message(s) were removed.`);
     }
 }

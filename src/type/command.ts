@@ -1,9 +1,9 @@
 import { CommandResponse } from "../constants/CommandResponse";
 import { ICommandContext } from "../contracts/ICommandContext";
-import { SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, Interaction, SlashCommandBuilder } from "discord.js";
 
 export class Command {
-    public SlashCommandBuilder: SlashCommandBuilder;
+    public CommandBuilder: any;
 
     public Roles: string[];
     public Category?: string;
@@ -12,15 +12,15 @@ export class Command {
         this.Roles = [];
     }
 
-    public precheck(context: ICommandContext): CommandResponse {
+    public precheck(interation: CommandInteraction): CommandResponse {
         return CommandResponse.Ok;
     }
 
-    public async precheckAsync(context: ICommandContext): Promise<CommandResponse> {
+    public async precheckAsync(interation: CommandInteraction): Promise<CommandResponse> {
         return CommandResponse.Ok;
     }
-
-    public execute(context: ICommandContext) {
+    
+    public execute(interaction: CommandInteraction) {
 
     }
 }

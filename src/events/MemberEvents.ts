@@ -1,8 +1,8 @@
 import { Event } from "../type/event";
-import { GuildMember } from "discord.js";
-import EventEmbed from "../helpers/embeds/EventEmbed";
+import { EmbedBuilder, GuildChannel, GuildMember, TextChannel } from "discord.js";
 import GuildMemberUpdate from "./MemberEvents/GuildMemberUpdate";
 import SettingsHelper from "../helpers/SettingsHelper";
+import EmbedColours from "../constants/EmbedColours";
 
 export default class MemberEvents extends Event {
     constructor() {
@@ -15,15 +15,29 @@ export default class MemberEvents extends Event {
         const enabled = await SettingsHelper.GetSetting("event.member.add.enabled", member.guild.id);
         if (!enabled || enabled.toLowerCase() != "true") return;
 
-        const embed = new EventEmbed(member.client, member.guild, "Member Joined");
-        embed.AddUser("User", member.user, true);
-        embed.AddField("Created", member.user.createdAt.toISOString());
-        embed.SetFooter(`Id: ${member.user.id}`);
+        const embed = new EmbedBuilder()
+            .setColor(EmbedColours.Ok)
+            .setTitle('Member Joined')
+            .setDescription(`${member.user} \`${member.user.tag}\``)
+            .setFooter({ text: `Id: ${member.user.id}` })
+            .addFields([
+                {
+                    name: 'Created',
+                    value: member.user.createdAt.toISOString(),
+                }
+            ]);
 
-        const channel = await SettingsHelper.GetSetting("event.member.add.channel", member.guild.id);
-        if (!channel || !member.guild.channels.cache.find(x => x.name == channel)) return;
+        const channelSetting = await SettingsHelper.GetSetting("event.member.add.channel", member.guild.id);
 
-        await embed.SendToChannel(channel);
+        if (!channelSetting) return;
+
+        const channel = member.guild.channels.cache.find(x => x.name == channelSetting);
+
+        if (!channel) return;
+
+        const guildChannel = channel as TextChannel;
+
+        await guildChannel.send({ embeds: [embed ]});
     }
 
     public override async guildMemberRemove(member: GuildMember) {
@@ -32,15 +46,29 @@ export default class MemberEvents extends Event {
         const enabled = await SettingsHelper.GetSetting("event.member.remove.enabled", member.guild.id);
         if (!enabled || enabled.toLowerCase() != "true") return;
 
-        const embed = new EventEmbed(member.client, member.guild, "Member Left");
-        embed.AddUser("User", member.user, true);
-        embed.AddField("Joined", member.joinedAt?.toISOString() || "n/a");
-        embed.SetFooter(`Id: ${member.user.id}`);
+        const embed = new EmbedBuilder()
+            .setColor(EmbedColours.Ok)
+            .setTitle('Member Left')
+            .setDescription(`${member.user} \`${member.user.tag}\``)
+            .setFooter({ text: `Id: ${member.user.id}` })
+            .addFields([
+                {
+                    name: 'Joined',
+                    value: member.joinedAt ? member.joinedAt.toISOString() : "*none*",
+                }
+            ]);
 
-        const channel = await SettingsHelper.GetSetting("event.member.remove.channel", member.guild.id);
-        if (!channel || !member.guild.channels.cache.find(x => x.name == channel)) return;
-        
-        await embed.SendToChannel(channel);
+        const channelSetting = await SettingsHelper.GetSetting("event.member.remove.channel", member.guild.id);
+
+        if (!channelSetting) return;
+
+        const channel = member.guild.channels.cache.find(x => x.name == channelSetting);
+
+        if (!channel) return;
+
+        const guildChannel = channel as TextChannel;
+
+        await guildChannel.send({ embeds: [embed ]});
     }
 
     public override async guildMemberUpdate(oldMember: GuildMember, newMember: GuildMember) {

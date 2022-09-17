@@ -9,8 +9,8 @@ const requiredConfigs: string[] = [
     "BOT_TOKEN",
     "BOT_VER",
     "BOT_AUTHOR",
-    "BOT_DATE",
     "BOT_OWNERID",
+    "BOT_CLIENTID",
 ];
 
 requiredConfigs.forEach(config => {

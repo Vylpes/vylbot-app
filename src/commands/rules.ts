@@ -1,7 +1,7 @@
+import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import { existsSync, readFileSync } from "fs";
+import EmbedColours from "../constants/EmbedColours";
 import { ICommandContext } from "../contracts/ICommandContext";
-import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
-import PublicEmbed from "../helpers/embeds/PublicEmbed";
 import { Command } from "../type/command";
 
 interface IRules {
@@ -19,34 +19,48 @@ export default class Rules extends Command {
         super.Roles = [
             "administrator"
         ];
+
+        super.CommandBuilder = new SlashCommandBuilder()
+            .setName("rules")
+            .setDescription("Send the rules embeds for this server");
     }
 
-    public override async execute(context: ICommandContext) {
-        if (!existsSync(`${process.cwd()}/data/rules/${context.message.guild?.id}.json`)) {
-            const errorEmbed = new ErrorEmbed(context, "Rules file doesn't exist");
-            await errorEmbed.SendToCurrentChannel();
+    public override async execute(interaction: CommandInteraction) {
+        if (!interaction.guildId) return;
 
+        if (!existsSync(`${process.cwd()}/data/rules/${interaction.guildId}.json`)) {
+            await interaction.reply('Rules file doesn\'t exist.');
             return;
         }
 
-        const rulesFile = readFileSync(`${process.cwd()}/data/rules/${context.message.guild?.id}.json`).toString();
+        const rulesFile = readFileSync(`${process.cwd()}/data/rules/${interaction.guildId}.json`).toString();
         const rules = JSON.parse(rulesFile) as IRules[];
 
-        const embeds: PublicEmbed[] = [];
+        const embeds: EmbedBuilder[] = [];
         
         rules.forEach(rule => {
-            const embed = new PublicEmbed(context, rule.title || "", rule.description?.join("\n") || "");
+            const embed = new EmbedBuilder()
+                .setColor(EmbedColours.Ok)
+                .setTitle(rule.title || "Rules")
+                .setDescription(rule.description ? rule.description.join("\n") : "*none*");
+            
+            if (rule.image) {
+                embed.setImage(rule.image);
+            }
 
-            embed.SetImage(rule.image || "");
-            embed.SetFooter(rule.footer || "");
+            if (rule.footer) {
+                embed.setFooter({ text: rule.footer });
+            }
 
             embeds.push(embed);
         });
 
-        for (let i = 0; i < embeds.length; i++) {
-            const embed = embeds[i];
+        const channel = interaction.channel;
 
-            await embed.SendToCurrentChannel();
+        if (!channel) {
+            return;
         }
+        
+        await channel.send({ embeds: embeds });
     }
 }

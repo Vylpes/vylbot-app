@@ -1,7 +1,6 @@
+import { CommandInteraction, EmbedBuilder, SlashCommandBuilder, SlashCommandSubcommandBuilder } from "discord.js";
 import { CommandResponse } from "../constants/CommandResponse";
 import { ICommandContext } from "../contracts/ICommandContext";
-import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
-import PublicEmbed from "../helpers/embeds/PublicEmbed";
 import SettingsHelper from "../helpers/SettingsHelper";
 import StringTools from "../helpers/StringTools";
 import { Command } from "../type/command";
@@ -14,14 +13,25 @@ export default class Code extends Command {
         super.Roles = [
             "moderator"
         ];
+
+        super.CommandBuilder = new SlashCommandBuilder()
+            .setName('code')
+            .setDescription('Manage the verification code of the server')
+            .addSubcommand(subcommand =>
+                subcommand
+                    .setName('randomise')
+                    .setDescription('Regenerates the verification code for this server'))
+            .addSubcommand(subcommand =>
+                subcommand
+                    .setName('embed')
+                    .setDescription('Sends the embed with the current code to the current channel'));
     }
 
-    public override async precheckAsync(context: ICommandContext): Promise<CommandResponse> {
-        if (!context.message.guild){
-            return CommandResponse.NotInServer;
-        }
+    public override async precheckAsync(interaction: CommandInteraction): Promise<CommandResponse> {
+        if (!interaction.isChatInputCommand()) return CommandResponse.NotInServer;
+        if (!interaction.guild || !interaction.guildId) return CommandResponse.NotInServer;
 
-        const isEnabled = await SettingsHelper.GetSetting("verification.enabled", context.message.guild?.id);
+        const isEnabled = await SettingsHelper.GetSetting("verification.enabled", interaction.guildId);
 
         if (!isEnabled) {
             return CommandResponse.FeatureDisabled;
@@ -34,61 +44,44 @@ export default class Code extends Command {
         return CommandResponse.Ok;
     }
 
-    public override async execute(context: ICommandContext) {
-        const action = context.args[0];
+    public override async execute(interaction: CommandInteraction) {
+        if (!interaction.isChatInputCommand()) return;
 
-        switch (action) {
+        switch (interaction.options.getSubcommand()) {
             case "randomise":
-                await this.Randomise(context);
+                await this.Randomise(interaction);
                 break;
             case "embed":
-                await this.SendEmbed(context);
+                await this.SendEmbed(interaction);
                 break;
-            default:
-                await this.SendUsage(context);
         }
     }
 
-    private async SendUsage(context: ICommandContext) {
-        const description = [
-            "USAGE: <randomise|embed>",
-            "",
-            "randomise: Sets the server's entry code to a random code",
-            "embed: Sends an embed with the server's entry code"
-        ].join("\n");
-        
-        const embed = new PublicEmbed(context, "", description);
-        await embed.SendToCurrentChannel();
-    }
-
-    private async Randomise(context: ICommandContext) {
-        if (!context.message.guild) {
-            return;
-        }
+    private async Randomise(interaction: CommandInteraction) {
+        if (!interaction.guildId) return;
 
         const randomCode = StringTools.RandomString(5);
 
-        await SettingsHelper.SetSetting("verification.code", context.message.guild.id, randomCode);
+        await SettingsHelper.SetSetting("verification.code", interaction.guildId, randomCode);
 
-        const embed = new PublicEmbed(context, "Code", `Entry code has been set to \`${randomCode}\``);
-        await embed.SendToCurrentChannel();
+        await interaction.reply(`Entry code has been set to \`${randomCode}\``);
     }
 
-    private async SendEmbed(context: ICommandContext) {
-        if (!context.message.guild) {
-            return;
-        }
+    private async SendEmbed(interaction: CommandInteraction) {
+        if (!interaction.guildId) return;
+        if (!interaction.channel) return;
 
-        const code = await SettingsHelper.GetSetting("verification.code", context.message.guild.id);
+        const code = await SettingsHelper.GetSetting("verification.code", interaction.guildId);
 
         if (!code || code == "") {
-            const errorEmbed = new ErrorEmbed(context, "There is no code for this server setup.");
-            errorEmbed.SendToCurrentChannel();
-
+            await interaction.reply("There is no code for this server setup.");
             return;
         }
 
-        const embed = new PublicEmbed(context, "Entry Code", code!);
-        await embed.SendToCurrentChannel();
+        const embed = new EmbedBuilder()
+            .setTitle("Entry Code")
+            .setDescription(code);
+
+        await interaction.channel.send({ embeds: [ embed ]});
     }
 }

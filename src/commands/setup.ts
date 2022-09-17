@@ -1,7 +1,6 @@
+import { CommandInteraction, SlashCommandBuilder } from "discord.js";
 import { ICommandContext } from "../contracts/ICommandContext";
 import Server from "../entity/Server";
-import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
-import PublicEmbed from "../helpers/embeds/PublicEmbed";
 import { Command } from "../type/command";
 
 export default class Setup extends Command {
@@ -11,27 +10,26 @@ export default class Setup extends Command {
         super.Roles = [
             "moderator"
         ]
+
+        super.CommandBuilder = new SlashCommandBuilder()
+            .setName('setup')
+            .setDescription('Makes the server ready to be configured');
     }
 
-    public override async execute(context: ICommandContext) {
-        if (!context.message.guild) {
-            return;
-        }
+    public override async execute(interaction: CommandInteraction) {
+        if (!interaction.guildId) return;
 
-        const server = await Server.FetchOneById(Server, context.message.guild?.id);
+        const server = await Server.FetchOneById(Server, interaction.guildId);
 
         if (server) {
-            const embed = new ErrorEmbed(context, "This server has already been setup, please configure using the config command");
-            await embed.SendToCurrentChannel();
-
+            await interaction.reply('This server has already been setup, please configure using the config command.');
             return;
         }
 
-        const newServer = new Server(context.message.guild?.id);
+        const newServer = new Server(interaction.guildId);
 
         await newServer.Save(Server, newServer);
 
-        const embed = new PublicEmbed(context, "Success", "Please configure using the config command");
-        await embed.SendToCurrentChannel();
+        await interaction.reply('Success, please configure using the configure command.');
     }
 }
