@@ -1,6 +1,5 @@
 import { CommandResponse } from "../constants/CommandResponse";
-import { ICommandContext } from "../contracts/ICommandContext";
-import { CommandInteraction, Interaction, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction } from "discord.js";
 
 export class Command {
     public CommandBuilder: any;

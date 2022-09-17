@@ -3,7 +3,6 @@ import { readFileSync } from "fs";
 import { CommandResponse } from "../constants/CommandResponse";
 import DefaultValues from "../constants/DefaultValues";
 import EmbedColours from "../constants/EmbedColours";
-import { ICommandContext } from "../contracts/ICommandContext";
 import Server from "../entity/Server";
 import Setting from "../entity/Setting";
 import { Command } from "../type/command";

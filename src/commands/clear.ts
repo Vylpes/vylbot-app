@@ -1,6 +1,5 @@
 import { CommandInteraction, SlashCommandBuilder, TextChannel } from "discord.js";
 import { Command } from "../type/command";
-import { ICommandContext } from "../contracts/ICommandContext";
 
 export default class Clear extends Command {
     constructor() {

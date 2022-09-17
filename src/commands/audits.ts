@@ -1,8 +1,6 @@
-import { ICommandContext } from "../contracts/ICommandContext";
 import Audit from "../entity/Audit";
 import AuditTools from "../helpers/AuditTools";
 import { Command } from "../type/command";
-import  SettingsHelper from "../helpers/SettingsHelper";
 import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import { AuditType } from "../constants/AuditType";
 import EmbedColours from "../constants/EmbedColours";

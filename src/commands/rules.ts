@@ -1,7 +1,6 @@
 import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import { existsSync, readFileSync } from "fs";
 import EmbedColours from "../constants/EmbedColours";
-import { ICommandContext } from "../contracts/ICommandContext";
 import { Command } from "../type/command";
 
 interface IRules {

@@ -1,9 +1,7 @@
-import { CommandInteraction, GuildMemberRoleManager, SlashCommandBuilder, TextChannel } from "discord.js";
-import { ICommandContext } from "../../contracts/ICommandContext";
+import { CommandInteraction, GuildMemberRoleManager, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../type/command";
 import { default as eLobby } from "../../entity/501231711271780357/Lobby";
 import SettingsHelper from "../../helpers/SettingsHelper";
-import { readFileSync } from "fs";
 import BaseEntity from "../../contracts/BaseEntity";
 
 export default class Lobby extends Command {

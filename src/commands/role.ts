@@ -1,10 +1,7 @@
-import { CommandInteraction, EmbedBuilder, GuildMemberRoleManager, Role as DiscordRole, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, EmbedBuilder, GuildMemberRoleManager, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
-import { ICommandContext } from "../contracts/ICommandContext";
 import SettingsHelper from "../helpers/SettingsHelper";
-import { readFileSync } from "fs";
 import { default as eRole } from "../entity/Role";
-import Server from "../entity/Server";
 import EmbedColours from "../constants/EmbedColours";
 
 export default class Role extends Command {

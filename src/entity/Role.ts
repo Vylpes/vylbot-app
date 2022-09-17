@@ -1,4 +1,4 @@
-import { Column, Entity, EntityTarget, getConnection, ManyToOne } from "typeorm";
+import { Column, Entity, getConnection, ManyToOne } from "typeorm";
 import BaseEntity from "../contracts/BaseEntity"
 import Server from "./Server";
 

@@ -1,6 +1,5 @@
 import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import EmbedColours from "../../constants/EmbedColours";
-import { ICommandContext } from "../../contracts/ICommandContext";
 import SettingsHelper from "../../helpers/SettingsHelper";
 import { Command } from "../../type/command";
 

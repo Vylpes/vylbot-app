@@ -1,5 +1,5 @@
 import { Event } from "../type/event";
-import { EmbedBuilder, GuildChannel, GuildMember, TextChannel } from "discord.js";
+import { EmbedBuilder, GuildMember, TextChannel } from "discord.js";
 import GuildMemberUpdate from "./MemberEvents/GuildMemberUpdate";
 import SettingsHelper from "../helpers/SettingsHelper";
 import EmbedColours from "../constants/EmbedColours";

@@ -1,19 +1,12 @@
-import { CommandInteraction, GuildMemberRoleManager, Interaction, Message, messageLink } from "discord.js";
+import { GuildMemberRoleManager, Interaction } from "discord.js";
 import { CommandResponse } from "../constants/CommandResponse";
 import ErrorMessages from "../constants/ErrorMessages";
 import ICommandItem from "../contracts/ICommandItem";
 import SettingsHelper from "../helpers/SettingsHelper";
 import StringTools from "../helpers/StringTools";
 import { CoreClient } from "./client";
-import { Util } from "./util";
 
 export class Events {
-    private _util: Util;
-
-    constructor() {
-        this._util = new Util();
-    }
-
     public async onInteractionCreate(interaction: Interaction) {
         if (!interaction.isChatInputCommand()) return;
         if (!interaction.guild) return;

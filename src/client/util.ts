@@ -1,15 +1,7 @@
-// Required Components
-import { Client, Message, REST, Routes, SlashCommandBuilder } from "discord.js";
-import { ICommandContext } from "../contracts/ICommandContext";
-import ICommandItem from "../contracts/ICommandItem";
+import { Client, REST, Routes, SlashCommandBuilder } from "discord.js";
 import IEventItem from "../contracts/IEventItem";
-import SettingsHelper from "../helpers/SettingsHelper";
-import StringTools from "../helpers/StringTools";
-import { CommandResponse } from "../constants/CommandResponse";
-import ErrorMessages from "../constants/ErrorMessages";
 import { CoreClient } from "./client";
 
-// Util Class
 export class Util {
     public loadSlashCommands(client: Client) {
         const registeredCommands = CoreClient.commandItems;

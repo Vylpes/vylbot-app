@@ -1,5 +1,4 @@
 import { Command } from "../type/command";
-import { ICommandContext } from "../contracts/ICommandContext";
 import randomBunny from "random-bunny";
 import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import EmbedColours from "../constants/EmbedColours";

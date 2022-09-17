@@ -1,6 +1,5 @@
-import { CommandInteraction, EmbedBuilder, SlashCommandBuilder, SlashCommandSubcommandBuilder } from "discord.js";
+import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import { CommandResponse } from "../constants/CommandResponse";
-import { ICommandContext } from "../contracts/ICommandContext";
 import SettingsHelper from "../helpers/SettingsHelper";
 import StringTools from "../helpers/StringTools";
 import { Command } from "../type/command";

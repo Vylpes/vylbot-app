@@ -1,8 +1,6 @@
 import { CommandInteraction, EmbedBuilder, GuildMember, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
 import { AuditType } from "../constants/AuditType";
 import EmbedColours from "../constants/EmbedColours";
-import ErrorMessages from "../constants/ErrorMessages";
-import { ICommandContext } from "../contracts/ICommandContext";
 import Audit from "../entity/Audit";
 import SettingsHelper from "../helpers/SettingsHelper";
 import { Command } from "../type/command";

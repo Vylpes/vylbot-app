@@ -1,4 +1,4 @@
-import { Column, Entity, getConnection, ManyToOne } from "typeorm";
+import { Column, Entity, getConnection } from "typeorm";
 import { AuditType } from "../constants/AuditType";
 import BaseEntity from "../contracts/BaseEntity";
 import StringTools from "../helpers/StringTools";

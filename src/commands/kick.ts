@@ -1,6 +1,4 @@
-import ErrorMessages from "../constants/ErrorMessages";
 import { Command } from "../type/command";
-import { ICommandContext } from "../contracts/ICommandContext";
 import Audit from "../entity/Audit";
 import { AuditType } from "../constants/AuditType";
 import { CommandInteraction, EmbedBuilder, GuildMember, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";

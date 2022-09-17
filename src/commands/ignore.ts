@@ -1,5 +1,4 @@
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
-import { ICommandContext } from "../contracts/ICommandContext";
 import IgnoredChannel from "../entity/IgnoredChannel";
 import { Command } from "../type/command";
 
