@@ -5,7 +5,6 @@ import { Command } from "../type/command";
 export default class About extends Command {
     constructor() {
         super();
-        super.Category = "General";
 
         super.CommandBuilder = new SlashCommandBuilder()
             .setName('about')

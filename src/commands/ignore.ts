@@ -1,4 +1,4 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import IgnoredChannel from "../entity/IgnoredChannel";
 import { Command } from "../type/command";
 
@@ -6,14 +6,10 @@ export default class Ignore extends Command {
     constructor() {
         super();
 
-        super.Category = "Moderation";
-        super.Roles = [
-            "moderator"
-        ];
-
         super.CommandBuilder = new SlashCommandBuilder()
             .setName('ignore')
-            .setDescription('Ignore events in this channel');
+            .setDescription('Ignore events in this channel')
+            .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
     }
 
     public override async execute(interaction: CommandInteraction) {

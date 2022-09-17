@@ -15,6 +15,10 @@ export default class Role extends BaseEntity {
 
     @ManyToOne(() => Server, x => x.Roles)
     Server: Server;
+
+    public SetServer(server: Server) {
+        this.Server = server;
+    }
     
     public static async FetchOneByRoleId(roleId: string, relations?: string[]): Promise<Role | undefined> {
         const connection = getConnection();

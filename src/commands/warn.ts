@@ -9,15 +9,10 @@ export default class Warn extends Command {
     constructor() {
         super();
 
-        super.Category = "Moderation";
-        super.Roles = [
-            "moderator"
-        ];
-
         super.CommandBuilder = new SlashCommandBuilder()
             .setName("warn")
             .setDescription("Warns a member in the server with an optional reason")
-            .setDefaultMemberPermissions(PermissionsBitField.Flags.KickMembers)
+            .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers)
             .addUserOption(option =>
                 option
                     .setName('target')

@@ -8,11 +8,6 @@ import SettingsHelper from "../helpers/SettingsHelper";
 export default class Ban extends Command {
     constructor() {
         super();
-        
-        super.Category = "Moderation";
-        super.Roles = [
-            "moderator"
-        ];
 
         super.CommandBuilder = new SlashCommandBuilder()
             .setName("ban")
@@ -59,6 +54,11 @@ export default class Ban extends Command {
                     value: reason,
                 },
             ]);
+
+        if (!member.bannable) {
+            await interaction.reply('Insufficient permissions. Please contact a moderator.');
+            return;
+        }
 
         await member.ban();
         await interaction.reply(`\`${targetUser.user.tag}\` has been banned.`);

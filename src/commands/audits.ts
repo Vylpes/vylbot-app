@@ -1,7 +1,7 @@
 import Audit from "../entity/Audit";
 import AuditTools from "../helpers/AuditTools";
 import { Command } from "../type/command";
-import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { AuditType } from "../constants/AuditType";
 import EmbedColours from "../constants/EmbedColours";
 
@@ -9,14 +9,10 @@ export default class Audits extends Command {
     constructor() {
         super();
 
-        super.Category = "Moderation";
-        super.Roles = [
-            "moderator"
-        ];
-
         super.CommandBuilder = new SlashCommandBuilder()
             .setName("audits")
             .setDescription("View audits of a particular user in the server")
+            .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers)
             .addSubcommand(subcommand => 
                 subcommand
                     .setName('user')

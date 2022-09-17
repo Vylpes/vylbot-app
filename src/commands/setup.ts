@@ -1,18 +1,15 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import Server from "../entity/Server";
 import { Command } from "../type/command";
 
 export default class Setup extends Command {
     constructor() {
         super();
-        super.Category = "Administration";
-        super.Roles = [
-            "moderator"
-        ]
 
         super.CommandBuilder = new SlashCommandBuilder()
             .setName('setup')
-            .setDescription('Makes the server ready to be configured');
+            .setDescription('Makes the server ready to be configured')
+            .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
     }
 
     public override async execute(interaction: CommandInteraction) {

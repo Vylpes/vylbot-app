@@ -1,18 +1,14 @@
-import { CommandInteraction, SlashCommandBuilder, TextChannel } from "discord.js";
+import { CommandInteraction, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
 import { Command } from "../type/command";
 
 export default class Clear extends Command {
     constructor() {
         super();
 
-        super.Category = "Moderation";
-        super.Roles = [
-            "moderator"
-        ];
-
         super.CommandBuilder = new SlashCommandBuilder()
             .setName("clear")
             .setDescription("Clears the channel of messages")
+            .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageMessages)
             .addNumberOption(option =>
                 option
                     .setName('count')
@@ -23,6 +19,7 @@ export default class Clear extends Command {
 
     public override async execute(interaction: CommandInteraction) {
         if (!interaction.isChatInputCommand()) return;
+        if (!interaction.channel) return;
 
         const totalToClear = interaction.options.getNumber('count');
 
@@ -32,6 +29,12 @@ export default class Clear extends Command {
         }
 
         const channel = interaction.channel as TextChannel;
+
+        if (!channel.manageable) {
+            await interaction.reply('Insufficient permissions. Please contact a moderator.');
+            return;
+        }
+
         await channel.bulkDelete(totalToClear);
 
         await interaction.reply(`${totalToClear} message(s) were removed.`);

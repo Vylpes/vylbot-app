@@ -8,11 +8,6 @@ import SettingsHelper from "../helpers/SettingsHelper";
 export default class Kick extends Command {
     constructor() {
         super();
-        
-        super.Category = "Moderation";
-        super.Roles = [
-            "moderator"
-        ];
 
         super.CommandBuilder = new SlashCommandBuilder()
             .setName("kick")
@@ -59,6 +54,11 @@ export default class Kick extends Command {
                     value: reason,
                 },
             ]);
+        
+        if (!member.kickable) {
+            await interaction.reply('Insufficient permissions. Please contact a moderator.');
+            return;
+        }
 
         await member.kick();
         await interaction.reply(`\`${targetUser.user.tag}\` has been kicked.`);

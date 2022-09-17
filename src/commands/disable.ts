@@ -1,4 +1,4 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import SettingsHelper from "../helpers/SettingsHelper";
 import { Command } from "../type/command";
 
@@ -6,14 +6,10 @@ export default class Disable extends Command {
     constructor() {
         super();
 
-        super.Category = "Moderation";
-        super.Roles = [
-            "moderator"
-        ];
-
         super.CommandBuilder = new SlashCommandBuilder()
             .setName('disable')
             .setDescription('Disables a command')
+            .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
             .addSubcommand(subcommand =>
                 subcommand
                     .setName('add')

@@ -1,6 +1,5 @@
-import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { readFileSync } from "fs";
-import { CommandResponse } from "../constants/CommandResponse";
 import DefaultValues from "../constants/DefaultValues";
 import EmbedColours from "../constants/EmbedColours";
 import Server from "../entity/Server";
@@ -10,14 +9,11 @@ import { Command } from "../type/command";
 export default class Config extends Command {
     constructor() {
         super();
-        super.Category = "Administration";
-        super.Roles = [
-            "administrator"
-        ]
 
         super.CommandBuilder = new SlashCommandBuilder()
             .setName('config')
             .setDescription('Configure the current server')
+            .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
             .addSubcommand(subcommand =>
                 subcommand
                     .setName('reset')
@@ -52,22 +48,18 @@ export default class Config extends Command {
                     .setDescription('Lists all settings'))
     }
 
-    public override async precheckAsync(interaction: CommandInteraction): Promise<CommandResponse> {
-        if (!interaction.guildId) return CommandResponse.ServerNotSetup;
+    public override async execute(interaction: CommandInteraction) {
+        if (!interaction.isChatInputCommand()) return;
+        if (!interaction.guildId) return;
 
         const server = await Server.FetchOneById<Server>(Server, interaction.guildId, [
             "Settings",
         ]);
 
         if (!server) {
-            return CommandResponse.ServerNotSetup;
+            await interaction.reply('Server not setup. Please use the setup command,');
+            return;
         }
-
-        return CommandResponse.Ok;
-    }
-
-    public override async execute(interaction: CommandInteraction) {
-        if (!interaction.isChatInputCommand()) return;
 
         switch (interaction.options.getSubcommand()) {
             case 'list':

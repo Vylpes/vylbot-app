@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import EmbedColours from "../../constants/EmbedColours";
 import SettingsHelper from "../../helpers/SettingsHelper";
 import { Command } from "../../type/command";
@@ -7,14 +7,10 @@ export default class Entry extends Command {
     constructor() {
         super();
 
-        super.Category = "Moderation";
-        super.Roles = [
-            "moderator"
-        ];
-
         super.CommandBuilder = new SlashCommandBuilder()
             .setName('entry')
-            .setDescription('Sends the entry embed');
+            .setDescription('Sends the entry embed')
+            .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers);
     }
 
     public override async execute(interaction: CommandInteraction) {

@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { existsSync, readFileSync } from "fs";
 import EmbedColours from "../constants/EmbedColours";
 import { Command } from "../type/command";
@@ -14,14 +14,10 @@ export default class Rules extends Command {
     constructor() {
         super();
 
-        super.Category = "Admin";
-        super.Roles = [
-            "administrator"
-        ];
-
         super.CommandBuilder = new SlashCommandBuilder()
             .setName("rules")
-            .setDescription("Send the rules embeds for this server");
+            .setDescription("Send the rules embeds for this server")
+            .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
     }
 
     public override async execute(interaction: CommandInteraction) {

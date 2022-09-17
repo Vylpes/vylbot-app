@@ -9,15 +9,10 @@ export default class Mute extends Command {
     constructor() {
         super();
 
-        super.Category = "Moderation";
-        super.Roles = [
-            "moderator"
-        ];
-
         super.CommandBuilder = new SlashCommandBuilder()
             .setName("mute")
             .setDescription("Mute a member in the server with an optional reason")
-            .setDefaultMemberPermissions(PermissionsBitField.Flags.KickMembers)
+            .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers)
             .addUserOption(option =>
                 option
                     .setName('target')
@@ -62,6 +57,11 @@ export default class Mute extends Command {
 
         if (!mutedRole) {
             await interaction.reply('Muted role not found.');
+            return;
+        }
+
+        if (!targetMember.manageable) {
+            await interaction.reply('Insufficient permissions. Please contact a moderator.');
             return;
         }
 
