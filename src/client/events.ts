@@ -11,9 +11,10 @@ export class Events {
         const disabledCommandsString = await SettingsHelper.GetSetting("commands.disabled", interaction.guildId);
         const disabledCommands = disabledCommandsString?.split(",");
 
-        if (disabledCommands?.find(x => x == interaction.commandName)) {
-            await interaction.reply(process.env.COMMANDS_DISABLED_MESSAGE || "This command is disabled.");
+        const disabledCommandsMessage = await SettingsHelper.GetSetting("commands.disabled.message", interaction.guildId);
 
+        if (disabledCommands?.find(x => x == interaction.commandName)) {
+            await interaction.reply(disabledCommandsMessage || "This command is disabled.");
             return;
         }
 
