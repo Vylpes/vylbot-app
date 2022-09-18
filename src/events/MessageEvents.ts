@@ -1,9 +1,9 @@
 import { Event } from "../type/event";
-import { Message } from "discord.js";
-import EventEmbed from "../helpers/embeds/EventEmbed";
+import { EmbedBuilder, Message, TextChannel } from "discord.js";
 import SettingsHelper from "../helpers/SettingsHelper";
 import OnMessage from "./MessageEvents/OnMessage";
 import IgnoredChannel from "../entity/IgnoredChannel";
+import EmbedColours from "../constants/EmbedColours";
 
 export default class MessageEvents extends Event {
     constructor() {
@@ -20,19 +20,42 @@ export default class MessageEvents extends Event {
         const ignored = await IgnoredChannel.IsChannelIgnored(message.channel.id);
         if (ignored) return;
 
-        const embed = new EventEmbed(message.client, message.guild, "Message Deleted");
-        embed.AddUser("User", message.author, true);
-        embed.addField("Channel", message.channel.toString(), true);
-        embed.addField("Content", `\`\`\`${message.content || "*none*"}\`\`\``);
+        const embed = new EmbedBuilder()
+            .setColor(EmbedColours.Ok)
+            .setTitle("Message Deleted")
+            .setDescription(`${message.author} \`${message.author.tag}\``)
+            .addFields([
+                {
+                    name: "Channel",
+                    value: message.channel.toString(),
+                    inline: true,
+                },
+                {
+                    name: "Content",
+                    value: `\`\`\`${message.content || "*none*"}\`\`\``,
+                }
+            ]);
 
         if (message.attachments.size > 0) {
-            embed.addField("Attachments", `\`\`\`${message.attachments.map(x => x.url).join("\n")}\`\`\``);
+            embed.addFields([
+                {
+                    name: "Attachments",
+                    value: `\`\`\`${message.attachments.map(x => x.url).join("\n")}\`\`\``
+                }
+            ]);
         }
 
-        const channel = await SettingsHelper.GetSetting("event.message.delete.channel", message.guild.id);
-        if (!channel || !message.guild.channels.cache.find(x => x.name == channel)) return;
+        const channelSetting = await SettingsHelper.GetSetting("event.message.delete.channel", message.guild.id);
 
-        await embed.SendToChannel(channel);
+        if (!channelSetting) return;
+
+        const channel = message.guild.channels.cache.find(x => x.name == channelSetting);
+
+        if (!channel) return;
+
+        const guildChannel = channel as TextChannel;
+
+        await guildChannel.send({ embeds: [ embed ]});
     }
 
     public override async messageUpdate(oldMessage: Message, newMessage: Message) {
@@ -46,16 +69,37 @@ export default class MessageEvents extends Event {
         const ignored = await IgnoredChannel.IsChannelIgnored(newMessage.channel.id);
         if (ignored) return;
 
-        const embed = new EventEmbed(newMessage.client, newMessage.guild, "Message Edited");
-        embed.AddUser("User", newMessage.author, true);
-        embed.addField("Channel", newMessage.channel.toString(), true);
-        embed.addField("Before", `\`\`\`${oldMessage.content || "*none*"}\`\`\``);
-        embed.addField("After", `\`\`\`${newMessage.content || "*none*"}\`\`\``);
+        const embed = new EmbedBuilder()
+            .setColor(EmbedColours.Ok)
+            .setTitle("Message Deleted")
+            .setDescription(`${newMessage.author} \`${newMessage.author.tag}\``)
+            .addFields([
+                {
+                    name: "Channel",
+                    value: newMessage.channel.toString(),
+                    inline: true,
+                },
+                {
+                    name: "Before",
+                    value: `\`\`\`${oldMessage.content || "*none*"}\`\`\``,
+                },
+                {
+                    name: "After",
+                    value: `\`\`\`${newMessage.content || "*none*"}\`\`\``,
+                }
+            ]);
 
-        const channel = await SettingsHelper.GetSetting("event.message.update.channel", newMessage.guild.id);
-        if (!channel || !newMessage.guild.channels.cache.find(x => x.name == channel)) return;
+            const channelSetting = await SettingsHelper.GetSetting("event.message.delete.channel", newMessage.guild.id);
 
-        await embed.SendToChannel(channel);
+            if (!channelSetting) return;
+    
+            const channel = newMessage.guild.channels.cache.find(x => x.name == channelSetting);
+    
+            if (!channel) return;
+    
+            const guildChannel = channel as TextChannel;
+    
+            await guildChannel.send({ embeds: [ embed ]});
     }
 
     public override async messageCreate(message: Message) {

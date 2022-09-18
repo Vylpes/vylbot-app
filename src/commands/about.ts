@@ -1,42 +1,56 @@
-import { MessageActionRow, MessageButton } from "discord.js";
-import { MessageButtonStyles } from "discord.js/typings/enums";
-import { ICommandContext } from "../contracts/ICommandContext";
-import PublicEmbed from "../helpers/embeds/PublicEmbed";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import EmbedColours from "../constants/EmbedColours";
 import { Command } from "../type/command";
 
 export default class About extends Command {
     constructor() {
         super();
-        super.Category = "General";
+
+        super.CommandBuilder = new SlashCommandBuilder()
+            .setName('about')
+            .setDescription('About VylBot');
     }
 
-    public override async execute(context: ICommandContext) {
+    public override async execute(interaction: CommandInteraction) {
         const fundingLink = process.env.ABOUT_FUNDING;
         const repoLink = process.env.ABOUT_REPO;
 
-        const embed = new PublicEmbed(context, "About", "")
-            .addField("Version", process.env.BOT_VER!, true)
-            .addField("Author", process.env.BOT_AUTHOR!, true)
-            .addField("Date", process.env.BOT_DATE!, true);
+        const embed = new EmbedBuilder()
+            .setColor(EmbedColours.Ok)
+            .setTitle("About")
+            .setDescription("Discord Bot made by Vylpes");
 
-        const row = new MessageActionRow();
+        embed.addFields([
+            {
+                name: "Version",
+                value: process.env.BOT_VER!,
+                inline: true,
+            },
+            {
+                name: "Author",
+                value: process.env.BOT_AUTHOR!,
+                inline: true,
+            },
+        ])
+
+        const row = new ActionRowBuilder<ButtonBuilder>();
 
         if (repoLink) {
             row.addComponents(
-                new MessageButton()
+                new ButtonBuilder()
                     .setURL(repoLink)
                     .setLabel("Repo")
-                    .setStyle(MessageButtonStyles.LINK));
+                    .setStyle(ButtonStyle.Link));
         }
 
         if (fundingLink) {
             row.addComponents(
-                new MessageButton()
+                new ButtonBuilder()
                     .setURL(fundingLink)
                     .setLabel("Funding")
-                    .setStyle(MessageButtonStyles.LINK));
+                    .setStyle(ButtonStyle.Link));
         }
-        
-        await embed.SendToCurrentChannel({ components: [row] });
+
+        await interaction.reply({ embeds: [ embed ]});
     }
 }

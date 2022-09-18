@@ -1,5 +1,5 @@
-import { GuildMember } from "discord.js";
-import EventEmbed from "../../helpers/embeds/EventEmbed";
+import { EmbedBuilder, GuildMember, TextChannel } from "discord.js";
+import EmbedColours from "../../constants/EmbedColours";
 import SettingsHelper from "../../helpers/SettingsHelper";
 
 export default class GuildMemberUpdate {
@@ -18,15 +18,32 @@ export default class GuildMemberUpdate {
         const oldNickname = this.oldMember.nickname || "*none*";
         const newNickname = this.newMember.nickname || "*none*";
 
-        const embed = new EventEmbed(this.oldMember.client, this.newMember.guild, "Nickname Changed");
-        embed.AddUser("User", this.newMember.user, true);
-        embed.addField("Before", oldNickname, true);
-        embed.addField("After", newNickname, true);
-        embed.setFooter({ text: `Id: ${this.newMember.user.id}` });
+        const embed = new EmbedBuilder()
+            .setColor(EmbedColours.Ok)
+            .setTitle('Nickname Changed')
+            .setDescription(`${this.newMember.user} \`${this.newMember.user.tag}\``)
+            .setFooter({ text: `Id: ${this.newMember.user.id}` })
+            .addFields([
+                {
+                    name: 'Before',
+                    value: oldNickname,
+                },
+                {
+                    name: 'After',
+                    value: newNickname,
+                },
+            ]);
     
-        const channel = await SettingsHelper.GetSetting("event.member.update.channel", this.newMember.guild.id);
-        if (!channel || channel.toLowerCase() != "true") return;
+            const channelSetting = await SettingsHelper.GetSetting("event.member.update.channel", this.newMember.guild.id);
 
-        await embed.SendToChannel(channel);
+            if (!channelSetting) return;
+    
+            const channel = this.newMember.guild.channels.cache.find(x => x.name == channelSetting);
+    
+            if (!channel) return;
+    
+            const guildChannel = channel as TextChannel;
+    
+            await guildChannel.send({ embeds: [embed ]});
     }
 }

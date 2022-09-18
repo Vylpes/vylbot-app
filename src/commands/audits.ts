@@ -1,144 +1,212 @@
-import { ICommandContext } from "../contracts/ICommandContext";
 import Audit from "../entity/Audit";
 import AuditTools from "../helpers/AuditTools";
-import PublicEmbed from "../helpers/embeds/PublicEmbed";
 import { Command } from "../type/command";
-import  SettingsHelper from "../helpers/SettingsHelper";
-import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
+import { CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { AuditType } from "../constants/AuditType";
+import EmbedColours from "../constants/EmbedColours";
 
 export default class Audits extends Command {
     constructor() {
         super();
 
-        super.Category = "Moderation";
-        super.Roles = [
-            "moderator"
-        ];
+        super.CommandBuilder = new SlashCommandBuilder()
+            .setName("audits")
+            .setDescription("View audits of a particular user in the server")
+            .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers)
+            .addSubcommand(subcommand => 
+                subcommand
+                    .setName('user')
+                    .setDescription('View all audits done against a user')
+                    .addUserOption(option =>
+                        option
+                            .setName('target')
+                            .setDescription('The user')
+                            .setRequired(true)))
+            .addSubcommand(subcommand =>
+                subcommand
+                    .setName('view')
+                    .setDescription('View a particular audit')
+                    .addStringOption(option =>
+                        option
+                            .setName('auditid')
+                            .setDescription('The audit id in caps')
+                            .setRequired(true)))
+            .addSubcommand(subcommand =>
+                subcommand
+                    .setName('clear')
+                    .setDescription('Clears an audit from a user')
+                    .addStringOption(option =>
+                        option
+                            .setName('auditid')
+                            .setDescription('The audit id in caps')
+                            .setRequired(true)))
+            .addSubcommand(subcommand =>
+                subcommand
+                    .setName('add')
+                    .setDescription('Manually add an audit')
+                    .addUserOption(option =>
+                        option
+                            .setName('target')
+                            .setDescription('The user')
+                            .setRequired(true))
+                    .addStringOption(option =>
+                        option
+                            .setName('type')
+                            .setDescription('The type of audit')
+                            .setRequired(true)
+                            .addChoices(
+                                { name: 'General', value: AuditType.General.toString() },
+                                { name: 'Warn', value: AuditType.Warn.toString() },
+                                { name: 'Mute', value: AuditType.Mute.toString() },
+                                { name: 'Kick', value: AuditType.Kick.toString() },
+                                { name: 'Ban', value: AuditType.Ban.toString() },
+                            )
+                            .setRequired(true))
+                    .addStringOption(option =>
+                        option
+                            .setName('reason')
+                            .setDescription('The reason')));
+            
     }
 
-    public override async execute(context: ICommandContext) {
-        if (!context.message.guild) return;
+    public override async execute(interaction: CommandInteraction) {
+        if (!interaction.isChatInputCommand()) return;
 
-        switch (context.args[0]) {
+        switch (interaction.options.getSubcommand()) {
             case "user":
-                await this.SendAuditForUser(context);
+                await this.SendAuditForUser(interaction);
                 break;
             case "view":
-                await this.SendAudit(context);
+                await this.SendAudit(interaction);
                 break;
             case "clear":
-                await this.ClearAudit(context);
+                await this.ClearAudit(interaction);
                 break;
             case "add":
-                await this.AddAudit(context);
+                await this.AddAudit(interaction);
                 break;
             default:
-                await this.SendUsage(context);
+                await interaction.reply("Subcommand doesn't exist.");
         }
     }
 
-    private async SendUsage(context: ICommandContext) {
-        const prefix = await SettingsHelper.GetServerPrefix(context.message.guild!.id);
+    private async SendAuditForUser(interaction: CommandInteraction) {
+        if (!interaction.guildId) return;
 
-        const description = [
-            `\`${prefix}audits user <id>\` - Send the audits for this user`,
-            `\`${prefix}audits view <id>\` - Send information about an audit`,
-            `\`${prefix}audits clear <id>\` - Clears an audit for a user by audit id`,
-            `\`${prefix}audits add <userid> <type> [reason]\` - Manually add an audit for a user`,
-        ]
+        const user = interaction.options.getUser('target');
 
-        const publicEmbed = new PublicEmbed(context, "Usage", description.join("\n"));
-        await publicEmbed.SendToCurrentChannel();
-    }
+        if (!user) {
+            await interaction.reply("User not found.");
+            return;
+        }
 
-    private async SendAuditForUser(context: ICommandContext) {
-        const userId = context.args[1];
-
-        const audits = await Audit.FetchAuditsByUserId(userId, context.message.guild!.id);
+        const audits = await Audit.FetchAuditsByUserId(user.id, interaction.guildId);
 
         if (!audits || audits.length == 0) {
-            const publicEmbed = new PublicEmbed(context, "", "There are no audits logged for this user.");
-            await publicEmbed.SendToCurrentChannel();
-
+            await interaction.reply("There are no audits for this user.");
             return;
         }
 
-        const publicEmbed = new PublicEmbed(context, "Audit Log", "");
+        const embed = new EmbedBuilder()
+            .setColor(EmbedColours.Ok)
+            .setTitle("Audits")
+            .setDescription(`Audits: ${audits.length}`);
 
         for (let audit of audits) {
-            publicEmbed.addField(`${audit.AuditId} // ${AuditTools.TypeToFriendlyText(audit.AuditType)}`, audit.WhenCreated.toString());
+            embed.addFields([
+                {
+                    name: `${audit.AuditId} // ${AuditTools.TypeToFriendlyText(audit.AuditType)}`,
+                    value: audit.WhenCreated.toString(),
+                }
+            ]);
         }
 
-        await publicEmbed.SendToCurrentChannel();
+        await interaction.reply({ embeds: [ embed ]});
     }
 
-    private async SendAudit(context: ICommandContext) {
-        const auditId = context.args[1];
+    private async SendAudit(interaction: CommandInteraction) {
+        if (!interaction.guildId) return;
 
-        if (!auditId) {
-            await this.SendUsage(context);
+        const auditId = interaction.options.get('auditid');
+
+        if (!auditId || !auditId.value) {
+            await interaction.reply("AuditId not found.");
             return;
         }
 
-        const audit = await Audit.FetchAuditByAuditId(auditId.toUpperCase(), context.message.guild!.id);
+        const audit = await Audit.FetchAuditByAuditId(auditId.value.toString().toUpperCase(), interaction.guildId);
 
         if (!audit) {
-            const errorEmbed = new ErrorEmbed(context, "This audit can not be found.");
-            await errorEmbed.SendToCurrentChannel();
-
+            await interaction.reply("Audit not found.");
             return;
         }
 
-        const publicEmbed = new PublicEmbed(context, `Audit ${audit.AuditId.toUpperCase()}`, "");
+        const embed = new EmbedBuilder()
+            .setColor(EmbedColours.Ok)
+            .setTitle("Audit")
+            .setDescription(audit.AuditId.toUpperCase())
+            .addFields([
+                {
+                    name: "Reason",
+                    value: audit.Reason || "*none*",
+                    inline: true,
+                },
+                {
+                    name: "Type",
+                    value: AuditTools.TypeToFriendlyText(audit.AuditType),
+                    inline: true,
+                },
+                {
+                    name: "Moderator",
+                    value: `<@${audit.ModeratorId}>`,
+                    inline: true,
+                },
+            ]);
 
-        publicEmbed.addField("Reason", audit.Reason || "*none*", true);
-        publicEmbed.addField("Type", AuditTools.TypeToFriendlyText(audit.AuditType), true);
-        publicEmbed.addField("Moderator", `<@${audit.ModeratorId}>`, true);
-
-        await publicEmbed.SendToCurrentChannel();
+            await interaction.reply({ embeds: [ embed ]});
     }
 
-    private async ClearAudit(context: ICommandContext) {
-        const auditId = context.args[1];
+    private async ClearAudit(interaction: CommandInteraction) {
+        if (!interaction.guildId) return;
 
-        if (!auditId) {
-            await this.SendUsage(context);
+        const auditId = interaction.options.get('auditid');
+
+        if (!auditId || !auditId.value) {
+            await interaction.reply("AuditId not found.");
             return;
         }
 
-        const audit = await Audit.FetchAuditByAuditId(auditId.toUpperCase(), context.message.guild!.id);
+        const audit = await Audit.FetchAuditByAuditId(auditId.value.toString().toUpperCase(), interaction.guildId);
 
         if (!audit) {
-            const errorEmbed = new ErrorEmbed(context, "This audit can not be found.");
-            await errorEmbed.SendToCurrentChannel();
-
+            await interaction.reply("Audit not found.");
             return;
         }
 
         await Audit.Remove(Audit, audit);
 
-        const publicEmbed = new PublicEmbed(context, "", "Audit cleared");
-        await publicEmbed.SendToCurrentChannel();
+        await interaction.reply("Audit cleared.");
     }
 
-    private async AddAudit(context: ICommandContext) {
-        const userId = context.args[1];
-        const typeString = context.args[2];
-        const reason = context.args.splice(3)
-            .join(" ");
+    private async AddAudit(interaction: CommandInteraction) {        
+        if (!interaction.guildId) return;
+
+        const user = interaction.options.getUser('target');
+        const auditType = interaction.options.get('type');
+        const reasonInput = interaction.options.get('reason');
         
-        if (!userId || !typeString) {
-            await this.SendUsage(context);
+        if (!user || !auditType || !auditType.value) {
+            await interaction.reply("Invalid input.");
             return;
         }
 
-        const type = AuditTools.StringToType(typeString);
+        const type = auditType.value as AuditType;
+        const reason = reasonInput && reasonInput.value ? reasonInput.value.toString() : "";
 
-        const audit = new Audit(userId, type, reason, context.message.author.id, context.message.guild!.id);
+        const audit = new Audit(user.id, type, reason, interaction.user.id, interaction.guildId);
 
         await audit.Save(Audit, audit);
-
-        const publicEmbed = new PublicEmbed(context, "", `Created new audit with ID \`${audit.AuditId}\``);
-        await publicEmbed.SendToCurrentChannel();
+        
+        await interaction.reply(`Created new audit with ID \`${audit.AuditId}\``);
     }
 }

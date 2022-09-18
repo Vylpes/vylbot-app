@@ -1,104 +1,83 @@
+import { CommandInteraction, EmbedBuilder, GuildMember, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
 import { AuditType } from "../constants/AuditType";
-import ErrorMessages from "../constants/ErrorMessages";
-import { ICommandContext } from "../contracts/ICommandContext";
-import ICommandReturnContext from "../contracts/ICommandReturnContext";
+import EmbedColours from "../constants/EmbedColours";
 import Audit from "../entity/Audit";
-import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
-import LogEmbed from "../helpers/embeds/LogEmbed";
-import PublicEmbed from "../helpers/embeds/PublicEmbed";
+import SettingsHelper from "../helpers/SettingsHelper";
 import { Command } from "../type/command";
 
 export default class Mute extends Command {
     constructor() {
         super();
 
-        super.Category = "Moderation";
-        super.Roles = [
-            "moderator"
-        ];
+        super.CommandBuilder = new SlashCommandBuilder()
+            .setName("mute")
+            .setDescription("Mute a member in the server with an optional reason")
+            .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers)
+            .addUserOption(option =>
+                option
+                    .setName('target')
+                    .setDescription('The user')
+                    .setRequired(true))
+            .addStringOption(option =>
+                option
+                    .setName('reason')
+                    .setDescription('The reason'));
     }
 
-    public override async execute(context: ICommandContext): Promise<ICommandReturnContext> {
-        const targetUser = context.message.mentions.users.first();
+    public override async execute(interaction: CommandInteraction) {
+        if (!interaction.guild || !interaction.guildId) return;
 
-        if (!targetUser) {
-            const embed = new ErrorEmbed(context, "User does not exist");
-            await embed.SendToCurrentChannel();
-            
-            return {
-                commandContext: context,
-                embeds: [embed]
-            };
+        const targetUser = interaction.options.get('target');
+        const reasonInput = interaction.options.get('reason');
+
+        if (!targetUser || !targetUser.user || !targetUser.member) {
+            await interaction.reply('Fields are required.');
+            return;
         }
 
-        const targetMember = context.message.guild?.members.cache.find(x => x.user.id == targetUser.id);
+        const targetMember = targetUser.member as GuildMember;
+        const reason = reasonInput && reasonInput.value ? reasonInput.value.toString() : "*none*";
 
-        if (!targetMember) {
-            const embed = new ErrorEmbed(context, "User is not in this server");
-            await embed.SendToCurrentChannel();
-            
-            return {
-                commandContext: context,
-                embeds: [embed]
-            };
-        }
+        const logEmbed = new EmbedBuilder()
+            .setColor(EmbedColours.Ok)
+            .setTitle("Member Muted")
+            .setDescription(`<@${targetUser.user.id}> \`${targetUser.user.tag}\``)
+            .addFields([
+                {
+                    name: "Moderator",
+                    value: `<@${interaction.user.id}>`,
+                },
+                {
+                    name: "Reason",
+                    value: reason,
+                },
+            ]);
 
-        const reasonArgs = context.args;
-        reasonArgs.splice(0, 1);
+        const mutedRole = interaction.guild.roles.cache.find(role => role.name == process.env.ROLES_MUTED);
 
-        const reason = reasonArgs.join(" ");
-
-        if (!context.message.guild?.available) {
-            return {
-                commandContext: context,
-                embeds: []
-            };
+        if (!mutedRole) {
+            await interaction.reply('Muted role not found.');
+            return;
         }
 
         if (!targetMember.manageable) {
-            const embed = new ErrorEmbed(context, ErrorMessages.InsufficientBotPermissions);
-            await embed.SendToCurrentChannel();
-            
-            return {
-                commandContext: context,
-                embeds: [embed]
-            };
+            await interaction.reply('Insufficient permissions. Please contact a moderator.');
+            return;
         }
 
-        const logEmbed = new LogEmbed(context, "Member Muted");
-        logEmbed.AddUser("User", targetUser, true)
-        logEmbed.AddUser("Moderator", context.message.author);
-        logEmbed.AddReason(reason);
+        await targetMember.roles.add(mutedRole);
 
-        const publicEmbed = new PublicEmbed(context, "", `${targetUser} has been muted`);
-        publicEmbed.AddReason(reason);
+        const channelName = await SettingsHelper.GetSetting('channels.logs.mod', interaction.guildId);
 
-        const mutedRole = context.message.guild.roles.cache.find(role => role.name == process.env.ROLES_MUTED);
+        if (!channelName) return;
 
-        if (!mutedRole) {
-            const embed = new ErrorEmbed(context, ErrorMessages.RoleNotFound);
-            await embed.SendToCurrentChannel();
-            
-            return {
-                commandContext: context,
-                embeds: [embed]
-            };
+        const channel = interaction.guild.channels.cache.find(x => x.name == channelName) as TextChannel;
+
+        if (channel) {
+            await channel.send({ embeds: [ logEmbed ]});
         }
 
-        await targetMember.roles.add(mutedRole, `Moderator: ${context.message.author.tag}, Reason: ${reason || "*none*"}`);
-
-        await logEmbed.SendToModLogsChannel();
-        await publicEmbed.SendToCurrentChannel();
-        
-        if (context.message.guild) {
-            const audit = new Audit(targetUser.id, AuditType.Mute, reason, context.message.author.id, context.message.guild.id);
-
-            await audit.Save(Audit, audit);
-        }
-
-        return {
-            commandContext: context,
-            embeds: [logEmbed, publicEmbed]
-        };
+        const audit = new Audit(targetUser.user.id, AuditType.Mute, reason, interaction.user.id, interaction.guildId);
+        await audit.Save(Audit, audit);
     }
 }

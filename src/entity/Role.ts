@@ -1,4 +1,4 @@
-import { Column, Entity, EntityTarget, getConnection, ManyToOne } from "typeorm";
+import { Column, Entity, getConnection, ManyToOne } from "typeorm";
 import BaseEntity from "../contracts/BaseEntity"
 import Server from "./Server";
 
@@ -15,6 +15,10 @@ export default class Role extends BaseEntity {
 
     @ManyToOne(() => Server, x => x.Roles)
     Server: Server;
+
+    public SetServer(server: Server) {
+        this.Server = server;
+    }
     
     public static async FetchOneByRoleId(roleId: string, relations?: string[]): Promise<Role | undefined> {
         const connection = getConnection();

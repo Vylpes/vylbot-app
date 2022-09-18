@@ -1,37 +1,34 @@
-import { ICommandContext } from "../contracts/ICommandContext";
+import { CommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import IgnoredChannel from "../entity/IgnoredChannel";
-import PublicEmbed from "../helpers/embeds/PublicEmbed";
 import { Command } from "../type/command";
 
 export default class Ignore extends Command {
     constructor() {
         super();
 
-        super.Category = "Moderation";
-        super.Roles = [
-            "moderator"
-        ];
+        super.CommandBuilder = new SlashCommandBuilder()
+            .setName('ignore')
+            .setDescription('Ignore events in this channel')
+            .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
     }
 
-    public override async execute(context: ICommandContext) {
-        if (!context.message.guild) return;
+    public override async execute(interaction: CommandInteraction) {
+        if (!interaction.guildId) return;
  
-        const isChannelIgnored = await IgnoredChannel.IsChannelIgnored(context.message.channel.id);
+        const isChannelIgnored = await IgnoredChannel.IsChannelIgnored(interaction.guildId);
  
         if (isChannelIgnored) {
-            const entity = await IgnoredChannel.FetchOneById(IgnoredChannel, context.message.channel.id);
+            const entity = await IgnoredChannel.FetchOneById(IgnoredChannel, interaction.guildId);
             
             await IgnoredChannel.Remove(IgnoredChannel, entity);
 
-            const embed = new PublicEmbed(context, "Success", "This channel will start being logged again.");
-            await embed.SendToCurrentChannel();
+            await interaction.reply('This channel will start being logged again.');
         } else {
-            const entity = new IgnoredChannel(context.message.channel.id);
+            const entity = new IgnoredChannel(interaction.guildId);
 
             await entity.Save(IgnoredChannel, entity);
 
-            const embed = new PublicEmbed(context, "Success", "This channel will now be ignored from logging.");
-            await embed.SendToCurrentChannel();
+            await interaction.reply('This channel will now be ignored from logging.');
         }
     }
 }

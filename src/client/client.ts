@@ -1,7 +1,6 @@
 import { Client } from "discord.js";
 import * as dotenv from "dotenv";
 import { createConnection } from "typeorm";
-import DefaultValues from "../constants/DefaultValues";
 import ICommandItem from "../contracts/ICommandItem";
 import IEventItem from "../contracts/IEventItem";
 import { Command } from "../type/command";
@@ -47,14 +46,13 @@ export class CoreClient extends Client {
             return;
         });
 
-        super.on("messageCreate", (message) => {
-            this._events.onMessageCreate(message, CoreClient._commandItems)
-        });
+        super.on("interactionCreate", this._events.onInteractionCreate);
         super.on("ready", this._events.onReady);
 
-        super.login(process.env.BOT_TOKEN);
+        await super.login(process.env.BOT_TOKEN);
 
         this._util.loadEvents(this, CoreClient._eventItems);
+        this._util.loadSlashCommands(this);
     }
 
     public static RegisterCommand(name: string, command: Command, serverId?: string) {

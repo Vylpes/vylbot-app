@@ -1,79 +1,69 @@
+import { CommandInteraction, EmbedBuilder, GuildMember, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
 import { AuditType } from "../constants/AuditType";
-import { ICommandContext } from "../contracts/ICommandContext";
-import ICommandReturnContext from "../contracts/ICommandReturnContext";
+import EmbedColours from "../constants/EmbedColours";
 import Audit from "../entity/Audit";
-import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
-import LogEmbed from "../helpers/embeds/LogEmbed";
-import PublicEmbed from "../helpers/embeds/PublicEmbed";
+import SettingsHelper from "../helpers/SettingsHelper";
 import { Command } from "../type/command";
 
 export default class Warn extends Command {
     constructor() {
         super();
 
-        super.Category = "Moderation";
-        super.Roles = [
-            "moderator"
-        ];
+        super.CommandBuilder = new SlashCommandBuilder()
+            .setName("warn")
+            .setDescription("Warns a member in the server with an optional reason")
+            .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers)
+            .addUserOption(option =>
+                option
+                    .setName('target')
+                    .setDescription('The user')
+                    .setRequired(true))
+            .addStringOption(option =>
+                option
+                    .setName('reason')
+                    .setDescription('The reason'));
     }
 
-    public override async execute(context: ICommandContext): Promise<ICommandReturnContext> {
-        const user = context.message.mentions.users.first();
+    public override async execute(interaction: CommandInteraction) {
+        if (!interaction.guild || !interaction.guildId) return;
 
-        if (!user) {
-            const errorEmbed = new ErrorEmbed(context, "User does not exist");
-            await errorEmbed.SendToCurrentChannel();
-            
-            return {
-                commandContext: context,
-                embeds: [errorEmbed]
-            };
+        const targetUser = interaction.options.get('target');
+        const reasonInput = interaction.options.get('reason');
+
+        if (!targetUser || !targetUser.user || !targetUser.member) {
+            await interaction.reply('Fields are required.');
+            return;
         }
 
-        const member = context.message.guild?.members.cache.find(x => x.user.id == user.id);
+        const targetMember = targetUser.member as GuildMember;
+        const reason = reasonInput && reasonInput.value ? reasonInput.value.toString() : "*none*";
 
-        if (!member) {
-            const errorEmbed = new ErrorEmbed(context, "User is not in this server");
-            await errorEmbed.SendToCurrentChannel();
-            
-            return {
-                commandContext: context,
-                embeds: [errorEmbed]
-            };
+        const logEmbed = new EmbedBuilder()
+            .setColor(EmbedColours.Ok)
+            .setTitle("Member Warned")
+            .setDescription(`<@${targetUser.user.id}> \`${targetUser.user.tag}\``)
+            .addFields([
+                {
+                    name: "Moderator",
+                    value: `<@${interaction.user.id}>`,
+                },
+                {
+                    name: "Reason",
+                    value: reason,
+                },
+            ]);
+
+        const channelName = await SettingsHelper.GetSetting('channels.logs.mod', interaction.guildId);
+
+        if (!channelName) return;
+
+        const channel = interaction.guild.channels.cache.find(x => x.name == channelName) as TextChannel;
+
+        if (channel) {
+            await channel.send({ embeds: [ logEmbed ]});
         }
 
-        const reasonArgs = context.args;
-        reasonArgs.splice(0, 1);
-
-        const reason = reasonArgs.join(" ");
-
-        if (!context.message.guild?.available) {
-            return {
-                commandContext: context,
-                embeds: []
-            };
-        }
-
-        const logEmbed = new LogEmbed(context, "Member Warned");
-        logEmbed.AddUser("User", user, true);
-        logEmbed.AddUser("Moderator", context.message.author);
-        logEmbed.AddReason(reason);
-
-        const publicEmbed = new PublicEmbed(context, "", `${user} has been warned`);
-        publicEmbed.AddReason(reason);
-
-        await logEmbed.SendToModLogsChannel();
-        await publicEmbed.SendToCurrentChannel();
-        
-        if (context.message.guild) {
-            const audit = new Audit(user.id, AuditType.Warn, reason, context.message.author.id, context.message.guild.id);
-
-            await audit.Save(Audit, audit);
-        }
-
-        return {
-            commandContext: context,
-            embeds: [logEmbed, publicEmbed]
-        };
+        const audit = new Audit(targetUser.user.id, AuditType.Warn, reason, interaction.user.id, interaction.guildId);
+        await audit.Save(Audit, audit);
     }
 }

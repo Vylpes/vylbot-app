@@ -1,50 +1,43 @@
-import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
-import { TextChannel } from "discord.js";
-import PublicEmbed from "../helpers/embeds/PublicEmbed";
+import { CommandInteraction, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
 import { Command } from "../type/command";
-import { ICommandContext } from "../contracts/ICommandContext";
-import ICommandReturnContext from "../contracts/ICommandReturnContext";
 
 export default class Clear extends Command {
     constructor() {
         super();
 
-        super.Category = "Moderation";
-        super.Roles = [
-            "moderator"
-        ];
+        super.CommandBuilder = new SlashCommandBuilder()
+            .setName("clear")
+            .setDescription("Clears the channel of messages")
+            .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageMessages)
+            .addNumberOption(option =>
+                option
+                    .setName('count')
+                    .setDescription('The amount to delete')
+                    .setRequired(true)
+                    .setMinValue(1)
+                    .setMaxValue(100));
     }
 
-    public override async execute(context: ICommandContext): Promise<ICommandReturnContext> {
-        if (context.args.length == 0) {
-            const errorEmbed = new ErrorEmbed(context, "Please specify an amount between 1 and 100");
-            await errorEmbed.SendToCurrentChannel();
+    public override async execute(interaction: CommandInteraction) {
+        if (!interaction.isChatInputCommand()) return;
+        if (!interaction.channel) return;
 
-            return {
-                commandContext: context,
-                embeds: [errorEmbed]
-            };
-        }
-
-        const totalToClear = Number.parseInt(context.args[0]);
+        const totalToClear = interaction.options.getNumber('count');
 
         if (!totalToClear || totalToClear <= 0 || totalToClear > 100) {
-            const errorEmbed = new ErrorEmbed(context, "Please specify an amount between 1 and 100");
-            await errorEmbed.SendToCurrentChannel();
-            return {
-                commandContext: context,
-                embeds: [errorEmbed]
-            };
+            await interaction.reply('Please specify an amount between 1 and 100.');
+            return;
         }
 
-        await (context.message.channel as TextChannel).bulkDelete(totalToClear);
+        const channel = interaction.channel as TextChannel;
 
-        const embed = new PublicEmbed(context, "", `${totalToClear} message(s) were removed`);
-        await embed.SendToCurrentChannel();
+        if (!channel.manageable) {
+            await interaction.reply('Insufficient permissions. Please contact a moderator.');
+            return;
+        }
 
-        return {
-            commandContext: context,
-            embeds: [embed]
-        };
+        await channel.bulkDelete(totalToClear);
+
+        await interaction.reply(`${totalToClear} message(s) were removed.`);
     }
 }

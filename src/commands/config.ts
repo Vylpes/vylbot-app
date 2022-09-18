@@ -1,126 +1,186 @@
+import { CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { readFileSync } from "fs";
-import { CommandResponse } from "../constants/CommandResponse";
 import DefaultValues from "../constants/DefaultValues";
-import { ICommandContext } from "../contracts/ICommandContext";
+import EmbedColours from "../constants/EmbedColours";
 import Server from "../entity/Server";
 import Setting from "../entity/Setting";
-import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
-import PublicEmbed from "../helpers/embeds/PublicEmbed";
 import { Command } from "../type/command";
 
 export default class Config extends Command {
     constructor() {
         super();
-        super.Category = "Administration";
-        super.Roles = [
-            "administrator"
-        ]
+
+        super.CommandBuilder = new SlashCommandBuilder()
+            .setName('config')
+            .setDescription('Configure the current server')
+            .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
+            .addSubcommand(subcommand =>
+                subcommand
+                    .setName('reset')
+                    .setDescription('Reset a setting to the default')
+                    .addStringOption(option =>
+                        option
+                            .setName('key')
+                            .setDescription('The key')
+                            .setRequired(true)))
+            .addSubcommand(subcommand =>
+                subcommand
+                    .setName('get')
+                    .setDescription('Gets a setting for the server')
+                    .addStringOption(option =>
+                        option
+                            .setName('key')
+                            .setDescription('The key')
+                            .setRequired(true)))
+            .addSubcommand(subcommand =>
+                subcommand
+                    .setName('set')
+                    .setDescription('Sets a setting to a specified value')
+                    .addStringOption(option =>
+                        option
+                            .setName('key')
+                            .setDescription('The key')
+                            .setRequired(true))
+                    .addStringOption(option =>
+                        option
+                            .setName('value')
+                            .setDescription('The value')
+                            .setRequired(true)))
+            .addSubcommand(subcommand =>
+                subcommand
+                    .setName('list')
+                    .setDescription('Lists all settings'))
     }
 
-    public override async precheckAsync(context: ICommandContext): Promise<CommandResponse> {
-        if (!context.message.guild) {
-            return CommandResponse.ServerNotSetup;
-        }
+    public override async execute(interaction: CommandInteraction) {
+        if (!interaction.isChatInputCommand()) return;
+        if (!interaction.guildId) return;
 
-        const server = await Server.FetchOneById<Server>(Server, context.message.guild?.id, [
+        const server = await Server.FetchOneById<Server>(Server, interaction.guildId, [
             "Settings",
         ]);
 
         if (!server) {
-            return CommandResponse.ServerNotSetup;
-        }
-
-        return CommandResponse.Ok;
-    }
-
-    public override async execute(context: ICommandContext) {
-        if (!context.message.guild) {
+            await interaction.reply('Server not setup. Please use the setup command,');
             return;
         }
 
-        const server = await Server.FetchOneById<Server>(Server, context.message.guild?.id, [
-            "Settings",
-        ]);
-
-        if (!server) {
-            return;
-        }
-
-        const key = context.args[0];
-        const action = context.args[1];
-        const value = context.args.splice(2).join(" ");
-
-        if (!key) {
-            this.SendHelpText(context);
-        } else if (!action) {
-            this.GetValue(context, server, key);
-        } else {
-            switch(action) {
-                case 'reset': 
-                    this.ResetValue(context, server, key);
-                    break;
-                case 'set':
-                    if (!value) {
-                        const errorEmbed = new ErrorEmbed(context, "Value is required when setting");
-                        errorEmbed.SendToCurrentChannel();
-                        return;
-                    }
-
-                    this.SetValue(context, server, key, value);
-                    break;
-                default:
-                    const errorEmbed = new ErrorEmbed(context, "Action must be either set or reset");
-                    errorEmbed.SendToCurrentChannel();
-                    return;
-            }
+        switch (interaction.options.getSubcommand()) {
+            case 'list':
+                await this.SendHelpText(interaction);
+                break;
+            case 'reset':
+                await this.ResetValue(interaction);
+                break;
+            case 'get':
+                await this.GetValue(interaction);
+                break;
+            case 'set':
+                await this.SetValue(interaction);
+                break;
+            default:
+                await interaction.reply('Subcommand not found.');
         }
     }
 
-    private async SendHelpText(context: ICommandContext) {
+    private async SendHelpText(interaction: CommandInteraction) {
         const description = readFileSync(`${process.cwd()}/data/usage/config.txt`).toString();
 
-        const embed = new PublicEmbed(context, "Config", description);
+        const embed = new EmbedBuilder()
+            .setColor(EmbedColours.Ok)
+            .setTitle("Config")
+            .setDescription(description);
 
-        await embed.SendToCurrentChannel();
+        await interaction.reply({ embeds: [ embed ]});
     }
 
-    private async GetValue(context: ICommandContext, server: Server, key: string) {
-        const setting = server.Settings.filter(x => x.Key == key)[0];
+    private async GetValue(interaction: CommandInteraction) {
+        if (!interaction.guildId) return;
+
+        const key = interaction.options.get('key');
+
+        if (!key || !key.value) {
+            await interaction.reply('Fields are required.');
+            return;
+        }
+
+        const server = await Server.FetchOneById<Server>(Server, interaction.guildId, [
+            "Settings",
+        ]);
+
+        if (!server) {
+            await interaction.reply('Server not found.');
+            return;
+        }
+
+        const setting = server.Settings.filter(x => x.Key == key.value)[0];
 
         if (setting) {
-            const embed = new PublicEmbed(context, "", `${key}: ${setting.Value}`);
-            await embed.SendToCurrentChannel();
+            await interaction.reply(`\`${key}\`: \`${setting.Value}\``);
         } else {
-            const embed = new PublicEmbed(context, "", `${key}: ${DefaultValues.GetValue(key)} <DEFAULT>`);
-            await embed.SendToCurrentChannel();
+            await interaction.reply(`\`${key}\`: \`${DefaultValues.GetValue(key.value.toString())}\` <DEFAULT>`);
         }
     }
 
-    private async ResetValue(context: ICommandContext, server: Server, key: string) {
-        const setting = server.Settings.filter(x => x.Key == key)[0];
+    private async ResetValue(interaction: CommandInteraction) {
+        if (!interaction.guildId) return;
+        
+        const key = interaction.options.get('key');
+
+        if (!key || !key.value) {
+            await interaction.reply('Fields are required.');
+            return;
+        }
+
+        const server = await Server.FetchOneById<Server>(Server, interaction.guildId, [
+            "Settings",
+        ]);
+
+        if (!server) {
+            await interaction.reply('Server not found.');
+            return;
+        }
+
+        const setting = server.Settings.filter(x => x.Key == key.value)[0];
 
         if (!setting) {
-            const embed = new PublicEmbed(context, "", "Setting has been reset");
-            await embed.SendToCurrentChannel();
-
+            await interaction.reply('Setting not found.');
             return;
         }
 
         await Setting.Remove(Setting, setting);
 
-        const embed = new PublicEmbed(context, "", "Setting has been reset");
-        await embed.SendToCurrentChannel();
+        await interaction.reply('The setting has been reset to the default.');
     }
 
-    private async SetValue(context: ICommandContext, server: Server, key: string, value: string) {
-        const setting = server.Settings.filter(x => x.Key == key)[0];
+    private async SetValue(interaction: CommandInteraction) {
+        if (!interaction.guildId) return;
+
+        const key = interaction.options.get('key');
+        const value = interaction.options.get('value');
+
+        if (!key || !key.value || !value || !value.value) {
+            await interaction.reply('Fields are required.');
+            return;
+        }
+
+        const server = await Server.FetchOneById<Server>(Server, interaction.guildId, [
+            "Settings",
+        ]);
+
+        if (!server) {
+            await interaction.reply('Server not found.');
+            return;
+        }
+
+        const setting = server.Settings.filter(x => x.Key == key.value)[0];
 
         if (setting) {
-            setting.UpdateBasicDetails(key, value);
+            setting.UpdateBasicDetails(key.value.toString(), value.value.toString());
 
             await setting.Save(Setting, setting);
         } else {
-            const newSetting = new Setting(key, value);
+            const newSetting = new Setting(key.value.toString(), value.value.toString());
 
             await newSetting.Save(Setting, newSetting);
 
@@ -129,7 +189,6 @@ export default class Config extends Command {
             await server.Save(Server, server);
         }
 
-        const embed = new PublicEmbed(context, "", "Setting has been set");
-        await embed.SendToCurrentChannel();
+        await interaction.reply('Setting has been set.');
     }
 }
