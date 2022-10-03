@@ -5,7 +5,6 @@ import { EventType } from "../constants/EventType";
 import ICommandItem from "../contracts/ICommandItem";
 import IEventItem from "../contracts/IEventItem";
 import { Command } from "../type/command";
-import { Event } from "../type/event";
 
 import { Events } from "./events";
 import { Util } from "./util";
