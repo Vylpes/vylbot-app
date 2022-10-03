@@ -71,7 +71,7 @@ export default class MessageEvents extends Event {
 
         const embed = new EmbedBuilder()
             .setColor(EmbedColours.Ok)
-            .setTitle("Message Deleted")
+            .setTitle("Message Edited")
             .setDescription(`${newMessage.author} \`${newMessage.author.tag}\``)
             .addFields([
                 {

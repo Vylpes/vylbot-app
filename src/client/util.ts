@@ -1,4 +1,5 @@
 import { Client, REST, Routes, SlashCommandBuilder } from "discord.js";
+import { EventType } from "../constants/EventType";
 import IEventItem from "../contracts/IEventItem";
 import { CoreClient } from "./client";
 
@@ -49,19 +50,46 @@ export class Util {
     // Load the events
     loadEvents(client: Client, events: IEventItem[]) {
         events.forEach((e) => {
-            client.on('channelCreate', e.Event.channelCreate);
-            client.on('channelDelete', e.Event.channelDelete);
-            client.on('channelUpdate', e.Event.channelUpdate);
-            client.on('guildBanAdd', e.Event.guildBanAdd);
-            client.on('guildBanRemove', e.Event.guildBanRemove);
-            client.on('guildCreate', e.Event.guildCreate);
-            client.on('guildMemberAdd', e.Event.guildMemberAdd);
-            client.on('guildMemberRemove', e.Event.guildMemberRemove);
-            client.on('guildMemberUpdate', e.Event.guildMemberUpdate);
-            client.on('messageCreate', e.Event.messageCreate);
-            client.on('messageDelete', e.Event.messageDelete);
-            client.on('messageUpdate', e.Event.messageUpdate);
-            client.on('ready', e.Event.ready);
+            switch(e.EventType) {
+                case EventType.ChannelCreate:
+                    client.on('channelCreate', (channel) => e.ExecutionFunction(channel));
+                    break;
+                case EventType.ChannelDelete:
+                    client.on('channelDelete', (channel) => e.ExecutionFunction(channel));
+                    break;
+                case EventType.ChannelUpdate:
+                    client.on('channelUpdate', (channel) => e.ExecutionFunction(channel));
+                    break;
+                case EventType.GuildBanAdd:
+                    client.on('guildBanAdd', (ban) => e.ExecutionFunction(ban));
+                    break;
+                case EventType.GuildBanRemove:
+                    client.on('guildBanRemove', (ban) => e.ExecutionFunction(ban));
+                    break;
+                case EventType.GuildCreate:
+                    client.on('guildCreate', (guild) => e.ExecutionFunction(guild));
+                    break;
+                case EventType.GuildMemberAdd:
+                    client.on('guildMemberAdd', (member) => e.ExecutionFunction(member));
+                    break;
+                case EventType.GuildMemberRemove:
+                    client.on('guildMemberRemove', (member) => e.ExecutionFunction(member));
+                    break;
+                case EventType.GuildMemberUpdate:
+                    client.on('guildMemberUpdate', (oldMember, newMember) => e.ExecutionFunction(oldMember, newMember));
+                    break;
+                case EventType.MessageCreate:
+                    client.on('messageCreate', (message) => e.ExecutionFunction(message));
+                    break;
+                case EventType.MessageDelete:
+                    client.on('messageDelete', (message) => e.ExecutionFunction(message));
+                    break;
+                case EventType.MessageUpdate:
+                    client.on('messageUpdate', (oldMessage, newMessage) => e.ExecutionFunction(oldMessage, newMessage));
+                    break;
+                default:
+                    console.error('Event not implemented.');
+            }
         });
     }
 }

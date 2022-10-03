@@ -28,6 +28,7 @@ import RemoveLobby from "./commands/501231711271780357/Lobby/remove";
 import MemberEvents from "./events/MemberEvents";
 import MessageEvents from "./events/MessageEvents";
 import Bunny from "./commands/bunny";
+import { EventType } from "./constants/EventType";
 
 export default class Registry {
     public static RegisterCommands() {
@@ -64,7 +65,15 @@ export default class Registry {
     }
 
     public static RegisterEvents() {
-        CoreClient.RegisterEvent(new MemberEvents());
-        CoreClient.RegisterEvent(new MessageEvents());
+        const memberEvents = new MemberEvents();
+        const messageEvents = new MessageEvents();
+
+        CoreClient.RegisterEvent(EventType.GuildMemberAdd, memberEvents.guildMemberAdd);
+        CoreClient.RegisterEvent(EventType.GuildMemberRemove, memberEvents.guildMemberRemove);
+        CoreClient.RegisterEvent(EventType.GuildMemberUpdate, memberEvents.guildMemberUpdate);
+
+        CoreClient.RegisterEvent(EventType.MessageDelete, messageEvents.messageDelete);
+        CoreClient.RegisterEvent(EventType.MessageUpdate, messageEvents.messageUpdate);
+        CoreClient.RegisterEvent(EventType.MessageCreate, messageEvents.messageCreate);
     }
 }
