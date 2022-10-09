@@ -1,9 +1,11 @@
 import { CoreClient } from "./client/client";
+import { EventType } from "./constants/EventType";
 
 // Command Imports
 import About from "./commands/about";
 import Audits from "./commands/audits";
 import Ban from "./commands/ban";
+import Bunny from "./commands/bunny";
 import Clear from "./commands/clear";
 import Code from "./commands/code";
 import Config from "./commands/config";
@@ -25,9 +27,12 @@ import AddLobby from "./commands/501231711271780357/Lobby/add";
 import RemoveLobby from "./commands/501231711271780357/Lobby/remove";
 
 // Event Imports
-import MemberEvents from "./events/MemberEvents";
-import MessageEvents from "./events/MessageEvents";
-import Bunny from "./commands/bunny";
+import GuildMemberAdd from "./events/MemberEvents/GuildMemberAdd";
+import GuildMemberRemove from "./events/MemberEvents/GuildMemberRemove";
+import GuildMemberUpdate from "./events/MemberEvents/GuildMemberUpdate";
+import MessageDelete from "./events/MessageEvents/MessageDelete";
+import MessageUpdate from "./events/MessageEvents/MessageUpdate";
+import MessageCreate from "./events/MessageEvents/MessageCreate";
 
 export default class Registry {
     public static RegisterCommands() {
@@ -64,7 +69,12 @@ export default class Registry {
     }
 
     public static RegisterEvents() {
-        CoreClient.RegisterEvent(new MemberEvents());
-        CoreClient.RegisterEvent(new MessageEvents());
+        CoreClient.RegisterEvent(EventType.GuildMemberAdd, GuildMemberAdd);
+        CoreClient.RegisterEvent(EventType.GuildMemberRemove, GuildMemberRemove);
+        CoreClient.RegisterEvent(EventType.GuildMemberUpdate, GuildMemberUpdate);
+
+        CoreClient.RegisterEvent(EventType.MessageDelete, MessageDelete);
+        CoreClient.RegisterEvent(EventType.MessageUpdate, MessageUpdate);
+        CoreClient.RegisterEvent(EventType.MessageCreate, MessageCreate);
     }
 }

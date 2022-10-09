@@ -1,10 +1,10 @@
 import { Client } from "discord.js";
 import * as dotenv from "dotenv";
 import { createConnection } from "typeorm";
+import { EventType } from "../constants/EventType";
 import ICommandItem from "../contracts/ICommandItem";
 import IEventItem from "../contracts/IEventItem";
 import { Command } from "../type/command";
-import { Event } from "../type/event";
 
 import { Events } from "./events";
 import { Util } from "./util";
@@ -65,9 +65,10 @@ export class CoreClient extends Client {
         CoreClient._commandItems.push(item);
     }
 
-    public static RegisterEvent(event: Event) {
+    public static RegisterEvent(eventType: EventType, func: Function) {
         const item: IEventItem = {
-            Event: event,
+            EventType: eventType,
+            ExecutionFunction: func,
         };
 
         CoreClient._eventItems.push(item);
