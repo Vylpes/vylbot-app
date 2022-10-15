@@ -25,6 +25,7 @@ import Entry from "./commands/501231711271780357/entry";
 import Lobby from "./commands/501231711271780357/Lobby/lobby";
 import AddLobby from "./commands/501231711271780357/Lobby/add";
 import RemoveLobby from "./commands/501231711271780357/Lobby/remove";
+import ListLobby from "./commands/501231711271780357/Lobby/list";
 
 // Event Imports
 import GuildMemberAdd from "./events/MemberEvents/GuildMemberAdd";
@@ -59,12 +60,14 @@ export default class Registry {
         CoreClient.RegisterCommand("lobby", new Lobby(), "501231711271780357");
         CoreClient.RegisterCommand("lobbyAdd", new AddLobby(), "501231711271780357");
         CoreClient.RegisterCommand("lobbyRemove", new RemoveLobby(), "501231711271780357");
+        CoreClient.RegisterCommand("listlobby", new ListLobby(), "501231711271780357");
         CoreClient.RegisterCommand("entry", new Entry(), "501231711271780357");
 
         // Add Exclusive Commands to Test Server
         CoreClient.RegisterCommand("lobby", new Lobby(), "442730357897429002");
         CoreClient.RegisterCommand("addlobby", new AddLobby(), "442730357897429002");
         CoreClient.RegisterCommand("removelobby", new RemoveLobby(), "442730357897429002");
+        CoreClient.RegisterCommand("listlobby", new ListLobby(), "442730357897429002");
         CoreClient.RegisterCommand("entry", new Entry(), "442730357897429002");
     }
 
