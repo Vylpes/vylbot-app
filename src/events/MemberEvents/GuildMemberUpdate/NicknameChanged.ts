@@ -14,6 +14,7 @@ export default async function NicknameChanged(oldMember: GuildMember, newMember:
         .setTitle('Nickname Changed')
         .setDescription(`${newMember.user} \`${newMember.user.tag}\``)
         .setFooter({ text: `Id: ${newMember.user.id}` })
+        .setThumbnail(newMember.avatarURL())
         .addFields([
             {
                 name: 'Before',

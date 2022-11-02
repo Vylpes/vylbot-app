@@ -18,6 +18,7 @@ export default async function MessageUpdate(oldMessage: Message, newMessage: Mes
         .setColor(EmbedColours.Ok)
         .setTitle("Message Edited")
         .setDescription(`${newMessage.author} \`${newMessage.author.tag}\``)
+        .setThumbnail(newMessage.author.avatarURL())
         .addFields([
             {
                 name: "Channel",

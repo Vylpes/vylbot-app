@@ -17,6 +17,7 @@ export default async function MessageDelete(message: Message) {
         .setColor(EmbedColours.Ok)
         .setTitle("Message Deleted")
         .setDescription(`${message.author} \`${message.author.tag}\``)
+        .setThumbnail(message.author.avatarURL())
         .addFields([
             {
                 name: "Channel",

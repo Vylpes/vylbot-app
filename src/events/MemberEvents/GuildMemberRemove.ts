@@ -13,6 +13,7 @@ export default async function GuildMemberRemove(member: GuildMember) {
         .setTitle('Member Left')
         .setDescription(`${member.user} \`${member.user.tag}\``)
         .setFooter({ text: `Id: ${member.user.id}` })
+        .setThumbnail(member.avatarURL())
         .addFields([
             {
                 name: 'Joined',
