@@ -13,6 +13,7 @@ export default async function GuildMemberAdd(member: GuildMember) {
         .setTitle('Member Joined')
         .setDescription(`${member.user} \`${member.user.tag}\``)
         .setFooter({ text: `Id: ${member.user.id}` })
+        .setThumbnail(member.avatarURL())
         .addFields([
             {
                 name: 'Created',
