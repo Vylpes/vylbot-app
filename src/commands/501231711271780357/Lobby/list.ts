@@ -21,27 +21,27 @@ export default class ListLobby extends Command {
 
         const channels: eLobby[] = [];
 
-        interaction.guild.channels.cache.forEach(async (channel) => {
+        for (let channel of interaction.guild.channels.cache.map(x => x)) {
             const lobby = await eLobby.FetchOneByChannelId(channel.id);
 
             if (lobby) {
                 channels.push(lobby);
             }
-        });
+        }
 
         const embed = new EmbedBuilder()
             .setColor(EmbedColours.Ok)
             .setTitle("Lobbies")
             .setDescription(`Channels: ${channels.length}`);
 
-        channels.forEach(lobby => {
+        for (let lobby of channels) {
             embed.addFields([
                 {
                     name: `<#${lobby.ChannelId}>`,
                     value: `Last Used: ${lobby.LastUsed}`
                 }
             ]);
-        });
+        }
 
         await interaction.reply({ embeds: [ embed ]});
     }
