@@ -37,7 +37,7 @@ export default class ListLobby extends Command {
         for (let lobby of channels) {
             embed.addFields([
                 {
-                    name: `<#${lobby.ChannelId}>`,
+                    name: `# ${lobby.Name}`,
                     value: `Last Used: ${lobby.LastUsed}`
                 }
             ]);
