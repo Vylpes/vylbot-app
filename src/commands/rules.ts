@@ -33,6 +33,11 @@ export default class Rules extends Command {
 
         const embeds: EmbedBuilder[] = [];
 
+        if (rules.length == 0) {
+            await interaction.reply({ content: "No rules have been supplied within code base for this server.", ephemeral: true });
+            return;
+        }
+
         rules.forEach(rule => {
             const embed = new EmbedBuilder()
                 .setColor(EmbedColours.Ok)
@@ -53,6 +58,7 @@ export default class Rules extends Command {
         const channel = interaction.channel;
 
         if (!channel) {
+            await interaction.reply({ content: "Channel not found.", ephemeral: true });
             return;
         }
 
@@ -63,6 +69,6 @@ export default class Rules extends Command {
             .setTitle("Success")
             .setDescription("The rules have sent to this channel successfully");
 
-        await interaction.reply({ embeds: [ successEmbed], ephemeral: true });
+        await interaction.reply({ embeds: [ successEmbed ], ephemeral: true });
     }
 }
