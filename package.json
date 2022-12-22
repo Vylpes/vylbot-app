@@ -5,6 +5,7 @@
   "main": "./dist/vylbot",
   "typings": "./dist",
   "scripts": {
+    "clean": "rm -rf node_modules/ dist/",
     "build": "tsc",
     "start": "node ./dist/vylbot",
     "test": "jest",

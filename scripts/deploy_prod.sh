@@ -9,14 +9,15 @@ cd ~/apps/vylbot/vylbot_prod \
 && git checkout main \
 && git fetch \
 && git pull \
-&& docker-compose --file docker-compose.prod.yml down \
+&& docker compose --file docker-compose.prod.yml down \
 && (pm2 stop vylbot_prod || true) \
 && (pm2 delete vylbot_prod || true) \
 && cp .prod.env .env \
 && cp ormconfig.prod.json ormconfig.json \
+&& yarn clean \
 && yarn install --frozen-lockfile \
 && yarn build \
-&& docker-compose --file docker-compose.prod.yml up -d \
+&& docker compose --file docker-compose.prod.yml up -d \
 && echo "Sleeping for 10 seconds to let database load..." \
 && sleep 10 \
 && yarn run db:up \
