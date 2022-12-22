@@ -1,7 +1,7 @@
 #! /bin/bash
 
 export PATH="$HOME/.yarn/bin:$PATH"
-export PATH="$HOME/.nvm/versions/node/v16.17.0/bin/:$PATH"
+export PATH="$HOME/.nodeuse/bin:$PATH"
 
 export BOT_TOKEN=$(cat $HOME/scripts/vylbot/prod_key.txt)
 
