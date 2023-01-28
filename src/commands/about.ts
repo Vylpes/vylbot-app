@@ -31,7 +31,7 @@ export default class About extends Command {
                 value: process.env.BOT_AUTHOR!,
                 inline: true,
             },
-        ])
+        ]);
 
         const row = new ActionRowBuilder<ButtonBuilder>();
 
@@ -51,6 +51,6 @@ export default class About extends Command {
                     .setStyle(ButtonStyle.Link));
         }
 
-        await interaction.reply({ embeds: [ embed ]});
+        await interaction.reply({ embeds: [ embed ], components: row.components.length > 0 ? [ row ] : [] });
     }
 }
