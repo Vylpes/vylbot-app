@@ -3,15 +3,16 @@
 kind: pipeline
 name: deployment
 
-image: appleboy/drone-ssh
-settings:
-  host: 192.168.68.121
-  username: vylpes
-  password:
-    from_secret: ssh_password
-  port: 22
-  script:
-    - sh /home/vylpes/scripts/vylbot/deploy_prod.sh
+steps:
+  image: appleboy/drone-ssh
+  settings:
+    host: 192.168.68.121
+    username: vylpes
+    password:
+      from_secret: ssh_password
+    port: 22
+    script:
+      - sh /home/vylpes/scripts/vylbot/deploy_prod.sh
 
 trigger:
   branch:
@@ -24,15 +25,16 @@ trigger:
 kind: pipeline
 name: staging
 
-image: appleboy/drone-ssh
-settings:
-  host: 192.168.68.121
-  username: vylpes
-  password:
-    from_secret: ssh_password
-  port: 22
-  script:
-    - sh /home/vylpes/scripts/vylbot/deploy_stage.sh
+steps:
+  image: appleboy/drone-ssh
+  settings:
+    host: 192.168.68.121
+    username: vylpes
+    password:
+      from_secret: ssh_password
+    port: 22
+    script:
+      - sh /home/vylpes/scripts/vylbot/deploy_stage.sh
 
 trigger:
   branch:
