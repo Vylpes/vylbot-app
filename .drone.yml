@@ -1,44 +1,38 @@
 ---
 
 kind: pipeline
-type: ssh
 name: deployment
 
-server:
+image: appleboy/drone-ssh
+settings:
   host: 192.168.68.121
-  user: vylpes
+  username: vylpes
   password:
     from_secret: ssh_password
-
-steps:
-- name: deploy
-  commands:
-  - sh /home/vylpes/scripts/vylbot/deploy_prod.sh
+  port: 22
+  script:
+    - sh /home/vylpes/scripts/vylbot/deploy_prod.sh
 
 trigger:
   branch:
   - main
   event:
   - promote
-  target:
-  - production
 
 ---
 
 kind: pipeline
-type: ssh
 name: staging
 
-server:
+image: appleboy/drone-ssh
+settings:
   host: 192.168.68.121
-  user: vylpes
+  username: vylpes
   password:
     from_secret: ssh_password
-
-steps:
-- name: deploy
-  commands:
-  - sh /home/vylpes/scripts/vylbot/deploy_stage.sh
+  port: 22
+  script:
+    - sh /home/vylpes/scripts/vylbot/deploy_stage.sh
 
 trigger:
   branch:
