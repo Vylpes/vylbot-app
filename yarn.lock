@@ -2219,6 +2219,11 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+linqts@^1.14.4:
+  version "1.14.4"
+  resolved "https://registry.yarnpkg.com/linqts/-/linqts-1.14.4.tgz#0aa0f78fc6be073d7db874e0a0480fda5d06db7d"
+  integrity sha512-b5sJjG1ZQ8iLSTJV19jWgMLoQicrQVVRkkQN7B/aboU+cf30lgnhIoGM8vEjqPxZFpryDU78PFpuTnfYNIHMeg==
+
 locate-path@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/locate-path/-/locate-path-5.0.0.tgz#1afba396afd676a6d42504d0a67a3a7eb9f62aa0"
@@ -2572,13 +2577,14 @@ quick-lru@^5.1.1:
   resolved "https://registry.yarnpkg.com/quick-lru/-/quick-lru-5.1.1.tgz#366493e6b3e42a3a6885e2e99d18f80fb7a8c932"
   integrity sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==
 
-random-bunny@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/random-bunny/-/random-bunny-2.0.0.tgz#f9950f53c7f5183a6dad26386db14f702d477cf7"
-  integrity sha512-xIDaPghs0nslKWNfxDLAGNtsUPUlmNagUmdNAHP7U4LSrGySbgSfAzCV8eECTeuny2csmf0SL5dBxEZdVvHgOA==
+random-bunny@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/random-bunny/-/random-bunny-2.0.5.tgz#7a6fabc34c1999b13bc30eeb95c92d5cfa743fcb"
+  integrity sha512-pVSAufABfk1oBR32+gqkvs4s7d0pqKd3wxD09arPbgpR4mEDOVI4yx/BhU4fxyxFKgFnP01fDDAc6jSvr8WWzA==
   dependencies:
     glob-parent "^6.0.0"
     got "^11.8.3"
+    linqts "^1.14.4"
 
 react-is@^17.0.1:
   version "17.0.2"
