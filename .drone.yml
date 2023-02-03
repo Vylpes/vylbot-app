@@ -4,6 +4,7 @@ kind: pipeline
 name: deployment
 
 steps:
+- name: deploy
   image: appleboy/drone-ssh
   settings:
     host: 192.168.68.121
@@ -26,6 +27,7 @@ kind: pipeline
 name: staging
 
 steps:
+- name: stage
   image: appleboy/drone-ssh
   settings:
     host: 192.168.68.121
