@@ -130,7 +130,7 @@ export default class Lobby extends Command {
         if (lobby) {
             const errorEmbed = new ErrorEmbed(context, "This channel has already been setup.");
             errorEmbed.SendToCurrentChannel();
-            
+
             return;
         }
 
@@ -150,7 +150,7 @@ export default class Lobby extends Command {
 
             return;
         }
-        
+
         await BaseEntity.Remove<eLobby>(eLobby, entity);
 
         const embed = new PublicEmbed(context, "", `Removed <#${context.args[2]}> from the list of lobby channels`);

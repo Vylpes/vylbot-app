@@ -1,6 +1,6 @@
 {
   "name": "vylbot-app",
-  "version": "3.0.6",
+  "version": "3.0.7",
   "description": "A discord bot made for Vylpes' Den",
   "main": "./dist/vylbot",
   "typings": "./dist",
@@ -31,7 +31,7 @@
     "mysql": "^2.18.1",
     "random-bunny": "^2.0.0",
     "ts-jest": "^27.1.2",
-    "typeorm": "^0.2.44",
+    "typeorm": "0.3.14",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

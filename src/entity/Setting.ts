@@ -25,12 +25,12 @@ export default class Setting extends BaseEntity {
         this.Value = value;
     }
 
-    public static async FetchOneByKey(key: string, relations?: string[]): Promise<Setting | undefined> {
+    public static async FetchOneByKey(key: string, relations?: string[]): Promise<Setting | null> {
         const connection = getConnection();
 
         const repository = connection.getRepository(Setting);
 
-        const single = await repository.findOne({ Key: key }, { relations: relations || [] });
+        const single = await repository.findOne({ where: { Key: key }, relations: relations || {} });
 
         return single;
     }
