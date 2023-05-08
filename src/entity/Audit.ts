@@ -34,22 +34,22 @@ export default class Audit extends BaseEntity {
     @Column()
     ServerId: string;
 
-    public static async FetchAuditsByUserId(userId: string, serverId: string): Promise<Audit[] | undefined> {
+    public static async FetchAuditsByUserId(userId: string, serverId: string): Promise<Audit[] | null> {
         const connection = getConnection();
 
         const repository = connection.getRepository(Audit);
 
-        const all = await repository.find({ UserId: userId, ServerId: serverId });
+        const all = await repository.find({ where: { UserId: userId, ServerId: serverId } });
 
         return all;
     }
 
-    public static async FetchAuditByAuditId(auditId: string, serverId: string): Promise<Audit | undefined> {
+    public static async FetchAuditByAuditId(auditId: string, serverId: string): Promise<Audit | null> {
         const connection = getConnection();
 
         const repository = connection.getRepository(Audit);
 
-        const single = await repository.findOne({ AuditId: auditId, ServerId: serverId });
+        const single = await repository.findOne({ where: { AuditId: auditId, ServerId: serverId } });
 
         return single;
     }

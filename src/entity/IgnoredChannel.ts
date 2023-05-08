@@ -14,7 +14,7 @@ export default class IgnoredChannel extends BaseEntity {
 
         const repository = connection.getRepository(IgnoredChannel);
 
-        const single = await repository.findOne(channelId);
+        const single = await repository.findOne({ where: { Id: channelId } });
 
         return single != undefined;
     }
