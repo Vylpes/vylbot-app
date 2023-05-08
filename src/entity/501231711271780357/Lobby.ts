@@ -33,12 +33,12 @@ export default class Lobby extends BaseEntity {
         this.LastUsed = new Date();
     }
 
-    public static async FetchOneByChannelId(channelId: string, relations?: string[]): Promise<Lobby | undefined> {
+    public static async FetchOneByChannelId(channelId: string, relations?: string[]): Promise<Lobby | null> {
         const connection = getConnection();
 
         const repository = connection.getRepository(Lobby);
 
-        const single = await repository.findOne({ ChannelId: channelId }, { relations: relations || [] });
+        const single = await repository.findOne({ where: { ChannelId: channelId }, relations: relations || [] });
 
         return single;
     }

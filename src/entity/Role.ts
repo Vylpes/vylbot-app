@@ -19,13 +19,13 @@ export default class Role extends BaseEntity {
     public SetServer(server: Server) {
         this.Server = server;
     }
-    
-    public static async FetchOneByRoleId(roleId: string, relations?: string[]): Promise<Role | undefined> {
+
+    public static async FetchOneByRoleId(roleId: string, relations?: string[]): Promise<Role | null> {
         const connection = getConnection();
 
         const repository = connection.getRepository(Role);
 
-        const single = await repository.findOne({ RoleId: roleId}, { relations: relations || [] });
+        const single = await repository.findOne({ where: { RoleId: roleId }, relations: relations || []});
 
         return single;
     }
@@ -35,9 +35,9 @@ export default class Role extends BaseEntity {
 
         const repository = connection.getRepository(Server);
 
-        const all = await repository.findOne(serverId, { relations: [
+        const all = await repository.findOne({ where: { Id: serverId }, relations: [
             "Roles",
-        ]});
+        ] });
 
         if (!all) {
             return [];
