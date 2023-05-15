@@ -36,7 +36,7 @@
     "minimatch": "7.4.3",
     "mysql": "^2.18.1",
     "random-bunny": "^2.0.5",
-    "ts-jest": "^27.1.2",
+    "ts-jest": "^29.0.0",
     "typeorm": "0.3.14"
   },
   "devDependencies": {
