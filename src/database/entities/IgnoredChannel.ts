@@ -1,5 +1,6 @@
-import { Entity, getConnection } from "typeorm";
-import BaseEntity from "../contracts/BaseEntity";
+import { Entity } from "typeorm";
+import BaseEntity from "../../contracts/BaseEntity";
+import AppDataSource from "../dataSources/appDataSource";
 
 @Entity()
 export default class IgnoredChannel extends BaseEntity {
@@ -10,9 +11,7 @@ export default class IgnoredChannel extends BaseEntity {
     }
 
     public static async IsChannelIgnored(channelId: string): Promise<boolean> {
-        const connection = getConnection();
-
-        const repository = connection.getRepository(IgnoredChannel);
+        const repository = AppDataSource.getRepository(IgnoredChannel);
 
         const single = await repository.findOne({ where: { Id: channelId } });
 

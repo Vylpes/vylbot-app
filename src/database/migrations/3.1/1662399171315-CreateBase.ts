@@ -1,5 +1,5 @@
 import { MigrationInterface, QueryRunner } from "typeorm"
-import MigrationHelper from "../../helpers/MigrationHelper"
+import MigrationHelper from "../../../helpers/MigrationHelper"
 
 export class vylbot1662399171315 implements MigrationInterface {
 

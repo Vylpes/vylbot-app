@@ -1,6 +1,6 @@
 import { EmbedBuilder, Message, TextChannel } from "discord.js";
 import EmbedColours from "../../constants/EmbedColours";
-import IgnoredChannel from "../../entity/IgnoredChannel";
+import IgnoredChannel from "../../database/entities/IgnoredChannel";
 import SettingsHelper from "../../helpers/SettingsHelper";
 
 export default async function MessageUpdate(oldMessage: Message, newMessage: Message) {

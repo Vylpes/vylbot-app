@@ -1,6 +1,6 @@
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../../type/command";
-import { default as eLobby } from "../../../entity/501231711271780357/Lobby";
+import { default as eLobby } from "../../../database/entities/501231711271780357/Lobby";
 
 export default class Lobby extends Command {
     constructor() {
@@ -13,7 +13,7 @@ export default class Lobby extends Command {
 
     public override async execute(interaction: CommandInteraction) {
         if (!interaction.channelId) return;
-    
+
         const lobby = await eLobby.FetchOneByChannelId(interaction.channelId);
 
         if (!lobby) {

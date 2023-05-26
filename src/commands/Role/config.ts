@@ -1,7 +1,7 @@
 import { CommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../type/command";
-import { default as eRole } from "../../entity/Role";
-import Server from "../../entity/Server";
+import { default as eRole } from "../../database/entities/Role";
+import Server from "../../database/entities/Server";
 
 export default class ConfigRole extends Command {
     constructor() {
@@ -33,7 +33,7 @@ export default class ConfigRole extends Command {
 
         if (existingRole) {
             await eRole.Remove(eRole, existingRole);
-            
+
             await interaction.reply('Removed role from configuration.');
         } else {
             const server = await Server.FetchOneById(Server, interaction.guildId);
@@ -45,7 +45,7 @@ export default class ConfigRole extends Command {
 
             const newRole = new eRole(role.role.id);
             newRole.SetServer(server);
-            
+
             await newRole.Save(eRole, newRole);
 
             await interaction.reply('Added role to configuration.');

@@ -1,6 +1,6 @@
 import { CommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../../type/command";
-import { default as eLobby } from "../../../entity/501231711271780357/Lobby";
+import { default as eLobby } from "../../../database/entities/501231711271780357/Lobby";
 import BaseEntity from "../../../contracts/BaseEntity";
 
 export default class RemoveLobby extends Command {
@@ -32,7 +32,7 @@ export default class RemoveLobby extends Command {
             await interaction.reply('Channel not found.');
             return;
         }
-        
+
         await BaseEntity.Remove<eLobby>(eLobby, entity);
 
         await interaction.reply(`Removed <#${channel.channel.id}> from the list of lobby channels`);

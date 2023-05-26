@@ -1,5 +1,5 @@
 import { CommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
-import Server from "../entity/Server";
+import Server from "../database/entities/Server";
 import { Command } from "../type/command";
 
 export default class Setup extends Command {

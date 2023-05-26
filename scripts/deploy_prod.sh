@@ -13,7 +13,6 @@ cd ~/apps/vylbot/vylbot_prod \
 && (pm2 stop vylbot_prod || true) \
 && (pm2 delete vylbot_prod || true) \
 && cp .prod.env .env \
-&& cp ormconfig.prod.json ormconfig.json \
 && yarn clean \
 && yarn install --frozen-lockfile \
 && yarn build \

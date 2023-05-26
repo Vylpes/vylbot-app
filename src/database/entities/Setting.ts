@@ -1,6 +1,7 @@
-import { Column, Entity, getConnection, ManyToOne } from "typeorm";
-import BaseEntity from "../contracts/BaseEntity";
+import { Column, Entity, ManyToOne } from "typeorm";
+import BaseEntity from "../../contracts/BaseEntity";
 import Server from "./Server";
+import AppDataSource from "../dataSources/appDataSource";
 
 @Entity()
 export default class Setting extends BaseEntity {
@@ -26,9 +27,7 @@ export default class Setting extends BaseEntity {
     }
 
     public static async FetchOneByKey(key: string, relations?: string[]): Promise<Setting | null> {
-        const connection = getConnection();
-
-        const repository = connection.getRepository(Setting);
+        const repository = AppDataSource.getRepository(Setting);
 
         const single = await repository.findOne({ where: { Key: key }, relations: relations || {} });
 

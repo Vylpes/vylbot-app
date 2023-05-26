@@ -1,5 +1,5 @@
 import { CommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
-import IgnoredChannel from "../entity/IgnoredChannel";
+import IgnoredChannel from "../database/entities/IgnoredChannel";
 import { Command } from "../type/command";
 
 export default class Ignore extends Command {

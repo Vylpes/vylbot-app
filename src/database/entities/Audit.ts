@@ -1,7 +1,8 @@
-import { Column, Entity, getConnection } from "typeorm";
-import { AuditType } from "../constants/AuditType";
-import BaseEntity from "../contracts/BaseEntity";
-import StringTools from "../helpers/StringTools";
+import { Column, Entity } from "typeorm";
+import { AuditType } from "../../constants/AuditType";
+import BaseEntity from "../../contracts/BaseEntity";
+import StringTools from "../../helpers/StringTools";
+import AppDataSource from "../dataSources/appDataSource";
 
 @Entity()
 export default class Audit extends BaseEntity {
@@ -35,9 +36,7 @@ export default class Audit extends BaseEntity {
     ServerId: string;
 
     public static async FetchAuditsByUserId(userId: string, serverId: string): Promise<Audit[] | null> {
-        const connection = getConnection();
-
-        const repository = connection.getRepository(Audit);
+        const repository = AppDataSource.getRepository(Audit);
 
         const all = await repository.find({ where: { UserId: userId, ServerId: serverId } });
 
@@ -45,9 +44,7 @@ export default class Audit extends BaseEntity {
     }
 
     public static async FetchAuditByAuditId(auditId: string, serverId: string): Promise<Audit | null> {
-        const connection = getConnection();
-
-        const repository = connection.getRepository(Audit);
+        const repository = AppDataSource.getRepository(Audit);
 
         const single = await repository.findOne({ where: { AuditId: auditId, ServerId: serverId } });
 

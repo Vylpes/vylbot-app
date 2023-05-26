@@ -1,6 +1,6 @@
 import { CommandInteraction, EmbedBuilder, GuildMemberRoleManager, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../type/command";
-import { default as eRole } from "../../entity/Role";
+import { default as eRole } from "../../database/entities/Role";
 import EmbedColours from "../../constants/EmbedColours";
 
 export default class Role extends Command {
@@ -47,7 +47,7 @@ export default class Role extends Command {
             .setColor(EmbedColours.Ok)
             .setTitle("Roles")
             .setDescription(`Roles: ${roles.length}\n\n${roles.join("\n")}`);
-        
+
         await interaction.reply({ embeds: [ embed ]});
     }
 

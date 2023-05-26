@@ -1,4 +1,4 @@
-import Audit from "../entity/Audit";
+import Audit from "../database/entities/Audit";
 import AuditTools from "../helpers/AuditTools";
 import { Command } from "../type/command";
 import { CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
@@ -13,7 +13,7 @@ export default class Audits extends Command {
             .setName("audits")
             .setDescription("View audits of a particular user in the server")
             .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers)
-            .addSubcommand(subcommand => 
+            .addSubcommand(subcommand =>
                 subcommand
                     .setName('user')
                     .setDescription('View all audits done against a user')
@@ -66,7 +66,7 @@ export default class Audits extends Command {
                         option
                             .setName('reason')
                             .setDescription('The reason')));
-            
+
     }
 
     public override async execute(interaction: CommandInteraction) {
@@ -188,13 +188,13 @@ export default class Audits extends Command {
         await interaction.reply("Audit cleared.");
     }
 
-    private async AddAudit(interaction: CommandInteraction) {        
+    private async AddAudit(interaction: CommandInteraction) {
         if (!interaction.guildId) return;
 
         const user = interaction.options.getUser('target');
         const auditType = interaction.options.get('type');
         const reasonInput = interaction.options.get('reason');
-        
+
         if (!user || !auditType || !auditType.value) {
             await interaction.reply("Invalid input.");
             return;
@@ -206,7 +206,7 @@ export default class Audits extends Command {
         const audit = new Audit(user.id, type, reason, interaction.user.id, interaction.guildId);
 
         await audit.Save(Audit, audit);
-        
+
         await interaction.reply(`Created new audit with ID \`${audit.AuditId}\``);
     }
 }

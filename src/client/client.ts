@@ -8,11 +8,12 @@ import { Command } from "../type/command";
 
 import { Events } from "./events";
 import { Util } from "./util";
+import AppDataSource from "../database/dataSources/appDataSource";
 
 export class CoreClient extends Client {
     private static _commandItems: ICommandItem[];
     private static _eventItems: IEventItem[];
-    
+
     private _events: Events;
     private _util: Util;
 
@@ -41,10 +42,9 @@ export class CoreClient extends Client {
             return;
         }
 
-        await createConnection().catch(e => {
-            console.error(e);
-            return;
-        });
+        await AppDataSource.initialize()
+            .then(() => console.log("Data Source Initialized"))
+            .catch((err) => console.error("Error Initialising Data Source", err));
 
         super.on("interactionCreate", this._events.onInteractionCreate);
         super.on("ready", this._events.onReady);

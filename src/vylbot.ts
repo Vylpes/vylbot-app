@@ -11,6 +11,12 @@ const requiredConfigs: string[] = [
     "BOT_AUTHOR",
     "BOT_OWNERID",
     "BOT_CLIENTID",
+    "DB_HOST",
+    "DB_PORT",
+    "DB_AUTH_USER",
+    "DB_AUTH_PASS",
+    "DB_SYNC",
+    "DB_LOGGING",
 ];
 
 requiredConfigs.forEach(config => {

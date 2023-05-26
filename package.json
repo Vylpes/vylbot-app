@@ -9,8 +9,8 @@
     "build": "tsc",
     "start": "node ./dist/vylbot",
     "test": "jest",
-    "db:up": "typeorm migration:run",
-    "db:down": "typeorm migration:revert"
+    "db:up": "typeorm migration:run -d dist/database/dataSources/appDataSource.js",
+    "db:down": "typeorm migration:revert -d dist/database/dataSources/appDataSource.js"
   },
   "repository": {
     "type": "git",

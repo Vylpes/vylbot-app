@@ -1,6 +1,7 @@
-import { Column, Entity, getConnection, ManyToOne } from "typeorm";
-import BaseEntity from "../contracts/BaseEntity"
+import { Column, Entity, ManyToOne } from "typeorm";
+import BaseEntity from "../../contracts/BaseEntity"
 import Server from "./Server";
+import AppDataSource from "../dataSources/appDataSource";
 
 @Entity()
 export default class Role extends BaseEntity {
@@ -21,9 +22,7 @@ export default class Role extends BaseEntity {
     }
 
     public static async FetchOneByRoleId(roleId: string, relations?: string[]): Promise<Role | null> {
-        const connection = getConnection();
-
-        const repository = connection.getRepository(Role);
+        const repository = AppDataSource.getRepository(Role);
 
         const single = await repository.findOne({ where: { RoleId: roleId }, relations: relations || []});
 
@@ -31,9 +30,7 @@ export default class Role extends BaseEntity {
     }
 
     public static async FetchAllByServerId(serverId: string): Promise<Role[]> {
-        const connection = getConnection();
-
-        const repository = connection.getRepository(Server);
+        const repository = AppDataSource.getRepository(Server);
 
         const all = await repository.findOne({ where: { Id: serverId }, relations: [
             "Roles",

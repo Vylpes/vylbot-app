@@ -1,5 +1,6 @@
-import { Column, Entity, getConnection } from "typeorm";
-import BaseEntity from "../../contracts/BaseEntity";
+import { Column, Entity } from "typeorm";
+import BaseEntity from "../../../contracts/BaseEntity";
+import AppDataSource from "../../dataSources/appDataSource";
 
 @Entity()
 export default class Lobby extends BaseEntity {
@@ -34,9 +35,7 @@ export default class Lobby extends BaseEntity {
     }
 
     public static async FetchOneByChannelId(channelId: string, relations?: string[]): Promise<Lobby | null> {
-        const connection = getConnection();
-
-        const repository = connection.getRepository(Lobby);
+        const repository = AppDataSource.getRepository(Lobby);
 
         const single = await repository.findOne({ where: { ChannelId: channelId }, relations: relations || [] });
 

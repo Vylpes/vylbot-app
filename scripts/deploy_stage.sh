@@ -13,7 +13,6 @@ cd ~/apps/vylbot/vylbot_stage \
 && (pm2 stop vylbot_stage || true) \
 && (pm2 delete vylbot_stage || true) \
 && cp .stage.env .env \
-&& cp ormconfig.stage.json ormconfig.json \
 && yarn clean \
 && yarn install --frozen-lockfile \
 && yarn build \

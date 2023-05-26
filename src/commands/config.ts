@@ -2,8 +2,8 @@ import { CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuil
 import { readFileSync } from "fs";
 import DefaultValues from "../constants/DefaultValues";
 import EmbedColours from "../constants/EmbedColours";
-import Server from "../entity/Server";
-import Setting from "../entity/Setting";
+import Server from "../database/entities/Server";
+import Setting from "../database/entities/Setting";
 import { Command } from "../type/command";
 
 export default class Config extends Command {
@@ -124,7 +124,7 @@ export default class Config extends Command {
 
     private async ResetValue(interaction: CommandInteraction) {
         if (!interaction.guildId) return;
-        
+
         const key = interaction.options.get('key');
 
         if (!key || !key.value) {

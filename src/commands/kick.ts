@@ -1,5 +1,5 @@
 import { Command } from "../type/command";
-import Audit from "../entity/Audit";
+import Audit from "../database/entities/Audit";
 import { AuditType } from "../constants/AuditType";
 import { CommandInteraction, EmbedBuilder, GuildMember, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
 import EmbedColours from "../constants/EmbedColours";
@@ -54,7 +54,7 @@ export default class Kick extends Command {
                     value: reason,
                 },
             ]);
-        
+
         if (!member.kickable) {
             await interaction.reply('Insufficient permissions. Please contact a moderator.');
             return;
