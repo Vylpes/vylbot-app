@@ -37,7 +37,7 @@
     "mysql": "^2.18.1",
     "random-bunny": "^2.0.5",
     "ts-jest": "^29.0.0",
-    "typeorm": "0.3.14"
+    "typeorm": "0.3.16"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
