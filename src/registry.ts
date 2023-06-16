@@ -17,6 +17,7 @@ import Role from "./commands/Role/role";
 import ConfigRole from "./commands/Role/config";
 import Rules from "./commands/rules";
 import Setup from "./commands/setup";
+import Timeout from "./commands/timeout";
 import Unmute from "./commands/unmute";
 import Warn from "./commands/warn";
 
@@ -38,6 +39,7 @@ import MessageCreate from "./events/MessageEvents/MessageCreate";
 export default class Registry {
     public static RegisterCommands() {
         CoreClient.RegisterCommand("about", new About());
+        CoreClient.RegisterCommand("audits", new Audits());
         CoreClient.RegisterCommand("ban", new Ban());
         CoreClient.RegisterCommand("bunny", new Bunny());
         CoreClient.RegisterCommand("clear", new Clear());
@@ -48,10 +50,10 @@ export default class Registry {
         CoreClient.RegisterCommand("kick", new Kick());
         CoreClient.RegisterCommand("mute", new Mute());
         CoreClient.RegisterCommand("rules", new Rules());
+        CoreClient.RegisterCommand("setup", new Setup());
+        CoreClient.RegisterCommand("timeout", new Timeout());
         CoreClient.RegisterCommand("unmute", new Unmute());
         CoreClient.RegisterCommand("warn", new Warn());
-        CoreClient.RegisterCommand("setup", new Setup());
-        CoreClient.RegisterCommand("audits", new Audits());
 
         CoreClient.RegisterCommand("role", new Role());
         CoreClient.RegisterCommand("configrole", new ConfigRole());

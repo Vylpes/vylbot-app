@@ -4,4 +4,5 @@ export  enum AuditType {
     Mute,
     Kick,
     Ban,
+    Timeout,
 }

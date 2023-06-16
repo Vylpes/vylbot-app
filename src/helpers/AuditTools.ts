@@ -13,6 +13,8 @@ export default class AuditTools {
                 return "Kick";
             case AuditType.Ban:
                 return "Ban";
+            case AuditType.Timeout:
+                return "Timeout";
             default:
                 return "Other";
         }
@@ -30,6 +32,8 @@ export default class AuditTools {
                 return AuditType.Kick;
             case "ban":
                 return AuditType.Ban;
+            case "timeout":
+                return AuditType.Timeout;
             default:
                 return AuditType.General;
         }
