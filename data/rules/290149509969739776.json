@@ -6,7 +6,7 @@
         "title": "Vylpes' Den",
         "description": [
             "Welcome to Vylpes' Den! Make sure to say hi!",
-            "Invite link: https://discord.gg/UyAhAVp"
+            "Invite link: https://go.vylpes.xyz/A6HcA"
         ]
     },
     {
@@ -70,19 +70,17 @@
         "description": [
             "This server uses a bot made by me, VylBot, to help moderate the server.",
             "For more information on it, see the GitHub repositories:",
-            "https://github.com/Vylpes/vylbot-core",
-            "https://github.com/Vylpes/vylbot-app"
+            "https://gitea.vylpes.xyz/rabbitlabs/vylbot-app"
         ]
     },
     {
         "title": "Links",
         "description": [
-            "YouTube: https://www.youtube.com/channel/UCwPlzKwCmP5Q9bCX3fHk2BA",
+            "YouTube: https://www.youtube.com/@vylpes",
             "Patreon: https://www.patreon.com/vylpes",
             "Twitch: https://www.twitch.tv/vylpes_",
-            "Twitter: https://twitter.com/vylpes",
-            "Blog: https://vylpes.xyz"
+            "Twitter: https://twitter.com/vylpes"
         ],
-        "footer": "Last updated 01/02/2022"
+        "footer": "Last updated 20/06/2023"
     }
 ]
