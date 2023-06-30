@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder, GuildMember, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
+import { CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
 import { AuditType } from "../constants/AuditType";
 import EmbedColours from "../constants/EmbedColours";
 import Audit from "../database/entities/Audit";
@@ -35,7 +35,6 @@ export default class Warn extends Command {
             return;
         }
 
-        const targetMember = targetUser.member as GuildMember;
         const reason = reasonInput && reasonInput.value ? reasonInput.value.toString() : "*none*";
 
         const logEmbed = new EmbedBuilder()
@@ -65,5 +64,7 @@ export default class Warn extends Command {
 
         const audit = new Audit(targetUser.user.id, AuditType.Warn, reason, interaction.user.id, interaction.guildId);
         await audit.Save(Audit, audit);
+
+        await interaction.reply('Successfully warned user.');
     }
 }
