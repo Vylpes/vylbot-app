@@ -35,4 +35,8 @@ export default class StringTools {
 
         return result;
     }
+
+    public static ReplaceAll(str: string, find: string, replace: string) {
+        return str.replace(new RegExp(find, 'g'), replace);
+    }
 }

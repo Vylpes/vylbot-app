@@ -49,6 +49,11 @@ export default class Timeout extends Command {
             return;
         }
 
+        if (targetUser.user.bot) {
+            await interaction.reply('Cannot timeout bots.');
+            return;
+        }
+
         // General Variables
         const targetMember = targetUser.member as GuildMember;
         const reason = reasonInput && reasonInput.value ? reasonInput.value.toString() : null;

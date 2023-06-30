@@ -1,8 +1,10 @@
+import StringTools from "./StringTools";
+
 export default class TimeLengthInput {
     public readonly value: string;
 
     constructor(input: string) {
-        this.value = input;
+        this.value = StringTools.ReplaceAll(input, ',', '');
     }
 
     public GetDays(): number {

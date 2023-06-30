@@ -360,6 +360,43 @@ describe('execute', () => {
         expect(interaction.reply).toBeCalledWith('Fields are required.');
     });
 
+    test('GIVEN targetUser is a bot, EXPECT error', async () => {
+        const interaction = {
+            reply: jest.fn(),
+            guild: mock<Guild>(),
+            guildId: 'guildId',
+            options: {
+                get: jest.fn((value: string): CommandInteractionOption<CacheType> | null => {
+                    switch (value) {
+                        case 'target':
+                            return {
+                                user: {
+                                    bot: true,
+                                } as User,
+                                member: {} as GuildMember
+                            } as CommandInteractionOption;
+                        case 'length':
+                            return {
+                                value: '1m',
+                            } as CommandInteractionOption;
+                        case 'reason':
+                            return {
+                                value: 'Test reason',
+                            } as CommandInteractionOption;
+                        default:
+                            return null;
+                    }
+                }),
+            }
+        } as unknown as CommandInteraction;
+
+        const command = new Timeout();
+
+        await command.execute(interaction);
+
+        expect(interaction.reply).toBeCalledWith('Cannot timeout bots.');
+    });
+
     test('GIVEN targetMember IS NOT manageable by the bot, EXPECT insufficient permissions error', async () => {
         const command = new Timeout();
 
