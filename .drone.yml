@@ -16,10 +16,8 @@ steps:
       - sh /home/vylpes/scripts/vylbot/deploy_prod.sh
 
 trigger:
-  branch:
-  - main
   event:
-  - promote
+  - tag
 
 ---
 
