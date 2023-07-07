@@ -11,7 +11,7 @@ export default class Mute extends Command {
 
         super.CommandBuilder = new SlashCommandBuilder()
             .setName("mute")
-            .setDescription("Mute a member in the server with an optional reason")
+            .setDescription("(DEPRECATED) Mute a member in the server with an optional reason")
             .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers)
             .addUserOption(option =>
                 option
@@ -79,5 +79,7 @@ export default class Mute extends Command {
 
         const audit = new Audit(targetUser.user.id, AuditType.Mute, reason, interaction.user.id, interaction.guildId);
         await audit.Save(Audit, audit);
+
+        await interaction.reply("Please note the mute and unmute commands have been deprecated and will be removed in a future update. Please use timeout instead");
     }
 }

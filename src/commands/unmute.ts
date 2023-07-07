@@ -9,7 +9,7 @@ export default class Unmute extends Command {
 
         super.CommandBuilder = new SlashCommandBuilder()
             .setName("unmute")
-            .setDescription("Unmute a member in the server with an optional reason")
+            .setDescription("(DEPRECATED) Unmute a member in the server with an optional reason")
             .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers)
             .addUserOption(option =>
                 option
@@ -74,5 +74,7 @@ export default class Unmute extends Command {
         if (channel) {
             await channel.send({ embeds: [ logEmbed ]});
         }
+
+        await interaction.reply("Please note the mute and unmute commands have been deprecated and will be removed in a future update. Please use timeout instead");
     }
 }
