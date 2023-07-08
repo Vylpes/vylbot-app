@@ -1,29 +1,45 @@
-import ErrorEmbed from "../helpers/embeds/ErrorEmbed";
-import PublicEmbed from "../helpers/embeds/PublicEmbed";
 import { Command } from "../type/command";
-import { ICommandContext } from "../contracts/ICommandContext";
 import randomBunny from "random-bunny";
+import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import EmbedColours from "../constants/EmbedColours";
 
 export default class Bunny extends Command {
     constructor() {
         super();
 
-        super.Category = "Fun";
+        super.CommandBuilder = new SlashCommandBuilder()
+            .setName("bunny")
+            .setDescription("Get a random picture of a rabbit.");
     }
 
-    public override async execute(context: ICommandContext) {
-        const result = await randomBunny('rabbits', 'hot');
+    public override async execute(interaction: CommandInteraction) {
+        if (!interaction.isChatInputCommand()) return;
+
+        const subreddits = [
+            'rabbits',
+            'bunnieswithhats',
+            'buncomfortable',
+            'bunnytongues',
+            'dutchbunnymafia',
+        ];
+
+        const random = Math.floor(Math.random() * subreddits.length);
+        const selectedSubreddit = subreddits[random];
+
+        const result = await randomBunny(selectedSubreddit, 'hot');
 
         if (result.IsSuccess) {
-            const embed = new PublicEmbed(context, result.Result!.Title, "")
+            const embed = new EmbedBuilder()
+                .setColor(EmbedColours.Ok)
+                .setTitle(result.Result!.Title)
+                .setDescription(result.Result!.Permalink)
                 .setImage(result.Result!.Url)
                 .setURL(`https://reddit.com${result.Result!.Permalink}`)
-                .setFooter({ text: `r/Rabbits · ${result.Result!.Ups} upvotes` });
-            
-            await embed.SendToCurrentChannel();
+                .setFooter({ text: `r/${selectedSubreddit} · ${result.Result!.Ups} upvotes`});
+
+            await interaction.reply({ embeds: [ embed ]});
         } else {
-            const errorEmbed = new ErrorEmbed(context, "There was an error using this command.");
-            await errorEmbed.SendToCurrentChannel();
+            await interaction.reply("There was an error running this command.");
         }
     }
 }

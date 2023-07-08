@@ -1,6 +1,7 @@
 
-import { Event } from "../type/event";
+import { EventType } from "../constants/EventType";
 
 export default interface IEventItem {
-    Event: Event,
+    EventType: EventType,
+    ExecutionFunction: Function,
 }

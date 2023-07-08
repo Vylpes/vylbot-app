@@ -1,4 +1,8 @@
 version: "3.9"
+
+volumes:
+  dev_database_data:
+
 services:
   # discord:
   #   build: .
@@ -12,13 +16,16 @@ services:
       - MYSQL_USER=dev
       - MYSQL_PASSWORD=dev
       - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_HOST=0.0.0.0
     ports:
-      - 3306:3306
+      - "3101:3306"
+    volumes:
+      - dev_database_data:/var/lib/mysql
 
   phpmyadmin:
     image: phpmyadmin
     restart: always
     ports:
-      - 8080:80
+      - "3102:80"
     environment:
       - PMA_ARBITRARY=1

@@ -1,6 +1,6 @@
 import DefaultValues from "../constants/DefaultValues";
-import Server from "../entity/Server";
-import Setting from "../entity/Setting";
+import Server from "../database/entities/Server";
+import Setting from "../database/entities/Setting";
 
 export default class SettingsHelper {
     public static async GetSetting(key: string, serverId: string): Promise<string | undefined> {

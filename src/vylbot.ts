@@ -1,7 +1,7 @@
 import { CoreClient } from "./client/client";
 import * as dotenv from "dotenv";
 import registry from "./registry";
-import { Intents } from "discord.js";
+import { IntentsBitField } from "discord.js";
 
 dotenv.config();
 
@@ -9,8 +9,14 @@ const requiredConfigs: string[] = [
     "BOT_TOKEN",
     "BOT_VER",
     "BOT_AUTHOR",
-    "BOT_DATE",
     "BOT_OWNERID",
+    "BOT_CLIENTID",
+    "DB_HOST",
+    "DB_PORT",
+    "DB_AUTH_USER",
+    "DB_AUTH_PASS",
+    "DB_SYNC",
+    "DB_LOGGING",
 ];
 
 requiredConfigs.forEach(config => {
@@ -19,13 +25,12 @@ requiredConfigs.forEach(config => {
     }
 });
 
-const devmode = process.argv.find(x => x.toLowerCase() == "--dev") != null;
-
 const client = new CoreClient([
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_MEMBERS,
-], devmode);
+    IntentsBitField.Flags.Guilds,
+    IntentsBitField.Flags.GuildMessages,
+    IntentsBitField.Flags.GuildMembers,
+    IntentsBitField.Flags.MessageContent,
+]);
 
 registry.RegisterCommands();
 registry.RegisterEvents();
