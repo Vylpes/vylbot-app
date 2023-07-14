@@ -13,6 +13,7 @@ import Disable from "./commands/disable";
 import Ignore from "./commands/ignore";
 import Kick from "./commands/kick";
 import Mute from "./commands/mute";
+import Poll from "./commands/poll";
 import Role from "./commands/Role/role";
 import ConfigRole from "./commands/Role/config";
 import Rules from "./commands/rules";
@@ -49,6 +50,7 @@ export default class Registry {
         CoreClient.RegisterCommand("ignore", new Ignore());
         CoreClient.RegisterCommand("kick", new Kick());
         CoreClient.RegisterCommand("mute", new Mute());
+        CoreClient.RegisterCommand("poll", new Poll());
         CoreClient.RegisterCommand("rules", new Rules());
         CoreClient.RegisterCommand("setup", new Setup());
         CoreClient.RegisterCommand("timeout", new Timeout());
