@@ -10,7 +10,8 @@
     "start": "node ./dist/vylbot",
     "test": "jest",
     "db:up": "typeorm migration:run -d dist/database/dataSources/appDataSource.js",
-    "db:down": "typeorm migration:revert -d dist/database/dataSources/appDataSource.js"
+    "db:down": "typeorm migration:revert -d dist/database/dataSources/appDataSource.js",
+    "release": "np --no-publish"
   },
   "repository": {
     "type": "git",
@@ -44,6 +45,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
+    "np": "^8.0.4",
     "typescript": "^5.0.0"
   }
 }
