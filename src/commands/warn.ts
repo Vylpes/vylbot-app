@@ -41,6 +41,7 @@ export default class Warn extends Command {
             .setColor(EmbedColours.Ok)
             .setTitle("Member Warned")
             .setDescription(`<@${targetUser.user.id}> \`${targetUser.user.tag}\``)
+            .setThumbnail(targetUser.user.avatarURL())
             .addFields([
                 {
                     name: "Moderator",

@@ -44,6 +44,7 @@ export default class Ban extends Command {
             .setColor(EmbedColours.Ok)
             .setTitle("Member Banned")
             .setDescription(`<@${targetUser.user.id}> \`${targetUser.user.tag}\``)
+            .setThumbnail(targetUser.user.avatarURL())
             .addFields([
                 {
                     name: "Moderator",

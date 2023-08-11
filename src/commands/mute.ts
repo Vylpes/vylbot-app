@@ -42,6 +42,7 @@ export default class Mute extends Command {
             .setColor(EmbedColours.Ok)
             .setTitle("Member Muted")
             .setDescription(`<@${targetUser.user.id}> \`${targetUser.user.tag}\``)
+            .setThumbnail(targetUser.user.avatarURL())
             .addFields([
                 {
                     name: "Moderator",
