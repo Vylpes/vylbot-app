@@ -54,7 +54,14 @@ export default class Mute extends Command {
                 },
             ]);
 
-        const mutedRole = interaction.guild.roles.cache.find(role => role.name == process.env.ROLES_MUTED);
+        const mutedRoleName = await SettingsHelper.GetSetting('role.muted', interaction.guildId);
+
+        if (!mutedRoleName) {
+            await interaction.reply('Unable to find configuration. Please contact the bot author.');
+            return;
+        }
+
+        const mutedRole = interaction.guild.roles.cache.find(role => role.name == mutedRoleName);
 
         if (!mutedRole) {
             await interaction.reply('Muted role not found.');
