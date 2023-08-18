@@ -116,9 +116,9 @@ export default class Config extends Command {
         const setting = server.Settings.filter(x => x.Key == key.value)[0];
 
         if (setting) {
-            await interaction.reply(`\`${key}\`: \`${setting.Value}\``);
+            await interaction.reply(`\`${key.value}\`: \`${setting.Value}\``);
         } else {
-            await interaction.reply(`\`${key}\`: \`${DefaultValues.GetValue(key.value.toString())}\` <DEFAULT>`);
+            await interaction.reply(`\`${key.value}\`: \`${DefaultValues.GetValue(key.value.toString())}\` <DEFAULT>`);
         }
     }
 
