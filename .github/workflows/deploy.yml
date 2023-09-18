@@ -2,8 +2,8 @@ name: Deploy To Production
 
 on:
   push:
-    tags:
-      - '*'
+    branches:
+      - main
 
 jobs:
   build:
