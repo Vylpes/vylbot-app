@@ -9,14 +9,14 @@ cd ~/apps/vylbot/vylbot_stage \
 && git checkout develop \
 && git fetch \
 && git pull \
-&& docker compose --file docker-compose.stage.yml down \
+&& docker compose down \
 && (pm2 stop vylbot_stage || true) \
 && (pm2 delete vylbot_stage || true) \
 && cp .stage.env .env \
 && yarn clean \
 && yarn install --frozen-lockfile \
 && yarn build \
-&& docker compose --file docker-compose.stage.yml up -d \
+&& docker compose up -d \
 && echo "Sleeping for 10 seconds to let database load..." \
 && sleep 10 \
 && yarn run db:up \
