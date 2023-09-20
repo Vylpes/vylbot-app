@@ -34,7 +34,7 @@ export default async function MessageDelete(message: Message) {
         embed.addFields([
             {
                 name: "Attachments",
-                value: `\`\`\`${message.attachments.map(x => x.url).join("\n")}\`\`\``
+                value: message.attachments.size.toString(),
             }
         ]);
     }
