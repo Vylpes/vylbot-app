@@ -44,6 +44,8 @@ jobs:
         DB_HOST: ${{ secrets.DB_HOST }}
         DB_PORT: ${{ secrets.DB_PORT }}
         DB_ROOT_HOST: ${{ secrets.DB_ROOT_HOST }}
+        DB_SYNC: ${{ secrets.DB_SYNC }}
+        DB_LOGGING: ${{ secrets.DB_LOGGING }}
         DB_DATA_LOCATION: ${{ secrets.DB_DATA_LOCATION }}
         BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         BOT_VER: ${{ vars.BOT_VER }}
@@ -57,7 +59,7 @@ jobs:
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
-        envs: DB_NAME,DB_AUTH_USER,DB_AUTH_PASS,DB_HOST,DB_PORT,DB_ROOT_HOST,DB_DATA_LOCATION,BOT_TOKEN,BOT_VER,BOT_AUTHOR,BOT_OWNERID,BOT_CLIENTID,ABOUT_FUNDING,ABOUT_REPO
+        envs: DB_NAME,DB_AUTH_USER,DB_AUTH_PASS,DB_HOST,DB_PORT,DB_ROOT_HOST,DB_SYNC,DB_LOGGING,DB_DATA_LOCATION,BOT_TOKEN,BOT_VER,BOT_AUTHOR,BOT_OWNERID,BOT_CLIENTID,ABOUT_FUNDING,ABOUT_REPO
         script: |
           cd ~/apps/vylbot/ \
           && docker compose down \
