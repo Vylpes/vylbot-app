@@ -34,17 +34,6 @@ resource "vultr_instance" "vps-app" {
     user_data = file("./cloud-config.yml")
 }
 
-resource "vultr_block_storage" "bs-data" {
-  size_gb = 10
-  region = "lhr"
-  attached_to_instance = "${vultr_instance.vps-app.id}"
-  label = "${var.INSTANCE_PREFIX}-ldn-bs-data"
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
 resource "vultr_reserved_ip" "ip-app" {
   region = "lhr"
   ip_type = "v4"
