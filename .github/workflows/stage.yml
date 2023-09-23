@@ -57,11 +57,11 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         envs: DB_NAME,DB_AUTH_USER,DB_AUTH_PASS,DB_ROOT_HOST,DB_DATA_LOCATION,BOT_TOKEN,BOT_VER,BOT_AUTHOR,BOT_OWNERID,BOT_CLIENTID,ABOUT_FUNDING,ABOUT_REPO
         script: |
-          cd ~/apps/vylbot/
-          docker compose down
-          pm2 stop vylbot
-          pm2 start vylbot
-          docker compose up -d
-          sleep 10
-          yarn run db:up
-          pm2 start --name vylbot dist/vylbot.js
+          cd ~/apps/vylbot/ \
+          && docker compose down \
+          && (pm2 stop vylbot || true) \
+          && (pm2 delete vylbot || true) \
+          && docker compose up -d \
+          && sleep 10 \
+          && yarn run db:up \
+          && pm2 start --name vylbot dist/vylbot.js
