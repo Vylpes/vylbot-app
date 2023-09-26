@@ -10,12 +10,6 @@ users:
       - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC/EDwCD5t3/WpyqDwpGAJMHTfbpPT9W5ffQfVqlMFl4TA8eVzPS+H/czy3PQOMUAgVKtO1Xup8GdFovN6dMVEk4IPNNS8w8OheSUKOCsRq1A1r2vDHZ/h393l4A9jWGq2HRBdUdQhy7SDXC/VBY2Yo5IQuAhI6gaXz/AENQ0Qf5PpMevfGs2jVu+0Ic5J1ccjX+8FWXZtRi0VF84WIixUfdyNgsi0RkywlRKyas7bDAWRtfB556qrxaQd0iTdyL0sCR+XAIx5cGbf5knFUXXeQvsASczgzn6X4Jzzgnv/MB0K/nALZeETxI9IXki4yQuGSomiR9WRYSIRLZsjrWxUTwk5RPMuAofW8hr20HL5QqBLVRzFVf7RipmCug8JAx8EE1uk8SLFOJCQBwzYTTbp1KAsJtVkUL+0YEIsgFuhPcXXIN1DbHCeKu5WHKnPxx9kwW/bx9q+Id1crYFWMm/a+MJPBNhIGmv9+HAWOeSZDeROCYd9Nx3yEdT15+hn5L/GZaMyk5AbCwjFWVwUVIAt5Pcn/AkBngRc5DuA+JE7TbbeWsYyN379gwswl/IYBP6fO13V80iDwwkQdizvBCtnmD3Q200aI1unpydR4lZlpPyP0ug0t7jJSEAn9nzQmsMSw7sI9BJ3uf49Y8Qf7LPd9llQeJl+qFXpvDBcji/qHYQ== vylpes@Ethans-MacBook-Pro.local
     sudo: ['ALL=(ALL) NOPASSWD:ALL']
 
-runcmd:
-  - ufw limit ssh
-  - ufw allow 80
-  - ufw allow 443
-  - ufw enable
-
 apt:
   sources:
     docker.list:
@@ -36,4 +30,6 @@ packages:
   - nodejs
 
 runcmd:
+  - ufw limit ssh
+  - ufw enable
   - npm install -g yarn pm2
