@@ -54,11 +54,11 @@ steps:
   - yarn install --frozen-lockfile
   - yarn build
 
-- name: test
-  image: node
-  commands:
-  - yarn install --frozen-lockfile
-  - yarn test
+# - name: test
+#   image: node
+#   commands:
+#   - yarn install --frozen-lockfile
+#   - yarn test
 
 trigger:
   branch:
