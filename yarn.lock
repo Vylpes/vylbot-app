@@ -3247,7 +3247,14 @@ json5@^2.2.2, json5@^2.2.3:
   resolved "https://registry.yarnpkg.com/json5/-/json5-2.2.3.tgz#78cd6f1a19bdc12b73db5ad0c61efd66c1e29283"
   integrity sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==
 
-keyv@^4.0.0, keyv@^4.5.2:
+keyv@^4.0.0:
+  version "4.5.4"
+  resolved "https://registry.yarnpkg.com/keyv/-/keyv-4.5.4.tgz#a879a99e29452f942439f2a405e3af8b31d4de93"
+  integrity sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==
+  dependencies:
+    json-buffer "3.0.1"
+
+keyv@^4.5.2:
   version "4.5.2"
   resolved "https://registry.yarnpkg.com/keyv/-/keyv-4.5.2.tgz#0e310ce73bf7851ec702f2eaf46ec4e3805cce56"
   integrity sha512-5MHbFaKn8cNSmVW7BYnijeAVlE4cYA/SVkifVgrh7yotnfhKmjuXpDKjrABLnT0SfHWV21P8ow07OGfRrNDg8g==
@@ -4126,9 +4133,9 @@ quick-lru@^6.1.1:
   integrity sha512-S27GBT+F0NTRiehtbrgaSE1idUAJ5bX8dPAQTdylEyNlrdcH5X4Lz7Edz3DYzecbsCluD5zO8ZNEe04z3D3u6Q==
 
 random-bunny@^2.0.5:
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/random-bunny/-/random-bunny-2.1.3.tgz#690cd260730409687eb3f1a72064c75f3acdb5f5"
-  integrity sha512-j6dxMmKZsiEfQrDn3ZJo4/lTOk+mdV5JVug9hCYQ0BGAucNn3vi/R2NEShOQe8O/501qNSnzrAtVn6fIc6i88Q==
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/random-bunny/-/random-bunny-2.1.4.tgz#95fed252efd345004156c450e7f477f76faf0ff4"
+  integrity sha512-tRusI1aQBhbUjMU/8Ww5f7MKQNbCnLv4iCaZ5w10ERgValiqCy3ti2LxLilApy8Iz1wp+CtG2aI+5KJAOdmgkQ==
   dependencies:
     glob-parent "^6.0.0"
     got-cjs "^12.5.4"
