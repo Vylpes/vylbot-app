@@ -26,11 +26,11 @@ event.message.delete.channel: Sets the channel the bot will log message delete e
 event.message.update.enabled: Enables/Disables the message delete log event (Default: "false")
 event.message.update.channel: Sets the channel the bot will log message delete events to (Default: "message-logs")
 
-event.member.add.enabled: Enables/Disables the message delete log event (Default: "false")
-event.member.add.channel: Sets the channel the bot will log message delete events to (Default: "member-logs")
+event.member.add.enabled: Enables/Disables the member join log event (Default: "false")
+event.member.add.channel: Sets the channel the bot will log member join events to (Default: "member-logs")
 
-event.member.remove.enabled: Enables/Disables the message delete log event (Default: "false")
-event.member.remove.channel: Sets the channel the bot will log message delete events to (Default: "member-logs")
+event.member.remove.enabled: Enables/Disables the member leave log event (Default: "false")
+event.member.remove.channel: Sets the channel the bot will log member leave events to (Default: "member-logs")
 
-event.member.update.enabled: Enables/Disables the message delete log event (Default: "false")
-event.member.update.channel: Sets the channel the bot will log message delete events to (Default: "member-logs")
+event.member.update.enabled: Enables/Disables the member update log event (Default: "false")
+event.member.update.channel: Sets the channel the bot will log member update events to (Default: "member-logs")
