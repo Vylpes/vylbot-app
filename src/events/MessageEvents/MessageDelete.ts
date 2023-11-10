@@ -33,8 +33,8 @@ export default async function MessageDelete(message: Message) {
     if (message.attachments.size > 0) {
         embed.addFields([
             {
-                name: "Attachments",
-                value: `\`\`\`${message.attachments.map(x => x.url).join("\n")}\`\`\``
+                name: `Attachments (${message.attachments.size})`,
+                value: `\`\`\`${message.attachments.map(x => x.name).join("\n")}\`\`\``
             }
         ]);
     }
