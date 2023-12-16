@@ -6,7 +6,7 @@ export default class DefaultValues {
         this.SetValues();
 
         const res = this.values.find(x => x.Key == key);
-        
+
         if (!res) {
             return undefined;
         }
@@ -46,18 +46,18 @@ export default class DefaultValues {
             // Event
             this.values.push({ Key: "event.message.delete.enabled", Value: "false" });
             this.values.push({ Key: "event.message.delete.channel", Value: "message-logs" });
-            
+
             this.values.push({ Key: "event.message.update.enabled", Value: "false" });
             this.values.push({ Key: "event.message.update.channel", Value: "message-logs" });
-            
+
             this.values.push({ Key: "event.member.add.enabled", Value: "false" });
             this.values.push({ Key: "event.member.add.channel", Value: "member-logs" });
-             
+
             this.values.push({ Key: "event.member.remove.enabled", Value: "false" });
             this.values.push({ Key: "event.member.remove.channel", Value: "member-logs" });
-            
+
             this.values.push({ Key: "event.member.update.enabled", Value: "false" });
-            this.values.push({ Key: "event.member.remove.channel", Value: "member-logs" });
+            this.values.push({ Key: "event.member.update.channel", Value: "member-logs" });
 
         }
     }

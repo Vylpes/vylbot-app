@@ -37,7 +37,7 @@ export class Util {
                 .flatMap(x => x.Command.CommandBuilder);
 
             if (!client.guilds.cache.has(guild)) continue;
-            
+
             rest.put(
                 Routes.applicationGuildCommands(process.env.BOT_CLIENTID!, guild),
                 {

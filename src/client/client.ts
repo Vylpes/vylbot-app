@@ -1,4 +1,4 @@
-import { Client } from "discord.js";
+import { Client, Partials } from "discord.js";
 import * as dotenv from "dotenv";
 import { createConnection } from "typeorm";
 import { EventType } from "../constants/EventType";
@@ -25,8 +25,8 @@ export class CoreClient extends Client {
         return this._eventItems;
     }
 
-    constructor(intents: number[]) {
-        super({ intents: intents });
+    constructor(intents: number[], partials: Partials[]) {
+        super({ intents: intents, partials: partials });
         dotenv.config();
 
         CoreClient._commandItems = [];
