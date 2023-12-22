@@ -121,9 +121,9 @@ export default class Config extends Command {
             var defaultValue = DefaultValues.GetValue(key.value.toString());
 
             if (defaultValue) {
-                await interaction.reply(`\`${key}\`: \`${defaultValue}\` <DEFAULT>`);
+                await interaction.reply(`\`${key.value}\`: \`${defaultValue}\` <DEFAULT>`);
             } else {
-                await interaction.reply(`\`${key}\`: <NONE>`);
+                await interaction.reply(`\`${key.value}\`: <NONE>`);
             }
         }
     }
