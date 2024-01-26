@@ -31,6 +31,7 @@ export default class DefaultValues {
 
             // Rules (Command)
             this.values.push({ Key: "rules.file", Value: "data/rules/rules" });
+            this.values.push({ Key: "rules.access.label", Value: "Verify" });
 
             // Channels
             this.values.push({ Key: "channels.logs.message", Value: "message-logs" });

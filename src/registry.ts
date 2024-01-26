@@ -37,6 +37,9 @@ import MessageDelete from "./events/MessageEvents/MessageDelete";
 import MessageUpdate from "./events/MessageEvents/MessageUpdate";
 import MessageCreate from "./events/MessageEvents/MessageCreate";
 
+// Button Event Imports
+import Verify from "./buttonEvents/verify";
+
 export default class Registry {
     public static RegisterCommands() {
         CoreClient.RegisterCommand("about", new About());
@@ -83,5 +86,9 @@ export default class Registry {
         CoreClient.RegisterEvent(EventType.MessageDelete, MessageDelete);
         CoreClient.RegisterEvent(EventType.MessageUpdate, MessageUpdate);
         CoreClient.RegisterEvent(EventType.MessageCreate, MessageCreate);
+    }
+
+    public static RegisterButtonEvents() {
+        CoreClient.RegisterButtonEvent("verify", new Verify());
     }
 }

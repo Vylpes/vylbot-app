@@ -1,40 +1,18 @@
 import { Interaction } from "discord.js";
-import ICommandItem from "../contracts/ICommandItem";
-import SettingsHelper from "../helpers/SettingsHelper";
-import { CoreClient } from "./client";
+import ChatInputCommand from "./interactionCreate/chatInputCommand";
+import Button from "./interactionCreate/button";
 
 export class Events {
     public async onInteractionCreate(interaction: Interaction) {
-        if (!interaction.isChatInputCommand()) return;
         if (!interaction.guildId) return;
 
-        const disabledCommandsString = await SettingsHelper.GetSetting("commands.disabled", interaction.guildId);
-        const disabledCommands = disabledCommandsString?.split(",");
-
-        const disabledCommandsMessage = await SettingsHelper.GetSetting("commands.disabled.message", interaction.guildId);
-
-        if (disabledCommands?.find(x => x == interaction.commandName)) {
-            await interaction.reply(disabledCommandsMessage || "This command is disabled.");
-            return;
+        if (interaction.isChatInputCommand()) {
+            ChatInputCommand.onChatInput(interaction);
         }
 
-        const item = CoreClient.commandItems.find(x => x.Name == interaction.commandName && !x.ServerId);
-        const itemForServer = CoreClient.commandItems.find(x => x.Name == interaction.commandName && x.ServerId == interaction.guildId);
-
-        let itemToUse: ICommandItem;
-
-        if (!itemForServer) {
-            if (!item) {
-                await interaction.reply('Command not found');
-                return;
-            }
-
-            itemToUse = item;
-        } else {
-            itemToUse = itemForServer;
+        if (interaction.isButton()) {
+            Button.onButtonClicked(interaction);
         }
-
-        itemToUse.Command.execute(interaction);
     }
 
     // Emit when bot is logged in and ready to use

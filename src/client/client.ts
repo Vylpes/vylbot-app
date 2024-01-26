@@ -9,10 +9,13 @@ import { Command } from "../type/command";
 import { Events } from "./events";
 import { Util } from "./util";
 import AppDataSource from "../database/dataSources/appDataSource";
+import ButtonEventItem from "../contracts/ButtonEventItem";
+import { ButtonEvent } from "../type/buttonEvent";
 
 export class CoreClient extends Client {
     private static _commandItems: ICommandItem[];
     private static _eventItems: IEventItem[];
+    private static _buttonEvents: ButtonEventItem[];
 
     private _events: Events;
     private _util: Util;
@@ -25,12 +28,17 @@ export class CoreClient extends Client {
         return this._eventItems;
     }
 
+    public static get buttonEvents(): ButtonEventItem[] {
+        return this._buttonEvents;
+    }
+
     constructor(intents: number[], partials: Partials[]) {
         super({ intents: intents, partials: partials });
         dotenv.config();
 
         CoreClient._commandItems = [];
         CoreClient._eventItems = [];
+        CoreClient._buttonEvents = [];
 
         this._events = new Events();
         this._util = new Util();
@@ -72,5 +80,14 @@ export class CoreClient extends Client {
         };
 
         CoreClient._eventItems.push(item);
+    }
+
+    public static RegisterButtonEvent(buttonId: string, event: ButtonEvent) {
+        const item: ButtonEventItem = {
+            ButtonId: buttonId,
+            Event: event,
+        };
+
+        CoreClient._buttonEvents.push(item);
     }
 }
