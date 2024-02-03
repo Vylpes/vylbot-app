@@ -7,7 +7,7 @@ export default class Bunny extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName("bunny")
             .setDescription("Get a random picture of a rabbit.");
     }

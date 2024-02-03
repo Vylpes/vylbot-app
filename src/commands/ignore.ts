@@ -6,7 +6,7 @@ export default class Ignore extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName('ignore')
             .setDescription('Ignore events in this channel')
             .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);

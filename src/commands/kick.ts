@@ -9,7 +9,7 @@ export default class Kick extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName("kick")
             .setDescription("Kick a member from the server with an optional reason")
             .setDefaultMemberPermissions(PermissionsBitField.Flags.KickMembers)

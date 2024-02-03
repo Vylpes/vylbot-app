@@ -10,7 +10,7 @@ export default class Timeout extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName("timeout")
             .setDescription("Timeouts a user out, sending them a DM with the reason if possible")
             .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers)

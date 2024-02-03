@@ -46,14 +46,4 @@ export default class SettingsHelper {
             await server.Save(Server, server);
         }
     }
-
-    public static async GetServerPrefix(serverId: string): Promise<string> {
-        const setting = await this.GetSetting("bot.prefix", serverId);
-
-        if (!setting) {
-            return "v!";
-        }
-
-        return setting;
-    }
 }

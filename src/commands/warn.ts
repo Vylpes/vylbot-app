@@ -9,7 +9,7 @@ export default class Warn extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName("warn")
             .setDescription("Warns a member in the server with an optional reason")
             .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers)

@@ -10,7 +10,7 @@ export default class Config extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName('config')
             .setDescription('Configure the current server')
             .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)

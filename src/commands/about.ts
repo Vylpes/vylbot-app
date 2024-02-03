@@ -6,7 +6,7 @@ export default class About extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName('about')
             .setDescription('About VylBot');
     }

@@ -1,4 +1,4 @@
-import { APIEmbed, CacheType, CommandInteraction, CommandInteractionOption, DMChannel, Embed, EmbedBuilder, EmbedField, Guild, GuildChannel, GuildMember, InteractionReplyOptions, JSONEncodable, Message, MessageCreateOptions, MessagePayload, SlashCommandBuilder, TextChannel, User } from "discord.js";
+import { APIEmbed, CacheType, CommandInteraction, CommandInteractionOption, DMChannel, EmbedBuilder, EmbedField, Guild, GuildMember, InteractionReplyOptions, JSONEncodable, Message, MessageCreateOptions, SlashCommandBuilder, TextChannel, User } from "discord.js";
 import { mock } from "jest-mock-extended";
 import Timeout from "../../src/commands/timeout";
 import SettingsHelper from "../../src/helpers/SettingsHelper";
@@ -58,6 +58,7 @@ describe('execute', () => {
                 id: 'userId',
                 tag: 'userTag',
                 createDM: jest.fn().mockResolvedValue(dmChannel),
+                avatarURL: jest.fn().mockReturnValue("https://google.com/test.png"),
             } as unknown as User,
             member: {
                 manageable: true,
@@ -106,7 +107,7 @@ describe('execute', () => {
         await command.execute(interaction);
 
         // EXPECT user to be timed out
-        expect(timeoutFunc).toBeCalledWith(1000, 'Test reason');
+        expect(timeoutFunc).toHaveBeenCalledWith(1000, 'Test reason');
 
         // EXPECT embeds to be sent
         expect(embeds).toBeDefined();
@@ -116,6 +117,7 @@ describe('execute', () => {
         const resultEmbed = embeds![0] as EmbedBuilder;
 
         expect(resultEmbed.data.description).toBe('<@userId> has been timed out');
+
         expect(resultEmbed.data.fields).toBeDefined();
         expect(resultEmbed.data.fields!.length).toBe(1);
 
@@ -154,6 +156,7 @@ describe('execute', () => {
 
         expect(logsChannelSentEmbed.color).toBe(EmbedColours.Ok);
         expect(logsChannelSentEmbed.title).toBe("Member Timed Out");
+        expect(logsChannelSentEmbed.thumbnail.url).toBe("https://google.com/test.png");
         expect(logsChannelSentEmbed.description).toBe("<@userId> `userTag`");
         expect(logsChannelSentEmbed.fields?.length).toBe(4);
 
@@ -415,7 +418,8 @@ describe('execute', () => {
                                 user: {
                                     id: 'userId',
                                     tag: 'userTag',
-                                } as User,
+                                    avatarURL: jest.fn().mockReturnValue("https://google.com/test.png"),
+                                } as unknown as User,
                                 member: {
                                     manageable: false,
                                 } as GuildMember
@@ -482,8 +486,9 @@ describe('execute', () => {
                                             sentEmbeds.push(options.embeds![0] as EmbedBuilder);
 
                                             return mock<Message<false>>();
-                                        })
+                                        }),
                                     }) as unknown as DMChannel,
+                                    avatarURL: jest.fn().mockReturnValue("https://google.com/test.png"),
                                 } as unknown as User,
                                 member: {
                                     manageable: true,
@@ -567,6 +572,7 @@ describe('execute', () => {
                                             return mock<Message<false>>();
                                         })
                                     }) as unknown as DMChannel,
+                                    avatarURL: jest.fn().mockReturnValue("https://google.com/test.png"),
                                 } as unknown as User,
                                 member: {
                                     manageable: true,
@@ -641,6 +647,7 @@ describe('execute', () => {
                                             return mock<Message<false>>();
                                         })
                                     }) as unknown as DMChannel,
+                                    avatarURL: jest.fn().mockReturnValue("https://google.com/test.png"),
                                 } as unknown as User,
                                 member: {
                                     manageable: true,
@@ -704,6 +711,7 @@ describe('execute', () => {
                 id: 'userId',
                 tag: 'userTag',
                 createDM: jest.fn().mockRejectedValue(undefined),
+                avatarURL: jest.fn().mockReturnValue("https://google.com/test.png"),
             } as unknown as User,
             member: {
                 manageable: true,

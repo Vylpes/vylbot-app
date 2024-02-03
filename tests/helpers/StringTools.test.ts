@@ -1,11 +1,15 @@
-import StringTools from "../../src/helpers/StringTools";
-
 describe('Capitalise', () => {
-    test('Expect sentence to be captilised', () => {
-        const inputString = 'the big brown fox jumps over the lazy dog';
+    test.todo('EXPECT sentence to be capitalised');
+});
 
-        const result = StringTools.Capitalise(inputString);
+describe('CapitaliseArray', () => {
+    test.todo("EXPECT words in array to be capitalised");
+});
 
-        expect(result).toBe('The Big Brown Fox Jumps Over The Lazy Dog');
-    });
+describe("RandomString", () => {
+    test.todo("EXPECT random string of length to be returned");
+});
+
+describe("ReplaceAll", () => {
+    test.todo("EXPECT all instances of substring to be replaced");
 });

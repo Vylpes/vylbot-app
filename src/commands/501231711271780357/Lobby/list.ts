@@ -1,4 +1,4 @@
-import { CacheType, CommandInteraction, EmbedBuilder, GuildBasedChannel, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { CacheType, CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../../type/command";
 import { default as eLobby } from "../../../database/entities/501231711271780357/Lobby";
 import EmbedColours from "../../../constants/EmbedColours";
@@ -7,7 +7,7 @@ export default class ListLobby extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName('listlobby')
             .setDescription('Lists all channels set up as lobbies')
             .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers);

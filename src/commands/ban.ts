@@ -9,7 +9,7 @@ export default class Ban extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName("ban")
             .setDescription("Ban a member from the server with an optional reason")
             .setDefaultMemberPermissions(PermissionsBitField.Flags.BanMembers)

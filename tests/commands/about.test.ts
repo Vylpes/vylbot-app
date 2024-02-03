@@ -1,8 +1,6 @@
-import { Message } from "discord.js";
-import { mock } from "jest-mock-extended";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedBuilder, InteractionReplyOptions,SlashCommandBuilder } from "discord.js";
 import About from "../../src/commands/about";
-import { ICommandContext } from "../../src/contracts/ICommandContext";
-import PublicEmbed from "../../src/helpers/embeds/PublicEmbed";
+import EmbedColours from "../../src/constants/EmbedColours";
 
 beforeEach(() => {
     process.env = {};
@@ -10,143 +8,169 @@ beforeEach(() => {
 
 describe('Constructor', () => {
     test('Expect values set', () => {
-        const about = new About();
+        const command = new About();
 
-        expect(about._category).toBe("General");
+        expect(command.CommandBuilder).toBeDefined();
+
+        const commandBuilder = command.CommandBuilder as SlashCommandBuilder;
+
+        expect(commandBuilder.name).toBe("about");
+        expect(commandBuilder.description).toBe("About VylBot");
     });
 });
 
 describe('Execute', () => {
-    test('Expect embed to be made and sent to the current channel', async () => {
-        process.env = {
-            BOT_VER: "BOT_VER",
-            BOT_AUTHOR: "BOT_AUTHOR",
-            BOT_DATE: "BOT_DATE"
-        };
+    test('GIVEN ABOUT_FUNDING and ABOUT_REPO are NOT present in env var, EXPECT embed to be sent without buttons', async () => {
+        // Setup
+        let replyOptions: InteractionReplyOptions | undefined;
 
-        const message = mock<Message>();
-        message.channel.send = jest.fn();
+        const interaction = {
+            reply: jest.fn((options: InteractionReplyOptions) => {
+                replyOptions = options;
+            }),
+        } as unknown as CommandInteraction;
 
-        const context: ICommandContext = {
-            name: "about",
-            args: [],
-            message: message
-        };
+        // Execution
+        process.env.BOT_VER = "VERSION";
+        process.env.BOT_AUTHOR = "AUTHOR";
 
-        const about = new About();
+        const command = new About();
 
-        const result = await about.execute(context);
+        await command.execute(interaction);
 
-        expect(message.channel.send).toBeCalledTimes(1);
+        // Assertion
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(replyOptions).toBeDefined();
+
+        expect(replyOptions?.embeds).toBeDefined();
+        expect(replyOptions?.embeds?.length).toBe(1);
+
+        expect(replyOptions?.components).toBeDefined();
+        expect(replyOptions?.components?.length).toBe(0);
+
+        const repliedEmbed = replyOptions?.embeds![0] as EmbedBuilder;
+
+        expect(repliedEmbed.data.color).toBe(EmbedColours.Ok);
+        expect(repliedEmbed.data.title).toBe("About");
+        expect(repliedEmbed.data.description).toBe("Discord Bot made by Vylpes");
+        expect(repliedEmbed.data.fields?.length).toBe(2);
+
+        const repliedEmbedVersionField = repliedEmbed.data.fields![0];
+
+        expect(repliedEmbedVersionField.name).toBe("Version");
+        expect(repliedEmbedVersionField.value).toBe("VERSION");
+        expect(repliedEmbedVersionField.inline).toBeTruthy();
+
+        const repliedEmbedAuthorField = repliedEmbed.data.fields![1];
+
+        expect(repliedEmbedAuthorField.name).toBe("Author");
+        expect(repliedEmbedAuthorField.value).toBe("AUTHOR");
+        expect(repliedEmbedAuthorField.inline).toBeTruthy();
     });
 
-    test('Expect embed send to have values', async () => {
-        process.env = {
-            BOT_VER: "BOT_VER",
-            BOT_AUTHOR: "BOT_AUTHOR",
-            BOT_DATE: "BOT_DATE"
-        };
+    test('GIVEN ABOUT_FUNDING is present in env var, EXPECT funding button to be sent', async () => {
+        // Setup
+        let replyOptions: InteractionReplyOptions | undefined;
 
-        const message = mock<Message>();
-        message.channel.send = jest.fn();
+        const interaction = {
+            reply: jest.fn((options: InteractionReplyOptions) => {
+                replyOptions = options;
+            }),
+        } as unknown as CommandInteraction;
 
-        const context: ICommandContext = {
-            name: "about",
-            args: [],
-            message: message
-        };
+        // Execution
+        process.env.BOT_VER = "VERSION";
+        process.env.BOT_AUTHOR = "AUTHOR";
+        process.env.ABOUT_FUNDING = "https://ko-fi.com/vylpes";
 
-        const about = new About();
+        const command = new About();
 
-        const result = await about.execute(context);
+        await command.execute(interaction);
 
-        expect(result.embeds.length).toBe(1);
+        // Assertion
+        expect(replyOptions?.components?.length).toBe(1);
 
-        const embed = result.embeds[0];
+        const repliedRow = replyOptions?.components![0] as ActionRowBuilder<ButtonBuilder>;
 
-        expect(embed.title).toBe('About');
-        expect(embed.description).toBe('');
-        expect(embed.fields.length).toBe(3);
+        expect(repliedRow.components?.length).toBe(1);
+
+        const repliedRowFundingComponent = repliedRow.components![0] as any;
+
+        expect(repliedRowFundingComponent.data.url).toBe("https://ko-fi.com/vylpes");
+        expect(repliedRowFundingComponent.data.label).toBe("Funding");
+        expect(repliedRowFundingComponent.data.style).toBe(ButtonStyle.Link);
     });
 
-    test('Expect version field to have values', async () => {
-        process.env = {
-            BOT_VER: "BOT_VER",
-            BOT_AUTHOR: "BOT_AUTHOR",
-            BOT_DATE: "BOT_DATE"
-        };
+    test('GIVEN ABOUT_REPO is present in env var, EXPECT funding button to be sent', async () => {
+        // Setup
+        let replyOptions: InteractionReplyOptions | undefined;
 
-        const message = mock<Message>();
-        message.channel.send = jest.fn();
+        const interaction = {
+            reply: jest.fn((options: InteractionReplyOptions) => {
+                replyOptions = options;
+            }),
+        } as unknown as CommandInteraction;
 
-        const context: ICommandContext = {
-            name: "about",
-            args: [],
-            message: message
-        };
+        // Execution
+        process.env.BOT_VER = "VERSION";
+        process.env.BOT_AUTHOR = "AUTHOR";
+        process.env.ABOUT_REPO = "https://gitea.vylpes.xyz/rabbitlabs/vylbot-app";
 
-        const about = new About();
+        const command = new About();
 
-        const result = await about.execute(context);
+        await command.execute(interaction);
 
-        const embed = result.embeds[0];
-        const field = embed.fields[0];
+        // Assertion
+        expect(replyOptions?.components?.length).toBe(1);
 
-        expect(field.name).toBe('Version');
-        expect(field.value).toBe('BOT_VER');
+        const repliedRow = replyOptions?.components![0] as ActionRowBuilder<ButtonBuilder>;
+
+        expect(repliedRow.components?.length).toBe(1);
+
+        const repliedRowRepoComponent = repliedRow.components![0] as any;
+
+        expect(repliedRowRepoComponent.data.url).toBe("https://gitea.vylpes.xyz/rabbitlabs/vylbot-app");
+        expect(repliedRowRepoComponent.data.label).toBe("Repo");
+        expect(repliedRowRepoComponent.data.style).toBe(ButtonStyle.Link);
     });
 
-    test('Expect author field to have values', async () => {
-        process.env = {
-            BOT_VER: "BOT_VER",
-            BOT_AUTHOR: "BOT_AUTHOR",
-            BOT_DATE: "BOT_DATE"
-        };
+    test('GIVEN ABOUT_REPO AND ABOUT_FUNDING is present in env var, EXPECT funding button to be sent', async () => {
+        // Setup
+        let replyOptions: InteractionReplyOptions | undefined;
 
-        const message = mock<Message>();
-        message.channel.send = jest.fn();
+        const interaction = {
+            reply: jest.fn((options: InteractionReplyOptions) => {
+                replyOptions = options;
+            }),
+        } as unknown as CommandInteraction;
 
-        const context: ICommandContext = {
-            name: "about",
-            args: [],
-            message: message
-        };
+        // Execution
+        process.env.BOT_VER = "VERSION";
+        process.env.BOT_AUTHOR = "AUTHOR";
+        process.env.ABOUT_REPO = "https://gitea.vylpes.xyz/rabbitlabs/vylbot-app";
+        process.env.ABOUT_FUNDING = "https://ko-fi.com/vylpes";
 
-        const about = new About();
+        const command = new About();
 
-        const result = await about.execute(context);
+        await command.execute(interaction);
 
-        const embed = result.embeds[0];
-        const field = embed.fields[1];
+        // Assertion
+        expect(replyOptions?.components?.length).toBe(1);
 
-        expect(field.name).toBe('Author');
-        expect(field.value).toBe('BOT_AUTHOR');
-    });
+        const repliedRow = replyOptions?.components![0] as ActionRowBuilder<ButtonBuilder>;
 
-    test('Expect version field to have values', async () => {
-        process.env = {
-            BOT_VER: "BOT_VER",
-            BOT_AUTHOR: "BOT_AUTHOR",
-            BOT_DATE: "BOT_DATE"
-        };
-        
-        const message = mock<Message>();
-        message.channel.send = jest.fn();
+        expect(repliedRow.components?.length).toBe(2);
 
-        const context: ICommandContext = {
-            name: "about",
-            args: [],
-            message: message
-        };
+        const repliedRowRepoComponent = repliedRow.components![0] as any;
 
-        const about = new About();
+        expect(repliedRowRepoComponent.data.url).toBe("https://gitea.vylpes.xyz/rabbitlabs/vylbot-app");
+        expect(repliedRowRepoComponent.data.label).toBe("Repo");
+        expect(repliedRowRepoComponent.data.style).toBe(ButtonStyle.Link);
 
-        const result = await about.execute(context);
+        const repliedRowFundingComponent = repliedRow.components![1] as any;
 
-        const embed = result.embeds[0];
-        const field = embed.fields[2];
-
-        expect(field.name).toBe('Date');
-        expect(field.value).toBe('BOT_DATE');
+        expect(repliedRowFundingComponent.data.url).toBe("https://ko-fi.com/vylpes");
+        expect(repliedRowFundingComponent.data.label).toBe("Funding");
+        expect(repliedRowFundingComponent.data.style).toBe(ButtonStyle.Link);
     });
 });

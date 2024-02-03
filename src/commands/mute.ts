@@ -9,7 +9,7 @@ export default class Mute extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName("mute")
             .setDescription("(DEPRECATED) Mute a member in the server with an optional reason")
             .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers)

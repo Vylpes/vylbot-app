@@ -7,7 +7,7 @@ export default class Role extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName('role')
             .setDescription('Toggle your roles')
             .addSubcommand(subcommand =>

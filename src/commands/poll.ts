@@ -7,7 +7,7 @@ export default class Poll extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName('poll')
             .setDescription('Run a poll, automatically adding reaction emojis as options')
             .addStringOption(option =>
