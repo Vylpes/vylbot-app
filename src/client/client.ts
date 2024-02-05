@@ -13,32 +13,20 @@ import ButtonEventItem from "../contracts/ButtonEventItem";
 import { ButtonEvent } from "../type/buttonEvent";
 
 export class CoreClient extends Client {
-    private static _commandItems: ICommandItem[];
-    private static _eventItems: IEventItem[];
-    private static _buttonEvents: ButtonEventItem[];
+    public static commandItems: ICommandItem[];
+    public static eventItems: IEventItem[];
+    public static buttonEvents: ButtonEventItem[];
 
     private _events: Events;
     private _util: Util;
-
-    public static get commandItems(): ICommandItem[] {
-        return this._commandItems;
-    }
-
-    public static get eventItems(): IEventItem[] {
-        return this._eventItems;
-    }
-
-    public static get buttonEvents(): ButtonEventItem[] {
-        return this._buttonEvents;
-    }
 
     constructor(intents: number[], partials: Partials[]) {
         super({ intents: intents, partials: partials });
         dotenv.config();
 
-        CoreClient._commandItems = [];
-        CoreClient._eventItems = [];
-        CoreClient._buttonEvents = [];
+        CoreClient.commandItems = [];
+        CoreClient.eventItems = [];
+        CoreClient.buttonEvents = [];
 
         this._events = new Events();
         this._util = new Util();
@@ -59,7 +47,7 @@ export class CoreClient extends Client {
 
         await super.login(process.env.BOT_TOKEN);
 
-        this._util.loadEvents(this, CoreClient._eventItems);
+        this._util.loadEvents(this, CoreClient.eventItems);
         this._util.loadSlashCommands(this);
     }
 
@@ -70,7 +58,7 @@ export class CoreClient extends Client {
             ServerId: serverId,
         };
 
-        CoreClient._commandItems.push(item);
+        CoreClient.commandItems.push(item);
     }
 
     public static RegisterEvent(eventType: EventType, func: Function) {
@@ -79,7 +67,7 @@ export class CoreClient extends Client {
             ExecutionFunction: func,
         };
 
-        CoreClient._eventItems.push(item);
+        CoreClient.eventItems.push(item);
     }
 
     public static RegisterButtonEvent(buttonId: string, event: ButtonEvent) {
@@ -88,6 +76,6 @@ export class CoreClient extends Client {
             Event: event,
         };
 
-        CoreClient._buttonEvents.push(item);
+        CoreClient.buttonEvents.push(item);
     }
 }
