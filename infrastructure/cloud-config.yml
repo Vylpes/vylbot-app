@@ -28,6 +28,7 @@ packages:
   - docker-buildx-plugin
   - docker-compose-plugin
   - nodejs
+  - npm
 
 runcmd:
   - ufw limit ssh
