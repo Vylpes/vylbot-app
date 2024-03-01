@@ -2,10 +2,14 @@ import { EmbedBuilder, Message, TextChannel } from "discord.js";
 import EmbedColours from "../../constants/EmbedColours";
 import IgnoredChannel from "../../database/entities/IgnoredChannel";
 import SettingsHelper from "../../helpers/SettingsHelper";
+import CacheHelper from "../../helpers/CacheHelper";
 
 export default async function MessageUpdate(oldMessage: Message, newMessage: Message) {
     if (!newMessage.guild) return;
     if (newMessage.author.bot) return;
+
+    await CacheHelper.UpdateServerCache(newMessage.guild);
+
     if (oldMessage.content == newMessage.content) return;
 
     const enabled = await SettingsHelper.GetSetting("event.message.update.enabled", newMessage.guild.id);
