@@ -11,6 +11,7 @@ import { Util } from "./util";
 import AppDataSource from "../database/dataSources/appDataSource";
 import ButtonEventItem from "../contracts/ButtonEventItem";
 import { ButtonEvent } from "../type/buttonEvent";
+import CacheHelper from "../helpers/CacheHelper";
 
 export class CoreClient extends Client {
     public static commandItems: ICommandItem[];
@@ -46,6 +47,10 @@ export class CoreClient extends Client {
         super.on("ready", this._events.onReady);
 
         await super.login(process.env.BOT_TOKEN);
+
+        this.guilds.cache.forEach(async (guild) => {
+            await CacheHelper.UpdateServerCache(guild);
+        });
 
         this._util.loadEvents(this, CoreClient.eventItems);
         this._util.loadSlashCommands(this);

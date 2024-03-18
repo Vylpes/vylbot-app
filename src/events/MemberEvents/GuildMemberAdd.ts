@@ -1,9 +1,12 @@
 import { EmbedBuilder, GuildMember, TextChannel } from "discord.js";
 import EmbedColours from "../../constants/EmbedColours";
 import SettingsHelper from "../../helpers/SettingsHelper";
+import CacheHelper from "../../helpers/CacheHelper";
 
 export default async function GuildMemberAdd(member: GuildMember) {
     if (!member.guild) return;
+
+    await CacheHelper.UpdateServerCache(member.guild);
 
     const enabled = await SettingsHelper.GetSetting("event.member.add.enabled", member.guild.id);
     if (!enabled || enabled.toLowerCase() != "true") return;

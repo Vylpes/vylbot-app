@@ -1,4 +1,4 @@
-import { Entity, OneToMany } from "typeorm";
+import { Column, Entity, OneToMany } from "typeorm";
 import BaseEntity from "../../contracts/BaseEntity";
 import Role from "./Role";
 import Setting from "./Setting";
@@ -9,13 +9,21 @@ export default class Server extends BaseEntity {
         super();
 
         this.Id = serverId;
+        this.LastCached = new Date();
     }
+
+    @Column({ default: "2024-03-01 18:10:04" })
+    LastCached: Date;
 
     @OneToMany(() => Setting, x => x.Server)
     Settings: Setting[];
 
     @OneToMany(() => Role, x => x.Server)
     Roles: Role[];
+
+    public UpdateLastCached(lastCached: Date) {
+        this.LastCached = lastCached;
+    }
 
     public AddSettingToServer(setting: Setting) {
         this.Settings.push(setting);

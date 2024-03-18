@@ -1,0 +1,2 @@
+ALTER TABLE server
+ADD LastCached datetime NOT NULL DEFAULT '2024-03-01 18:10:04';
