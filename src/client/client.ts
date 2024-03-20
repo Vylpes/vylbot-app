@@ -1,6 +1,5 @@
 import { Client, Partials } from "discord.js";
 import * as dotenv from "dotenv";
-import { createConnection } from "typeorm";
 import { EventType } from "../constants/EventType";
 import ICommandItem from "../contracts/ICommandItem";
 import IEventItem from "../contracts/IEventItem";
@@ -39,9 +38,12 @@ export class CoreClient extends Client {
             return;
         }
 
-        await AppDataSource.initialize()
-            .then(() => console.log("Data Source Initialized"))
-            .catch((err) => console.error("Error Initialising Data Source", err));
+        try {
+            await AppDataSource.initialize();
+        } catch (err) {
+            console.error("Error Initialising Data Source", err);
+            return;
+        }
 
         super.on("interactionCreate", this._events.onInteractionCreate);
         super.on("ready", this._events.onReady);
