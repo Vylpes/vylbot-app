@@ -8,10 +8,10 @@ export class Events {
 
         if (interaction.isChatInputCommand()) {
             ChatInputCommand.onChatInput(interaction);
-        }
-
-        if (interaction.isButton()) {
+        } else if (interaction.isButton()) {
             Button.onButtonClicked(interaction);
+        } else {
+            console.error("Received interaction unable to interact with, ignoring");
         }
     }
 
