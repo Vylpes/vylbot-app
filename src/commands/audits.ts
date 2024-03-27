@@ -60,8 +60,7 @@ export default class Audits extends Command {
                                 { name: 'Mute', value: AuditType.Mute.toString() },
                                 { name: 'Kick', value: AuditType.Kick.toString() },
                                 { name: 'Ban', value: AuditType.Ban.toString() },
-                            )
-                            .setRequired(true))
+                            ))
                     .addStringOption(option =>
                         option
                             .setName('reason')
