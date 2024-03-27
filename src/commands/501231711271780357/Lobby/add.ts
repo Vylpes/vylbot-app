@@ -53,6 +53,6 @@ export default class AddRole extends Command {
         const entity = new eLobby(channel.channel.id, role.role.id, cooldown.value as number, gameName.value as string);
         await entity.Save(eLobby, entity);
 
-        await interaction.reply(`Added \`${channel.name}\` as a new lobby channel with a cooldown of \`${cooldown.value} minutes \` and will ping \`${role.name}\` on use`);
+        await interaction.reply(`Added \`${channel.name}\` as a new lobby channel with a cooldown of \`${cooldown.value} minutes\` and will ping \`${role.name}\` on use`);
     }
 }
