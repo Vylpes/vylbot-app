@@ -72,20 +72,18 @@ export default class Role extends Command {
 
         const userRole = roleManager.cache.find(x => x.name == requestedRole.role!.name);
         const assignRole = interaction.guild.roles.cache.find(x => x.id == requestedRole.role!.id);
-
-        if (!assignRole) return;
-
-        if (!assignRole.editable) {
+        
+        if (!assignRole!.editable) {
             await interaction.reply('Insufficient permissions. Please contact a moderator.');
             return;
         }
 
         if (!userRole) {
-            await roleManager.add(assignRole);
-            await interaction.reply(`Gave role: \`${assignRole.name}\``);
+            await roleManager.add(assignRole!);
+            await interaction.reply(`Gave role: \`${assignRole!.name}\``);
         } else {
-            await roleManager.remove(assignRole);
-            await interaction.reply(`Removed role: \`${assignRole.name}\``);
+            await roleManager.remove(assignRole!);
+            await interaction.reply(`Removed role: \`${assignRole!.name}\``);
         }
     }
 
