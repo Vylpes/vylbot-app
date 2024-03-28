@@ -1,5 +1,8 @@
-import { PermissionsBitField, SlashCommandBuilder, SlashCommandStringOption, SlashCommandUserOption } from "discord.js";
+import { APIEmbedField, CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder, SlashCommandStringOption, SlashCommandUserOption } from "discord.js";
 import Ban from "../../src/commands/ban";
+import SettingsHelper from "../../src/helpers/SettingsHelper";
+import Audit from "../../src/database/entities/Audit";
+import EmbedColours from "../../src/constants/EmbedColours";
 
 beforeEach(() => {
     process.env = {};
@@ -32,27 +35,475 @@ describe('Constructor', () => {
 });
 
 describe('Execute', () => {
-    test.todo('GIVEN command is valid, EXPECT user to be banned');
+    test('GIVEN command is valid, EXPECT user to be banned', async () => {
+        let sentWith;
 
-    test.todo("GIVEN interaction is NOT a chat input command, EXPECT nothing to happen");
+        const targetUser = {
+            user: {
+                tag: "userTag",
+                id: "userId",
+                avatarURL: jest.fn().mockReturnValue("https://avatarurl.com/user.png"),
+            },
+            member: {
+                bannable: true,
+                ban: jest.fn(),
+            },
+        };
 
-    test.todo("GIVEN interaction.guildId is null, EXPECT nothing to happen");
+        const reason = {
+            value: "reason",
+        };
 
-    test.todo("GIVEN interaction.guild is null, EXPECT nothing to happen");
+        const modChannel = {
+            send: jest.fn().mockImplementation((option) => {
+                sentWith = option;
+            }),
+        };
 
-    test.todo("GIVEN targetUser is null, EXPECT user not found error");
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            guild: {
+                channels: {
+                    cache: {
+                        find: jest.fn().mockReturnValue(modChannel),
+                    }
+                }
+            },
+            options: {
+                get: jest.fn().mockReturnValueOnce(targetUser)
+                    .mockReturnValue(reason),
+            },
+            user: {
+                id: "moderatorId",
+            },
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
 
-    test.todo("GIVEN targetUser.user is undefined, EXPECT user not found error");
+        SettingsHelper.GetSetting = jest.fn().mockResolvedValue("channelName");
+        Audit.prototype.Save = jest.fn();
 
-    test.todo("GIVEN targetUser.member is undefined, EXPECT user not found error");
+        const ban = new Ban();
+        await ban.execute(interaction);
 
-    test.todo("GIVEN reasonInput is null, EXPECT reason to be defaulted");
+        expect(interaction.isChatInputCommand).toHaveBeenCalledTimes(1);
 
-    test.todo("GIVEN reasonInput.value is null, EXPECT reason to be defaulted");
+        expect(interaction.options.get).toHaveBeenCalledTimes(2);
+        expect(interaction.options.get).toHaveBeenCalledWith("target");
+        expect(interaction.options.get).toHaveBeenCalledWith("reason");
 
-    test.todo("GIVEN user is not bannable, EXPECT insufficient permissions error");
+        expect(interaction.guild?.channels.cache.find).toHaveBeenCalledTimes(1);
 
-    test.todo("GIVEN channels.log.mod setting is not set, EXPECT command to return");
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("`userTag` has been banned.");
 
-    test.todo("GIVEN channel can NOT be found, EXPECT logEmbed not to be sent");
+        expect(targetUser.member.ban).toHaveBeenCalledTimes(1);
+        expect(targetUser.user.avatarURL).toHaveBeenCalledTimes(1);
+
+        expect(modChannel.send).toHaveBeenCalledTimes(1);
+        expect(sentWith).toBeDefined();
+        expect(sentWith!.embeds).toBeDefined();
+        expect(sentWith!.embeds.length).toBe(1);
+
+        const logEmbed = sentWith!.embeds[0] as EmbedBuilder;
+
+        expect(logEmbed.data.color).toBe(EmbedColours.Ok);
+        expect(logEmbed.data.title).toBe("Member Banned");
+        expect(logEmbed.data.description).toBe("<@userId> `userTag`");
+        expect(logEmbed.data.thumbnail).toBeDefined();
+        expect(logEmbed.data.thumbnail!.url).toBe("https://avatarurl.com/user.png");
+        expect(logEmbed.data.fields).toBeDefined();
+        expect(logEmbed.data.fields!.length).toBe(2);
+
+        const logEmbedModeratorField = logEmbed.data.fields![0] as APIEmbedField;
+
+        expect(logEmbedModeratorField.name).toBe("Moderator");
+        expect(logEmbedModeratorField.value).toBe("<@moderatorId>");
+
+        const logEmbedReasonField = logEmbed.data.fields![1] as APIEmbedField;
+
+        expect(logEmbedReasonField.name).toBe("Reason");
+        expect(logEmbedReasonField.value).toBe("reason");
+
+        expect(SettingsHelper.GetSetting).toHaveBeenCalledTimes(1);
+        expect(SettingsHelper.GetSetting).toHaveBeenCalledWith("channels.logs.mod", "guildId");
+    });
+
+    test("GIVEN interaction is NOT a chat input command, EXPECT nothing to happen", async () => {
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(false),
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
+
+        const ban = new Ban();
+        await ban.execute(interaction);
+
+        expect(interaction.isChatInputCommand).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).not.toHaveBeenCalled();
+    });
+
+    test("GIVEN interaction.guildId is null, EXPECT nothing to happen", async () => {
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: null,
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
+
+        const ban = new Ban();
+        await ban.execute(interaction);
+
+        expect(interaction.isChatInputCommand).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).not.toHaveBeenCalled();
+    });
+
+    test("GIVEN interaction.guild is null, EXPECT nothing to happen", async () => {
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            guild: null,
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
+
+        const ban = new Ban();
+        await ban.execute(interaction);
+
+        expect(interaction.isChatInputCommand).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).not.toHaveBeenCalled();
+    });
+
+    test("GIVEN targetUser is null, EXPECT user not found error", async () => {
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            guild: {},
+            options: {
+                get: jest.fn().mockReturnValue(null),
+            },
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
+
+        const ban = new Ban();
+        await ban.execute(interaction);
+
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("User not found.");
+    });
+
+    test("GIVEN targetUser.user is undefined, EXPECT user not found error", async () => {
+        const user = {
+            user: undefined,
+        }
+
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            guild: {},
+            options: {
+                get: jest.fn().mockReturnValue(user),
+            },
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
+
+        const ban = new Ban();
+        await ban.execute(interaction);
+
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("User not found.");
+    });
+
+    test("GIVEN targetUser.member is undefined, EXPECT user not found error", async () => {
+        const user = {
+            user: {},
+            member: undefined,
+        }
+
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            guild: {},
+            options: {
+                get: jest.fn().mockReturnValue(user),
+            },
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
+
+        const ban = new Ban();
+        await ban.execute(interaction);
+
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("User not found.");
+    });
+
+    test("GIVEN reasonInput is null, EXPECT reason to be defaulted", async () => {
+        let sentWith;
+
+        const targetUser = {
+            user: {
+                tag: "userTag",
+                id: "userId",
+                avatarURL: jest.fn().mockReturnValue("https://avatarurl.com/user.png"),
+            },
+            member: {
+                bannable: true,
+                ban: jest.fn(),
+            },
+        };
+
+        const modChannel = {
+            send: jest.fn().mockImplementation((option) => {
+                sentWith = option;
+            }),
+        };
+
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            guild: {
+                channels: {
+                    cache: {
+                        find: jest.fn().mockReturnValue(modChannel),
+                    }
+                }
+            },
+            options: {
+                get: jest.fn().mockReturnValueOnce(targetUser)
+                    .mockReturnValue(null),
+            },
+            user: {
+                id: "moderatorId",
+            },
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
+
+        SettingsHelper.GetSetting = jest.fn().mockResolvedValue("channelName");
+        Audit.prototype.Save = jest.fn();
+
+        const ban = new Ban();
+        await ban.execute(interaction);
+
+        const logEmbed = sentWith!.embeds[0] as EmbedBuilder;
+
+        const logEmbedReasonField = logEmbed.data.fields![1] as APIEmbedField;
+
+        expect(logEmbedReasonField.name).toBe("Reason");
+        expect(logEmbedReasonField.value).toBe("*none*");
+    });
+
+    test("GIVEN reasonInput.value is undefined, EXPECT reason to be defaulted", async () => {
+        let sentWith;
+
+        const targetUser = {
+            user: {
+                tag: "userTag",
+                id: "userId",
+                avatarURL: jest.fn().mockReturnValue("https://avatarurl.com/user.png"),
+            },
+            member: {
+                bannable: true,
+                ban: jest.fn(),
+            },
+        };
+
+        const modChannel = {
+            send: jest.fn().mockImplementation((option) => {
+                sentWith = option;
+            }),
+        };
+
+        const reason = {
+            value: undefined,
+        }
+
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            guild: {
+                channels: {
+                    cache: {
+                        find: jest.fn().mockReturnValue(modChannel),
+                    }
+                }
+            },
+            options: {
+                get: jest.fn().mockReturnValueOnce(targetUser)
+                    .mockReturnValue(reason),
+            },
+            user: {
+                id: "moderatorId",
+            },
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
+
+        SettingsHelper.GetSetting = jest.fn().mockResolvedValue("channelName");
+        Audit.prototype.Save = jest.fn();
+
+        const ban = new Ban();
+        await ban.execute(interaction);
+
+        const logEmbed = sentWith!.embeds[0] as EmbedBuilder;
+
+        const logEmbedReasonField = logEmbed.data.fields![1] as APIEmbedField;
+
+        expect(logEmbedReasonField.name).toBe("Reason");
+        expect(logEmbedReasonField.value).toBe("*none*");
+    });
+
+    test("GIVEN user is not bannable, EXPECT insufficient permissions error", async () => {
+        let sentWith;
+
+        const targetUser = {
+            user: {
+                tag: "userTag",
+                id: "userId",
+                avatarURL: jest.fn().mockReturnValue("https://avatarurl.com/user.png"),
+            },
+            member: {
+                bannable: false,
+                ban: jest.fn(),
+            },
+        };
+
+        const reason = {
+            value: "reason",
+        };
+
+        const modChannel = {
+            send: jest.fn().mockImplementation((option) => {
+                sentWith = option;
+            }),
+        };
+
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            guild: {
+                channels: {
+                    cache: {
+                        find: jest.fn().mockReturnValue(modChannel),
+                    }
+                }
+            },
+            options: {
+                get: jest.fn().mockReturnValueOnce(targetUser)
+                    .mockReturnValue(reason),
+            },
+            user: {
+                id: "moderatorId",
+            },
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
+
+        SettingsHelper.GetSetting = jest.fn().mockResolvedValue("channelName");
+        Audit.prototype.Save = jest.fn();
+
+        const ban = new Ban();
+        await ban.execute(interaction);
+
+        expect(targetUser.member.ban).not.toHaveBeenCalled();
+
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("Insufficient permissions. Please contact a moderator.");
+    });
+
+    test("GIVEN channels.log.mod setting is not set, EXPECT command to return", async () => {
+        let sentWith;
+
+        const targetUser = {
+            user: {
+                tag: "userTag",
+                id: "userId",
+                avatarURL: jest.fn().mockReturnValue("https://avatarurl.com/user.png"),
+            },
+            member: {
+                bannable: true,
+                ban: jest.fn(),
+            },
+        };
+
+        const reason = {
+            value: "reason",
+        };
+
+        const modChannel = {
+            send: jest.fn().mockImplementation((option) => {
+                sentWith = option;
+            }),
+        };
+
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            guild: {
+                channels: {
+                    cache: {
+                        find: jest.fn().mockReturnValue(modChannel),
+                    }
+                }
+            },
+            options: {
+                get: jest.fn().mockReturnValueOnce(targetUser)
+                    .mockReturnValue(reason),
+            },
+            user: {
+                id: "moderatorId",
+            },
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
+
+        SettingsHelper.GetSetting = jest.fn().mockResolvedValue(undefined);
+        Audit.prototype.Save = jest.fn();
+
+        const ban = new Ban();
+        await ban.execute(interaction);
+
+        expect(interaction.guild?.channels.cache.find).not.toHaveBeenCalled();
+    });
+
+    test("GIVEN channel can NOT be found, EXPECT logEmbed not to be sent", async () => {
+        let sentWith;
+
+        const targetUser = {
+            user: {
+                tag: "userTag",
+                id: "userId",
+                avatarURL: jest.fn().mockReturnValue("https://avatarurl.com/user.png"),
+            },
+            member: {
+                bannable: true,
+                ban: jest.fn(),
+            },
+        };
+
+        const reason = {
+            value: "reason",
+        };
+
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            guild: {
+                channels: {
+                    cache: {
+                        find: jest.fn().mockReturnValue(null),
+                    }
+                }
+            },
+            options: {
+                get: jest.fn().mockReturnValueOnce(targetUser)
+                    .mockReturnValue(reason),
+            },
+            user: {
+                id: "moderatorId",
+            },
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
+
+        SettingsHelper.GetSetting = jest.fn().mockResolvedValue("channelName");
+        Audit.prototype.Save = jest.fn();
+
+        const ban = new Ban();
+        await ban.execute(interaction);
+
+        expect(Audit.prototype.Save).toHaveBeenCalled();
+    });
 });
