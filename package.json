@@ -1,6 +1,6 @@
 {
   "name": "vylbot-app",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "description": "A discord bot made for Vylpes' Den",
   "main": "./dist/vylbot",
   "typings": "./dist",
