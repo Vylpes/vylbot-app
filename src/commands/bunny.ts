@@ -7,13 +7,15 @@ export default class Bunny extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName("bunny")
             .setDescription("Get a random picture of a rabbit.");
     }
 
     public override async execute(interaction: CommandInteraction) {
         if (!interaction.isChatInputCommand()) return;
+
+        await interaction.deferReply();
 
         const subreddits = [
             'rabbits',
@@ -37,9 +39,9 @@ export default class Bunny extends Command {
                 .setURL(`https://reddit.com${result.Result!.Permalink}`)
                 .setFooter({ text: `r/${selectedSubreddit} · ${result.Result!.Ups} upvotes`});
 
-            await interaction.reply({ embeds: [ embed ]});
+            await interaction.editReply({ embeds: [ embed ]});
         } else {
-            await interaction.reply("There was an error running this command.");
+            await interaction.editReply("There was an error running this command.");
         }
     }
 }
