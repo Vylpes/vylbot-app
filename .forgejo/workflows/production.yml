@@ -21,17 +21,8 @@ jobs:
     - run: npm run build
     - run: npm test
 
-    - run: ls -lah ${{ secrets.PROD_SSH_REPO_PATH }}
-
-    - name: RSync to server
-      uses: https://github.com/D3rHase/rsync-deploy-action@v0.2
-      with:
-        HOST: ${{ secrets.PROD_SSH_HOST }}
-        PORT: ${{ secrets.PROD_SSH_PORT }}
-        USER: ${{ secrets.PROD_SSH_USER }}
-        PRIVATE_SSH_KEY: ${{ secrets.PROD_SSH_KEY }}
-        REPOSITORY_PATH: ${{ secrets.PROD_SSH_REPO_PATH }}
-        SERVER_PATH: ${{ secrets.PROD_SSH_SERVER_PATH }}
+    - name: "Copy files over to location"
+      run: cp -r . ${{ secrets.PROD_REPO_PATH }}
 
   deploy:
     environment: prod
