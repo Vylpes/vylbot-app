@@ -9,7 +9,7 @@ jobs:
   build:
     environment: prod
 
-    runs-on: docker
+    runs-on: node
 
     steps:
     - uses: actions/checkout@v2
@@ -34,7 +34,7 @@ jobs:
   deploy:
     environment: prod
     needs: build
-    runs-on: docker
+    runs-on: node
     steps:
     - uses: https://github.com/appleboy/ssh-action@v1.0.0
       env:
