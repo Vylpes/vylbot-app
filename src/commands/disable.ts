@@ -6,7 +6,7 @@ export default class Disable extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName('disable')
             .setDescription('Disables a command')
             .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)

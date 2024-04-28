@@ -7,7 +7,7 @@ export default class Code extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName('code')
             .setDescription('Manage the verification code of the server')
             .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers)

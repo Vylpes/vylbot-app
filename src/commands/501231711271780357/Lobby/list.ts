@@ -7,7 +7,7 @@ export default class ListLobby extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName('listlobby')
             .setDescription('Lists all channels set up as lobbies')
             .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers);

@@ -6,7 +6,7 @@ export default class Setup extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName('setup')
             .setDescription('Makes the server ready to be configured')
             .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);

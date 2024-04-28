@@ -5,7 +5,7 @@ export default class Clear extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName("clear")
             .setDescription("Clears the channel of messages")
             .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageMessages)
