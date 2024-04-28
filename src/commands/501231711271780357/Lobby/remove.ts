@@ -7,7 +7,7 @@ export default class RemoveLobby extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName('removelobby')
             .setDescription('Remove a lobby channel')
             .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers)

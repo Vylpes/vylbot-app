@@ -6,7 +6,7 @@ export default class Lobby extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName('lobby')
             .setDescription('Attempt to organise a lobby');
     }

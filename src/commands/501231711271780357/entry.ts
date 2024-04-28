@@ -7,7 +7,7 @@ export default class Entry extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName('entry')
             .setDescription('Sends the entry embed')
             .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers);

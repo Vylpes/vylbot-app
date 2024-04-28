@@ -7,7 +7,7 @@ export default class ConfigRole extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName('configrole')
             .setDescription('Toggle your roles')
             .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)

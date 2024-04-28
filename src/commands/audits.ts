@@ -9,7 +9,7 @@ export default class Audits extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName("audits")
             .setDescription("View audits of a particular user in the server")
             .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers)

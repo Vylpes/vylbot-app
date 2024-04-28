@@ -17,9 +17,9 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 18.x
-    - run: yarn install --frozen-lockfile
-    - run: yarn build
-    - run: yarn test
+    - run: npm ci
+    - run: npm run build
+    - run: npm test
 
     - name: RSync to server
       uses: https://github.com/D3rHase/rsync-deploy-action@v0.2
@@ -69,5 +69,5 @@ jobs:
           && (pm2 delete vylbot_prod || true) \
           && docker compose up -d \
           && sleep 10 \
-          && yarn run db:up \
+          && npm run db:up \
           && pm2 start --name vylbot_prod dist/vylbot.js

@@ -6,7 +6,7 @@ export default class AddRole extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName('addlobby')
             .setDescription('Add lobby channel')
             .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers)
