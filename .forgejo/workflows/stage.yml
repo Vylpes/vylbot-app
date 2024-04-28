@@ -57,11 +57,11 @@ jobs:
         envs: DB_NAME,DB_AUTH_USER,DB_AUTH_PASS,DB_HOST,DB_PORT,DB_ROOT_HOST,DB_SYNC,DB_LOGGING,DB_DATA_LOCATION,BOT_TOKEN,BOT_VER,BOT_AUTHOR,BOT_OWNERID,BOT_CLIENTID,ABOUT_FUNDING,ABOUT_REPO,CACHE_INTERVAL
         script: |
           source .sshrc \
-          && cd /home/vylpes/apps/vylbot/vylbot_prod \
+          && cd /home/vylpes/apps/vylbot/vylbot_stage \
           && docker compose down \
-          && (pm2 stop vylbot_prod || true) \
-          && (pm2 delete vylbot_prod || true) \
+          && (pm2 stop vylbot_stage || true) \
+          && (pm2 delete vylbot_stage || true) \
           && docker compose up -d \
           && sleep 10 \
           && npm run db:up \
-          && pm2 start --name vylbot_prod dist/vylbot.js
+          && pm2 start --name vylbot_stage dist/vylbot.js
