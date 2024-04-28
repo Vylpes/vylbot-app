@@ -21,6 +21,8 @@ jobs:
     - run: npm run build
     - run: npm test
 
+    - run: ls -lah ${{ secrets.PROD_SSH_REPO_PATH }}
+
     - name: RSync to server
       uses: https://github.com/D3rHase/rsync-deploy-action@v0.2
       with:
