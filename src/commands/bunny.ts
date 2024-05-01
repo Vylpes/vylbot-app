@@ -26,6 +26,7 @@ export default class Bunny extends Command {
         ];
 
         const random = Math.floor(Math.random() * subreddits.length);
+
         const selectedSubreddit = subreddits[random];
 
         const result = await randomBunny(selectedSubreddit, 'hot');

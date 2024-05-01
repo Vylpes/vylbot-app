@@ -28,9 +28,10 @@ describe('execute', () => {
 
         const interaction = {
             isChatInputCommand: jest.fn().mockReturnValue(true),
-            reply: jest.fn().mockImplementation((options) => {
+            editReply: jest.fn().mockImplementation((options) => {
                 repliedWith = options;
             }),
+            deferReply: jest.fn(),
         } as unknown as CommandInteraction;
 
         jest.spyOn(randomBunny, "default").mockResolvedValue({
@@ -46,6 +47,11 @@ describe('execute', () => {
                 Subreddit: "rabbits",
                 SubredditSubscribers: 1,
             },
+            Error: undefined,
+            Query: {
+                subreddit: "rabbits",
+                sortBy: "hot",
+            },
         });
 
         Math.floor = jest.fn().mockReturnValue(0);
@@ -56,7 +62,9 @@ describe('execute', () => {
         expect(randomBunny.default).toHaveBeenCalledTimes(1);
         expect(randomBunny.default).toHaveBeenCalledWith("rabbits", "hot");
 
-        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.editReply).toHaveBeenCalledTimes(1);
+        expect(interaction.deferReply).toHaveBeenCalledTimes(1);
+
         expect(repliedWith).toBeDefined();
         expect(repliedWith!.embeds).toBeDefined();
         expect(repliedWith!.embeds.length).toBe(1);
@@ -88,12 +96,18 @@ describe('execute', () => {
     test("GIVEN a result from random-bunny is failure, EXPECT error", async () => {
         const interaction = {
             isChatInputCommand: jest.fn().mockReturnValue(true),
-            reply: jest.fn(),
+            editReply: jest.fn(),
+            deferReply: jest.fn(),
         } as unknown as CommandInteraction;
 
         jest.spyOn(randomBunny, "default").mockResolvedValue({
             IsSuccess: false,
-            Result: undefined
+            Result: undefined,
+            Error: undefined,
+            Query: {
+                subreddit: "rabbits",
+                sortBy: "hot",
+            },
         });
 
         Math.floor = jest.fn().mockReturnValue(0);
@@ -103,7 +117,9 @@ describe('execute', () => {
 
         expect(randomBunny.default).toHaveBeenCalledTimes(1);
 
-        expect(interaction.reply).toHaveBeenCalledTimes(1);
-        expect(interaction.reply).toHaveBeenCalledWith("There was an error running this command.");
+        expect(interaction.editReply).toHaveBeenCalledTimes(1);
+        expect(interaction.editReply).toHaveBeenCalledWith("There was an error running this command.");
+
+        expect(interaction.deferReply).toHaveBeenCalledTimes(1);
     });
 });
