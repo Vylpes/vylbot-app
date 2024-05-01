@@ -7,7 +7,7 @@ export default class Unmute extends Command {
     constructor() {
         super();
 
-        super.CommandBuilder = new SlashCommandBuilder()
+        this.CommandBuilder = new SlashCommandBuilder()
             .setName("unmute")
             .setDescription("(DEPRECATED) Unmute a member in the server with an optional reason")
             .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers)
