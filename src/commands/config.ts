@@ -61,7 +61,7 @@ export default class Config extends Command {
         ]);
 
         if (!server) {
-            await interaction.reply('Server not setup. Please use the setup command,');
+            await interaction.reply('Server not setup. Please use the setup command.');
             return;
         }
 
