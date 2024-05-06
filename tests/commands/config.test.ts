@@ -1,6 +1,13 @@
-import { ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder, SlashCommandStringOption, SlashCommandSubcommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, CommandInteraction, PermissionsBitField, SlashCommandBuilder, SlashCommandStringOption, SlashCommandSubcommandBuilder } from "discord.js";
 import Command from "../../src/commands/config";
 import Server from "../../src/database/entities/Server";
+import fs from "fs";
+import EmbedColours from "../../src/constants/EmbedColours";
+import Setting from "../../src/database/entities/Setting";
+
+beforeEach(() => {
+    process.cwd = jest.fn().mockReturnValue("/cwd");
+});
 
 describe("constructor", () => {
     test("EXPECT properties to be set", () => {
@@ -155,19 +162,120 @@ describe("execute", () => {
 });
 
 describe("list", () => {
-    test.todo("EXPECT help text to be sent");
+    test("EXPECT help text to be sent", async () => {
+        let repliedWith: any;
+
+        // Assert
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            options: {
+                getSubcommand: jest.fn().mockReturnValue("list"),
+            },
+            reply: jest.fn().mockImplementation((options: any) => {
+                repliedWith = options.embeds[0];
+            }),
+        } as unknown as CommandInteraction;
+
+        Server.FetchOneById = jest.fn().mockResolvedValue({});
+
+        const readFileSyncMock = jest.spyOn(fs, "readFileSync").mockReturnValue("Example config text");
+
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        expect(readFileSyncMock).toHaveBeenCalledTimes(1);
+        expect(readFileSyncMock).toHaveBeenCalledWith("/cwd/data/usage/config.txt");
+
+        expect(repliedWith).toBeDefined();
+        expect(repliedWith.data.color).toBe(EmbedColours.Ok);
+        expect(repliedWith.data.title).toBe("Config");
+        expect(repliedWith.data.description).toBe("Example config text");
+    });
 });
 
 describe("reset", () => {
-    test.todo("EXPECT setting value to be set to default");
+    test("EXPECT setting value to be set to default", async () => {
+        // Assert
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            options: {
+                getSubcommand: jest.fn().mockReturnValue("reset"),
+                get: jest.fn().mockReturnValue({
+                    value: "test.key",
+                }),
+            },
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
 
-    test.todo("GIVEN interaction.guildId is null, EXPECT nothing to happen");
+        Server.FetchOneById = jest.fn().mockResolvedValue({
+            Settings: [
+                {
+                    Key: "test.key",
+                    Value: "12345",
+                },
+            ],
+        });
 
-    test.todo("GIVEN key is null, EXPECT error");
+        Setting.Remove = jest.fn();
+
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        expect(interaction.options.get).toHaveBeenCalledTimes(1);
+        expect(interaction.options.get).toHaveBeenCalledWith("key");
+
+        expect(Server.FetchOneById).toHaveBeenCalledTimes(1);
+        expect(Server.FetchOneById).toHaveBeenCalledWith(Server, "guildId", [ "Settings" ]);
+
+        expect(Setting.Remove).toHaveBeenCalledTimes(1);
+        expect(Setting.Remove).toHaveBeenCalledWith(Setting, {
+            Key: "test.key",
+            Value: "12345",
+        });
+
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("The setting has been reset to the default.");
+    });
+
+    test("GIVEN key is null, EXPECT error", async () => {
+        // Assert
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            options: {
+                getSubcommand: jest.fn().mockReturnValue("reset"),
+                get: jest.fn().mockReturnValue(null),
+            },
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
+
+        Server.FetchOneById = jest.fn().mockResolvedValue({
+            Settings: [
+                {
+                    Key: "test.key",
+                    Value: "12345",
+                },
+            ],
+        });
+
+        Setting.Remove = jest.fn();
+
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("Fields are required.");
+    });
 
     test.todo("GIVEN key.value is undefined, EXPECT error");
-
-    test.todo("GIVEN server is not found in database, EXPECT error");
 
     test.todo("GIVEN setting is not found, EXPECT error");
 });

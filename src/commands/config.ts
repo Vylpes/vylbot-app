@@ -70,7 +70,7 @@ export default class Config extends Command {
                 await this.SendHelpText(interaction);
                 break;
             case 'reset':
-                await this.ResetValue(interaction);
+                await this.ResetValue(interaction, server);
                 break;
             case 'get':
                 await this.GetValue(interaction);
@@ -95,8 +95,6 @@ export default class Config extends Command {
     }
 
     private async GetValue(interaction: CommandInteraction) {
-        if (!interaction.guildId) return;
-
         const key = interaction.options.get('key');
 
         if (!key || !key.value) {
@@ -104,7 +102,7 @@ export default class Config extends Command {
             return;
         }
 
-        const server = await Server.FetchOneById<Server>(Server, interaction.guildId, [
+        const server = await Server.FetchOneById<Server>(Server, interaction.guildId!, [
             "Settings",
         ]);
 
@@ -128,22 +126,13 @@ export default class Config extends Command {
         }
     }
 
-    private async ResetValue(interaction: CommandInteraction) {
+    private async ResetValue(interaction: CommandInteraction, server: Server) {
         if (!interaction.guildId) return;
 
         const key = interaction.options.get('key');
 
         if (!key || !key.value) {
             await interaction.reply('Fields are required.');
-            return;
-        }
-
-        const server = await Server.FetchOneById<Server>(Server, interaction.guildId, [
-            "Settings",
-        ]);
-
-        if (!server) {
-            await interaction.reply('Server not found.');
             return;
         }
 
