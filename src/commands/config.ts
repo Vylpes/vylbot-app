@@ -73,10 +73,10 @@ export default class Config extends Command {
                 await this.ResetValue(interaction, server);
                 break;
             case 'get':
-                await this.GetValue(interaction);
+                await this.GetValue(interaction, server);
                 break;
             case 'set':
-                await this.SetValue(interaction);
+                await this.SetValue(interaction, server);
                 break;
             default:
                 await interaction.reply('Subcommand not found.');
@@ -94,20 +94,11 @@ export default class Config extends Command {
         await interaction.reply({ embeds: [ embed ]});
     }
 
-    private async GetValue(interaction: CommandInteraction) {
+    private async GetValue(interaction: CommandInteraction, server: Server) {
         const key = interaction.options.get('key');
 
         if (!key || !key.value) {
             await interaction.reply('Fields are required.');
-            return;
-        }
-
-        const server = await Server.FetchOneById<Server>(Server, interaction.guildId!, [
-            "Settings",
-        ]);
-
-        if (!server) {
-            await interaction.reply('Server not found.');
             return;
         }
 
@@ -148,23 +139,12 @@ export default class Config extends Command {
         await interaction.reply('The setting has been reset to the default.');
     }
 
-    private async SetValue(interaction: CommandInteraction) {
-        if (!interaction.guildId) return;
-
+    private async SetValue(interaction: CommandInteraction, server: Server) {
         const key = interaction.options.get('key');
         const value = interaction.options.get('value');
 
         if (!key || !key.value || !value || !value.value) {
             await interaction.reply('Fields are required.');
-            return;
-        }
-
-        const server = await Server.FetchOneById<Server>(Server, interaction.guildId, [
-            "Settings",
-        ]);
-
-        if (!server) {
-            await interaction.reply('Server not found.');
             return;
         }
 

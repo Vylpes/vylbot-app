@@ -4,6 +4,7 @@ import Server from "../../src/database/entities/Server";
 import fs from "fs";
 import EmbedColours from "../../src/constants/EmbedColours";
 import Setting from "../../src/database/entities/Setting";
+import DefaultValues from "../../src/constants/DefaultValues";
 
 beforeEach(() => {
     process.cwd = jest.fn().mockReturnValue("/cwd");
@@ -250,6 +251,40 @@ describe("reset", () => {
             guildId: "guildId",
             options: {
                 getSubcommand: jest.fn().mockReturnValue("reset"),
+                get: jest.fn().mockReturnValue({
+                    value: undefined,
+                }),
+            },
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
+
+        Server.FetchOneById = jest.fn().mockResolvedValue({
+            Settings: [
+                {
+                    Key: "test.key",
+                    Value: "12345",
+                },
+            ],
+        });
+
+        Setting.Remove = jest.fn();
+
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("Fields are required.");
+    });
+
+    test("GIVEN key.value is undefined, EXPECT error", async () => {
+        // Assert
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            options: {
+                getSubcommand: jest.fn().mockReturnValue("reset"),
                 get: jest.fn().mockReturnValue(null),
             },
             reply: jest.fn(),
@@ -275,33 +310,255 @@ describe("reset", () => {
         expect(interaction.reply).toHaveBeenCalledWith("Fields are required.");
     });
 
-    test.todo("GIVEN key.value is undefined, EXPECT error");
+    test("GIVEN setting is not found, EXPECT error", async () => {
+        // Assert
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            options: {
+                getSubcommand: jest.fn().mockReturnValue("reset"),
+                get: jest.fn().mockReturnValue({
+                    value: "test.key",
+                }),
+            },
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
 
-    test.todo("GIVEN setting is not found, EXPECT error");
+        Server.FetchOneById = jest.fn().mockResolvedValue({
+            Settings: [],
+        });
+
+        Setting.Remove = jest.fn();
+
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("Setting not found.");
+    });
 });
 
 describe("get", () => {
-    test.todo("EXPECT setting value to be sent");
+    test("EXPECT setting value to be sent", async () => {
+        // Assert
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            options: {
+                getSubcommand: jest.fn().mockReturnValue("get"),
+                get: jest.fn().mockReturnValue({
+                    value: "test.key",
+                }),
+            },
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
 
-    test.todo("GIVEN interaction.guildId is null, EXPECT nothing to happen");
+        Server.FetchOneById = jest.fn().mockResolvedValue({
+            Settings: [
+                {
+                    Key: "test.key",
+                    Value: "12345",
+                },
+            ],
+        });
 
-    test.todo("GIVEN key is null, EXPECT error");
+        Setting.Remove = jest.fn();
 
-    test.todo("GIVEN key.value is undefined, EXPECT error");
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
 
-    test.todo("GIVEN server can not be found in database, EXPECT error");
+        // Assert
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("`test.key`: `12345`");
 
-    test.todo("GIVEN setting can not be found AND a default value is found, EXPECT default to be shown");
+        expect(interaction.options.get).toHaveBeenCalledTimes(1);
+        expect(interaction.options.get).toHaveBeenCalledWith("key");
+    });
 
-    test.todo("GIVEN setting can not be found AND a default value is not found, EXPECT none to be shown");
+    test("GIVEN key is null, EXPECT error", async () => {
+        // Assert
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            options: {
+                getSubcommand: jest.fn().mockReturnValue("get"),
+                get: jest.fn().mockReturnValue(null),
+            },
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
+
+        Server.FetchOneById = jest.fn().mockResolvedValue({
+            Settings: [
+                {
+                    Key: "test.key",
+                    Value: "12345",
+                },
+            ],
+        });
+
+        Setting.Remove = jest.fn();
+
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("Fields are required.");
+    });
+
+    test("GIVEN key.value is undefined, EXPECT error", async () => {
+        // Assert
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            options: {
+                getSubcommand: jest.fn().mockReturnValue("get"),
+                get: jest.fn().mockReturnValue({
+                    value: undefined,
+                }),
+            },
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
+
+        Server.FetchOneById = jest.fn().mockResolvedValue({
+            Settings: [
+                {
+                    Key: "test.key",
+                    Value: "12345",
+                },
+            ],
+        });
+
+        Setting.Remove = jest.fn();
+
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("Fields are required.");
+    });
+
+    test("GIVEN setting can not be found AND a default value is found, EXPECT default to be shown", async () => {
+        // Assert
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            options: {
+                getSubcommand: jest.fn().mockReturnValue("get"),
+                get: jest.fn().mockReturnValue({
+                    value: "test.key",
+                }),
+            },
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
+
+        Server.FetchOneById = jest.fn().mockResolvedValue({
+            Settings: [],
+        });
+
+        DefaultValues.GetValue = jest.fn().mockReturnValue("Test");
+
+        Setting.Remove = jest.fn();
+
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("`test.key`: `Test` <DEFAULT>");
+
+        expect(DefaultValues.GetValue).toHaveBeenCalledTimes(1);
+        expect(DefaultValues.GetValue).toHaveBeenCalledWith("test.key");
+    });
+
+    test("GIVEN setting can not be found AND a default value is not found, EXPECT none to be shown", async () => {
+        // Assert
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            options: {
+                getSubcommand: jest.fn().mockReturnValue("get"),
+                get: jest.fn().mockReturnValue({
+                    value: "test.key",
+                }),
+            },
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
+
+        Server.FetchOneById = jest.fn().mockResolvedValue({
+            Settings: [],
+        });
+
+        DefaultValues.GetValue = jest.fn().mockReturnValue(undefined);
+
+        Setting.Remove = jest.fn();
+
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("`test.key`: <NONE>");
+
+        expect(DefaultValues.GetValue).toHaveBeenCalledTimes(1);
+        expect(DefaultValues.GetValue).toHaveBeenCalledWith("test.key");
+    });
 });
 
 describe("set", () => {
-    test.todo("GIVEN setting already is set, EXPECT setting to be updated");
+    test("GIVEN setting already is set, EXPECT setting to be updated", async () => {
+        // Assert
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            options: {
+                getSubcommand: jest.fn().mockReturnValue("set"),
+                get: jest.fn().mockReturnValueOnce({
+                    value: "test.key",
+                }).mockReturnValue({
+                    value: "54321",
+                }),
+            },
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
+
+        const server = {
+            Settings: [
+                {
+                    Key: "test.key",
+                    Value: "12345",
+                    UpdateBasicDetails: jest.fn(),
+                    Save: jest.fn(),
+                },
+            ],
+        } as unknown as Server;
+
+        Server.FetchOneById = jest.fn().mockResolvedValue(server);
+
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("Setting has been set.");
+
+        expect(server.Settings[0].UpdateBasicDetails).toHaveBeenCalledTimes(1);
+        expect(server.Settings[0].UpdateBasicDetails).toHaveBeenCalledWith("test.key", "54321");
+
+        expect(server.Settings[0].Save).toHaveBeenCalledTimes(1);
+        expect(server.Settings[0].Save).toHaveBeenCalledWith(Setting, server.Settings[0]);
+    });
 
     test.todo("GIVEN setting is not set, EXPECT setting to be added");
-
-    test.todo("GIVEN interaction.guildId is null, EXPECT nothing to happen");
 
     test.todo("GIVEN key is null, EXPECT error");
 
@@ -310,6 +567,4 @@ describe("set", () => {
     test.todo("GIVEN value is null, EXPECT error");
 
     test.todo("GIVEN value.value is undefined, EXPECT error");
-
-    test.todo("GIVEN server can not be found in the database, EXPECT error");
 });
