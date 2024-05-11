@@ -13,23 +13,16 @@ export default class Ignore extends Command {
     }
 
     public override async execute(interaction: CommandInteraction) {
-        if (!interaction.guildId) return;
-
-        const isChannelIgnored = await IgnoredChannel.IsChannelIgnored(interaction.guildId);
+        const isChannelIgnored = await IgnoredChannel.IsChannelIgnored(interaction.channelId);
 
         if (isChannelIgnored) {
-            const entity = await IgnoredChannel.FetchOneById(IgnoredChannel, interaction.guildId);
+            const entity = await IgnoredChannel.FetchOneById(IgnoredChannel, interaction.channelId);
 
-            if (!entity) {
-                await interaction.reply('Unable to find channel.');
-                return;
-            }
-
-            await IgnoredChannel.Remove(IgnoredChannel, entity);
+            await IgnoredChannel.Remove(IgnoredChannel, entity!);
 
             await interaction.reply('This channel will start being logged again.');
         } else {
-            const entity = new IgnoredChannel(interaction.guildId);
+            const entity = new IgnoredChannel(interaction.channelId);
 
             await entity.Save(IgnoredChannel, entity);
 
