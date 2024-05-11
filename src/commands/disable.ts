@@ -48,17 +48,12 @@ export default class Disable extends Command {
     private async Add(interaction: CommandInteraction) {
         if (!interaction.guildId) return;
 
-        const commandName = interaction.options.get('name');
-
-        if (!commandName || !commandName.value) {
-            await interaction.reply('Fields are required.');
-            return;
-        }
+        const commandName = interaction.options.get('name', true);
 
         const disabledCommandsString = await SettingsHelper.GetSetting("commands.disabled", interaction.guildId);
-        const disabledCommands = disabledCommandsString != "" ? disabledCommandsString?.split(",") : [];
+        const disabledCommands = disabledCommandsString != undefined ? disabledCommandsString?.split(",") : [];
 
-        disabledCommands?.push(commandName.value.toString());
+        disabledCommands?.push(commandName.value!.toString());
 
         await SettingsHelper.SetSetting("commands.disabled", interaction.guildId, disabledCommands!.join(","));
 
@@ -68,23 +63,18 @@ export default class Disable extends Command {
     private async Remove(interaction: CommandInteraction) {
         if (!interaction.guildId) return;
 
-        const commandName = interaction.options.get('name');
-
-        if (!commandName || !commandName.value) {
-            await interaction.reply('Fields are required.');
-            return;
-        }
+        const commandName = interaction.options.get('name', true);
 
         const disabledCommandsString = await SettingsHelper.GetSetting("commands.disabled", interaction.guildId);
-        const disabledCommands = disabledCommandsString != "" ? disabledCommandsString?.split(",") : [];
+        const disabledCommands = disabledCommandsString != undefined ? disabledCommandsString?.split(",") : [];
 
         const disabledCommandsInstance = disabledCommands?.findIndex(x => x == commandName.value!.toString());
 
-        if (disabledCommandsInstance! > -1) {
-            disabledCommands?.splice(disabledCommandsInstance!, 1);
+        if (disabledCommandsInstance > -1) {
+            disabledCommands?.splice(disabledCommandsInstance, 1);
         }
 
-        await SettingsHelper.SetSetting("commands.disabled", interaction.guildId, disabledCommands!.join(","));
+        await SettingsHelper.SetSetting("commands.disabled", interaction.guildId, disabledCommands.join(","));
 
         await interaction.reply(`Enabled command ${commandName.value}`);
     }
