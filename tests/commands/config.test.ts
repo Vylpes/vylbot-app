@@ -558,13 +558,55 @@ describe("set", () => {
         expect(server.Settings[0].Save).toHaveBeenCalledWith(Setting, server.Settings[0]);
     });
 
-    test.todo("GIVEN setting is not set, EXPECT setting to be added");
+    test("GIVEN setting is not set, EXPECT setting to be added", async () => {
+        let savedSetting: Setting | undefined;
 
-    test.todo("GIVEN key is null, EXPECT error");
+        // Assert
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            options: {
+                getSubcommand: jest.fn().mockReturnValue("set"),
+                get: jest.fn().mockReturnValueOnce({
+                    value: "test.key",
+                }).mockReturnValue({
+                    value: "54321",
+                }),
+            },
+            reply: jest.fn(),
+        } as unknown as CommandInteraction;
 
-    test.todo("GIVEN key.value is undefined, EXPECT error");
+        const server = {
+            Settings: [],
+            AddSettingToServer: jest.fn(),
+            Save: jest.fn(),
+        } as unknown as Server;
 
-    test.todo("GIVEN value is null, EXPECT error");
+        Server.FetchOneById = jest.fn().mockResolvedValue(server);
 
-    test.todo("GIVEN value.value is undefined, EXPECT error");
+        Setting.prototype.Save = jest.fn().mockImplementation((_, setting: Setting) => {
+            savedSetting = setting;
+        });
+
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        expect(Setting.prototype.Save).toHaveBeenCalledTimes(1);
+        expect(Setting.prototype.Save).toHaveBeenCalledWith(Setting, expect.any(Setting));
+
+        expect(server.AddSettingToServer).toHaveBeenCalledTimes(1);
+        expect(server.AddSettingToServer).toHaveBeenCalledWith(expect.any(Setting));
+
+        expect(server.Save).toHaveBeenCalledTimes(1);
+        expect(server.Save).toHaveBeenCalledWith(Server, server);
+
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("Setting has been set.");
+
+        expect(savedSetting).toBeDefined();
+        expect(savedSetting!.Key).toBe("test.key");
+        expect(savedSetting!.Value).toBe("54321");
+    });
 });

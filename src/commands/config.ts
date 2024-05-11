@@ -140,22 +140,17 @@ export default class Config extends Command {
     }
 
     private async SetValue(interaction: CommandInteraction, server: Server) {
-        const key = interaction.options.get('key');
-        const value = interaction.options.get('value');
-
-        if (!key || !key.value || !value || !value.value) {
-            await interaction.reply('Fields are required.');
-            return;
-        }
+        const key = interaction.options.get('key', true);
+        const value = interaction.options.get('value', true);
 
         const setting = server.Settings.filter(x => x.Key == key.value)[0];
 
         if (setting) {
-            setting.UpdateBasicDetails(key.value.toString(), value.value.toString());
+            setting.UpdateBasicDetails(key.value!.toString(), value.value!.toString());
 
             await setting.Save(Setting, setting);
         } else {
-            const newSetting = new Setting(key.value.toString(), value.value.toString());
+            const newSetting = new Setting(key.value!.toString(), value.value!.toString());
 
             await newSetting.Save(Setting, newSetting);
 
