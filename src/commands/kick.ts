@@ -29,13 +29,8 @@ export default class Kick extends Command {
         if (!interaction.guildId) return;
         if (!interaction.guild) return;
 
-        const targetUser = interaction.options.get('target');
+        const targetUser = interaction.options.get('target', true);
         const reasonInput = interaction.options.get('reason');
-
-        if (!targetUser || !targetUser.user || !targetUser.member) {
-            await interaction.reply("User not found.");
-            return;
-        }
 
         const member = targetUser.member as GuildMember;
         const reason = reasonInput && reasonInput.value ? reasonInput.value.toString() : "*none*";
@@ -43,8 +38,8 @@ export default class Kick extends Command {
         const logEmbed = new EmbedBuilder()
             .setColor(EmbedColours.Ok)
             .setTitle("Member Kicked")
-            .setDescription(`<@${targetUser.user.id}> \`${targetUser.user.tag}\``)
-            .setThumbnail(targetUser.user.avatarURL())
+            .setDescription(`<@${targetUser.user!.id}> \`${targetUser.user!.tag}\``)
+            .setThumbnail(targetUser.user!.avatarURL())
             .addFields([
                 {
                     name: "Moderator",
@@ -62,7 +57,7 @@ export default class Kick extends Command {
         }
 
         await member.kick();
-        await interaction.reply(`\`${targetUser.user.tag}\` has been kicked.`);
+        await interaction.reply(`\`${targetUser.user!.tag}\` has been kicked.`);
 
         const channelName = await SettingsHelper.GetSetting('channels.logs.mod', interaction.guildId);
 
@@ -74,7 +69,7 @@ export default class Kick extends Command {
             await channel.send({ embeds: [ logEmbed ]});
         }
 
-        const audit = new Audit(targetUser.user.id, AuditType.Kick, reason, interaction.user.id, interaction.guildId);
+        const audit = new Audit(targetUser.user!.id, AuditType.Kick, reason, interaction.user.id, interaction.guildId);
         await audit.Save(Audit, audit);
     }
 }
