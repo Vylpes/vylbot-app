@@ -40,14 +40,12 @@ export default class Poll extends Command {
     }
 
     public override async execute(interaction: CommandInteraction) {
-        const title = interaction.options.get('title');
-        const option1 = interaction.options.get('option1');
-        const option2 = interaction.options.get('option2');
+        const title = interaction.options.get('title', true);
+        const option1 = interaction.options.get('option1', true);
+        const option2 = interaction.options.get('option2', true);
         const option3 = interaction.options.get('option3');
         const option4 = interaction.options.get('option4');
         const option5 = interaction.options.get('option5');
-
-        if (!title || !option1 || !option2) return;
 
         const description = [
             option1.value as string,
@@ -58,15 +56,7 @@ export default class Poll extends Command {
         ]
             .filter(x => x != null);
 
-        const arrayOfNumbers = [
-            ':one:',
-            ':two:',
-            ':three:',
-            ':four:',
-            ':five:',
-        ];
-
-        const reactionEmojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"];
+        const reactionEmojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"];
 
         description.forEach((value, index) => {
             description[index] = `${reactionEmojis[index]} ${description[index]}`;
@@ -82,10 +72,11 @@ export default class Poll extends Command {
             });
 
 
-        const message = await interaction.reply({ embeds: [ embed ]});
+        const messageResponse = await interaction.reply({ embeds: [ embed ]});
+        const message = await messageResponse.fetch();
 
         description.forEach(async (value, index) => {
-            await (await message.fetch()).react(reactionEmojis[index]);
+            await message.react(reactionEmojis[index]);
         });
     }
 }
