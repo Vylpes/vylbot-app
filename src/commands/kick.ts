@@ -61,12 +61,12 @@ export default class Kick extends Command {
 
         const channelName = await SettingsHelper.GetSetting('channels.logs.mod', interaction.guildId);
 
-        if (!channelName) return;
+        if (channelName) {
+            const channel = interaction.guild.channels.cache.find(x => x.name == channelName) as TextChannel;
 
-        const channel = interaction.guild.channels.cache.find(x => x.name == channelName) as TextChannel;
-
-        if (channel) {
-            await channel.send({ embeds: [ logEmbed ]});
+            if (channel) {
+                await channel.send({ embeds: [ logEmbed ]});
+            }
         }
 
         const audit = new Audit(targetUser.user!.id, AuditType.Kick, reason, interaction.user.id, interaction.guildId);

@@ -141,19 +141,490 @@ describe('Execute', () => {
         expect(savedAudit?.ServerId).toBe("guildId");
     });
 
-    test.todo("GIVEN interaction is NOT a chat input command, EXPECT nothing to happen");
+    test("GIVEN interaction is NOT a chat input command, EXPECT nothing to happen", async () => {
+        let sentEmbed: EmbedBuilder | undefined;
+        let savedAudit: Audit | undefined;
 
-    test.todo("GIVEN interaction.guildId is null, EXPECT nothing to happen");
+        // Arrange
+        const targetUser = {
+            member: {
+                kickable: true,
+                kick: jest.fn(),
+            } as unknown as GuildMember,
+            user: {
+                tag: "userTag",
+                id: "userId",
+                avatarURL: jest.fn().mockReturnValue("https://avatarurl.com/user.png"),
+            } as unknown as User,
+        };
 
-    test.todo("GIVEN interaction.guild is null, EXPECT nothing to happen");
+        const reason = {
+            value: "Test reason",
+        };
 
-    test.todo("GIVEN reasonInput is null, EXPECT reason to be defaulted");
+        const channel = {
+            name: "mod-logs",
+            send: jest.fn().mockImplementation((options: any) => {
+                sentEmbed = options.embeds[0];
+            }),
+        } as unknown as TextChannel;
 
-    test.todo("GIVEN reasonInput.value is undefined, EXPECT reason to be defaulted");
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(false),
+            guildId: "guildId",
+            guild: {
+                channels: {
+                    cache: [ channel ],
+                },
+            },
+            options: {
+                get: jest.fn().mockReturnValueOnce(targetUser)
+                    .mockReturnValue(reason),
+            },
+            reply: jest.fn(),
+            user: {
+                id: "moderatorId",
+            },
+        } as unknown as CommandInteraction;
 
-    test.todo("GIVEN user is not kickable, EXPECT insufficient permissions error");
+        SettingsHelper.GetSetting = jest.fn().mockResolvedValue("mod-logs");
 
-    test.todo("GIVEN channels.logs.mod setting can not be found, EXPECT command to return");
+        Audit.prototype.Save = jest.fn().mockImplementation((_, audit: Audit) => {
+            savedAudit = audit;
+        });
 
-    test.todo("GIVEN channel can not be found, EXPECT logEmbed not to be sent");
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        expect(interaction.isChatInputCommand).toHaveBeenCalledTimes(1);
+
+        expect(interaction.reply).not.toHaveBeenCalled();
+        expect(targetUser.member.kick).not.toHaveBeenCalled();
+        expect(Audit.prototype.Save).not.toHaveBeenCalled();
+    });
+
+    test("GIVEN interaction.guildId is null, EXPECT nothing to happen", async () => {
+        let sentEmbed: EmbedBuilder | undefined;
+        let savedAudit: Audit | undefined;
+
+        // Arrange
+        const targetUser = {
+            member: {
+                kickable: true,
+                kick: jest.fn(),
+            } as unknown as GuildMember,
+            user: {
+                tag: "userTag",
+                id: "userId",
+                avatarURL: jest.fn().mockReturnValue("https://avatarurl.com/user.png"),
+            } as unknown as User,
+        };
+
+        const reason = {
+            value: "Test reason",
+        };
+
+        const channel = {
+            name: "mod-logs",
+            send: jest.fn().mockImplementation((options: any) => {
+                sentEmbed = options.embeds[0];
+            }),
+        } as unknown as TextChannel;
+
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: null,
+            guild: {
+                channels: {
+                    cache: [ channel ],
+                },
+            },
+            options: {
+                get: jest.fn().mockReturnValueOnce(targetUser)
+                    .mockReturnValue(reason),
+            },
+            reply: jest.fn(),
+            user: {
+                id: "moderatorId",
+            },
+        } as unknown as CommandInteraction;
+
+        SettingsHelper.GetSetting = jest.fn().mockResolvedValue("mod-logs");
+
+        Audit.prototype.Save = jest.fn().mockImplementation((_, audit: Audit) => {
+            savedAudit = audit;
+        });
+
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        expect(interaction.reply).not.toHaveBeenCalled();
+        expect(targetUser.member.kick).not.toHaveBeenCalled();
+        expect(Audit.prototype.Save).not.toHaveBeenCalled();
+    });
+
+    test("GIVEN interaction.guild is null, EXPECT nothing to happen", async () => {
+        let sentEmbed: EmbedBuilder | undefined;
+        let savedAudit: Audit | undefined;
+
+        // Arrange
+        const targetUser = {
+            member: {
+                kickable: true,
+                kick: jest.fn(),
+            } as unknown as GuildMember,
+            user: {
+                tag: "userTag",
+                id: "userId",
+                avatarURL: jest.fn().mockReturnValue("https://avatarurl.com/user.png"),
+            } as unknown as User,
+        };
+
+        const reason = {
+            value: "Test reason",
+        };
+
+        const channel = {
+            name: "mod-logs",
+            send: jest.fn().mockImplementation((options: any) => {
+                sentEmbed = options.embeds[0];
+            }),
+        } as unknown as TextChannel;
+
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            guild: null,
+            options: {
+                get: jest.fn().mockReturnValueOnce(targetUser)
+                    .mockReturnValue(reason),
+            },
+            reply: jest.fn(),
+            user: {
+                id: "moderatorId",
+            },
+        } as unknown as CommandInteraction;
+
+        SettingsHelper.GetSetting = jest.fn().mockResolvedValue("mod-logs");
+
+        Audit.prototype.Save = jest.fn().mockImplementation((_, audit: Audit) => {
+            savedAudit = audit;
+        });
+
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        expect(interaction.reply).not.toHaveBeenCalled();
+        expect(targetUser.member.kick).not.toHaveBeenCalled();
+        expect(Audit.prototype.Save).not.toHaveBeenCalled();
+    });
+
+    test("GIVEN reasonInput is null, EXPECT reason to be defaulted", async () => {
+        let sentEmbed: EmbedBuilder | undefined;
+        let savedAudit: Audit | undefined;
+
+        // Arrange
+        const targetUser = {
+            member: {
+                kickable: true,
+                kick: jest.fn(),
+            } as unknown as GuildMember,
+            user: {
+                tag: "userTag",
+                id: "userId",
+                avatarURL: jest.fn().mockReturnValue("https://avatarurl.com/user.png"),
+            } as unknown as User,
+        };
+
+        const channel = {
+            name: "mod-logs",
+            send: jest.fn().mockImplementation((options: any) => {
+                sentEmbed = options.embeds[0];
+            }),
+        } as unknown as TextChannel;
+
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            guild: {
+                channels: {
+                    cache: [ channel ],
+                },
+            },
+            options: {
+                get: jest.fn().mockReturnValueOnce(targetUser)
+                    .mockReturnValue(null),
+            },
+            reply: jest.fn(),
+            user: {
+                id: "moderatorId",
+            },
+        } as unknown as CommandInteraction;
+
+        SettingsHelper.GetSetting = jest.fn().mockResolvedValue("mod-logs");
+
+        Audit.prototype.Save = jest.fn().mockImplementation((_, audit: Audit) => {
+            savedAudit = audit;
+        });
+
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        const sentEmbedReasonField = sentEmbed!.data.fields!.find(x => x.name == "Reason");
+
+        expect(sentEmbedReasonField!.value).toBe("*none*");
+    });
+
+    test("GIVEN reasonInput.value is undefined, EXPECT reason to be defaulted", async () => {
+        let sentEmbed: EmbedBuilder | undefined;
+        let savedAudit: Audit | undefined;
+
+        // Arrange
+        const targetUser = {
+            member: {
+                kickable: true,
+                kick: jest.fn(),
+            } as unknown as GuildMember,
+            user: {
+                tag: "userTag",
+                id: "userId",
+                avatarURL: jest.fn().mockReturnValue("https://avatarurl.com/user.png"),
+            } as unknown as User,
+        };
+
+        const reason = {
+            value: undefined,
+        };
+
+        const channel = {
+            name: "mod-logs",
+            send: jest.fn().mockImplementation((options: any) => {
+                sentEmbed = options.embeds[0];
+            }),
+        } as unknown as TextChannel;
+
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            guild: {
+                channels: {
+                    cache: [ channel ],
+                },
+            },
+            options: {
+                get: jest.fn().mockReturnValueOnce(targetUser)
+                    .mockReturnValue(reason),
+            },
+            reply: jest.fn(),
+            user: {
+                id: "moderatorId",
+            },
+        } as unknown as CommandInteraction;
+
+        SettingsHelper.GetSetting = jest.fn().mockResolvedValue("mod-logs");
+
+        Audit.prototype.Save = jest.fn().mockImplementation((_, audit: Audit) => {
+            savedAudit = audit;
+        });
+
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        const sentEmbedReasonField = sentEmbed!.data.fields!.find(x => x.name == "Reason");
+
+        expect(sentEmbedReasonField!.value).toBe("*none*");
+    });
+
+    test("GIVEN user is not kickable, EXPECT insufficient permissions error", async () => {
+        let sentEmbed: EmbedBuilder | undefined;
+        let savedAudit: Audit | undefined;
+
+        // Arrange
+        const targetUser = {
+            member: {
+                kickable: false,
+                kick: jest.fn(),
+            } as unknown as GuildMember,
+            user: {
+                tag: "userTag",
+                id: "userId",
+                avatarURL: jest.fn().mockReturnValue("https://avatarurl.com/user.png"),
+            } as unknown as User,
+        };
+
+        const reason = {
+            value: "Test reason",
+        };
+
+        const channel = {
+            name: "mod-logs",
+            send: jest.fn().mockImplementation((options: any) => {
+                sentEmbed = options.embeds[0];
+            }),
+        } as unknown as TextChannel;
+
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            guild: {
+                channels: {
+                    cache: [ channel ],
+                },
+            },
+            options: {
+                get: jest.fn().mockReturnValueOnce(targetUser)
+                    .mockReturnValue(reason),
+            },
+            reply: jest.fn(),
+            user: {
+                id: "moderatorId",
+            },
+        } as unknown as CommandInteraction;
+
+        SettingsHelper.GetSetting = jest.fn().mockResolvedValue("mod-logs");
+
+        Audit.prototype.Save = jest.fn().mockImplementation((_, audit: Audit) => {
+            savedAudit = audit;
+        });
+
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("Insufficient permissions. Please contact a moderator.");
+
+        expect(targetUser.member.kick).not.toHaveBeenCalled();
+        expect(Audit.prototype.Save).not.toHaveBeenCalled();
+    });
+
+    test("GIVEN channels.logs.mod setting can not be found, EXPECT command to return", async () => {
+        let sentEmbed: EmbedBuilder | undefined;
+        let savedAudit: Audit | undefined;
+
+        // Arrange
+        const targetUser = {
+            member: {
+                kickable: true,
+                kick: jest.fn(),
+            } as unknown as GuildMember,
+            user: {
+                tag: "userTag",
+                id: "userId",
+                avatarURL: jest.fn().mockReturnValue("https://avatarurl.com/user.png"),
+            } as unknown as User,
+        };
+
+        const reason = {
+            value: "Test reason",
+        };
+
+        const channel = {
+            name: "mod-logs",
+            send: jest.fn().mockImplementation((options: any) => {
+                sentEmbed = options.embeds[0];
+            }),
+        } as unknown as TextChannel;
+
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            guild: {
+                channels: {
+                    cache: [ channel ],
+                },
+            },
+            options: {
+                get: jest.fn().mockReturnValueOnce(targetUser)
+                    .mockReturnValue(reason),
+            },
+            reply: jest.fn(),
+            user: {
+                id: "moderatorId",
+            },
+        } as unknown as CommandInteraction;
+
+        SettingsHelper.GetSetting = jest.fn().mockResolvedValue(undefined);
+
+        Audit.prototype.Save = jest.fn().mockImplementation((_, audit: Audit) => {
+            savedAudit = audit;
+        });
+
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        expect(channel.send).not.toHaveBeenCalled();
+
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(Audit.prototype.Save).toHaveBeenCalledTimes(1);
+        expect(targetUser.member.kick).toHaveBeenCalledTimes(1);
+    });
+
+    test("GIVEN channel can not be found, EXPECT logEmbed not to be sent", async () => {
+        let sentEmbed: EmbedBuilder | undefined;
+        let savedAudit: Audit | undefined;
+
+        // Arrange
+        const targetUser = {
+            member: {
+                kickable: true,
+                kick: jest.fn(),
+            } as unknown as GuildMember,
+            user: {
+                tag: "userTag",
+                id: "userId",
+                avatarURL: jest.fn().mockReturnValue("https://avatarurl.com/user.png"),
+            } as unknown as User,
+        };
+
+        const reason = {
+            value: "Test reason",
+        };
+
+        const interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            guildId: "guildId",
+            guild: {
+                channels: {
+                    cache: [],
+                },
+            },
+            options: {
+                get: jest.fn().mockReturnValueOnce(targetUser)
+                    .mockReturnValue(reason),
+            },
+            reply: jest.fn(),
+            user: {
+                id: "moderatorId",
+            },
+        } as unknown as CommandInteraction;
+
+        SettingsHelper.GetSetting = jest.fn().mockResolvedValue("mod-logs");
+
+        Audit.prototype.Save = jest.fn().mockImplementation((_, audit: Audit) => {
+            savedAudit = audit;
+        });
+
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(Audit.prototype.Save).toHaveBeenCalledTimes(1);
+        expect(targetUser.member.kick).toHaveBeenCalledTimes(1);
+    });
 });
