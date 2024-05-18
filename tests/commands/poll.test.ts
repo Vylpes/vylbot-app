@@ -117,15 +117,126 @@ describe('Execute', () => {
         expect(message.react).toHaveBeenCalledWith("5️⃣");
     });
 
-    test.todo("GIVEN title is not supplied, EXPECT nothing to happen");
+    test("GIVEN option3 is not supplied, EXPECT a 2 option poll to be created", async () => {
+        let sentEmbed: EmbedBuilder | undefined;
 
-    test.todo("GIVEN option1 is not supplied, EXPECT nothing to happen");
+        // Arrange
+        const message = {
+            react: jest.fn(),
+        } as unknown as Message<boolean>;
 
-    test.todo("GIVEN option2 is not supplied, EXPECT nothing to happen");
+        const response = {
+            fetch: jest.fn().mockResolvedValue(message),
+        } as unknown as InteractionResponse<boolean>;
 
-    test.todo("GIVEN option3 is not supplied, EXPECT a 2 option poll to be created");
+        const interaction = {
+            options: {
+                get: jest.fn().mockReturnValueOnce({ value: "Title" })
+                    .mockReturnValueOnce({ value: "Option 1" })
+                    .mockReturnValueOnce({ value: "Option 2" }),
+            },
+            reply: jest.fn().mockImplementation((options: any) => {
+                sentEmbed = options.embeds[0];
 
-    test.todo("GIVEN option4 is not supplied, EXPECT a 3 option poll to be created");
+                return response;
+            }),
+            user: {
+                username: "username",
+                avatarURL: jest.fn().mockReturnValue("https://avatarurl.com/user.png"),
+            },
+        } as unknown as CommandInteraction;
 
-    test.todo("GIVEN option5 is not supplied, EXPECT a 4 option poll to be created");
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        expect(sentEmbed).toBeDefined();
+        expect(sentEmbed!.data.description).toBe("1️⃣ Option 1\n2️⃣ Option 2");
+
+        expect(message.react).toHaveBeenCalledTimes(2);
+    });
+
+    test("GIVEN option4 is not supplied, EXPECT a 3 option poll to be created", async () => {
+        let sentEmbed: EmbedBuilder | undefined;
+
+        // Arrange
+        const message = {
+            react: jest.fn(),
+        } as unknown as Message<boolean>;
+
+        const response = {
+            fetch: jest.fn().mockResolvedValue(message),
+        } as unknown as InteractionResponse<boolean>;
+
+        const interaction = {
+            options: {
+                get: jest.fn().mockReturnValueOnce({ value: "Title" })
+                    .mockReturnValueOnce({ value: "Option 1" })
+                    .mockReturnValueOnce({ value: "Option 2" })
+                    .mockReturnValueOnce({ value: "Option 3" }),
+            },
+            reply: jest.fn().mockImplementation((options: any) => {
+                sentEmbed = options.embeds[0];
+
+                return response;
+            }),
+            user: {
+                username: "username",
+                avatarURL: jest.fn().mockReturnValue("https://avatarurl.com/user.png"),
+            },
+        } as unknown as CommandInteraction;
+
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        expect(sentEmbed).toBeDefined();
+        expect(sentEmbed!.data.description).toBe("1️⃣ Option 1\n2️⃣ Option 2\n3️⃣ Option 3");
+
+        expect(message.react).toHaveBeenCalledTimes(3);
+    });
+
+    test("GIVEN option5 is not supplied, EXPECT a 4 option poll to be created", async () => {
+        let sentEmbed: EmbedBuilder | undefined;
+
+        // Arrange
+        const message = {
+            react: jest.fn(),
+        } as unknown as Message<boolean>;
+
+        const response = {
+            fetch: jest.fn().mockResolvedValue(message),
+        } as unknown as InteractionResponse<boolean>;
+
+        const interaction = {
+            options: {
+                get: jest.fn().mockReturnValueOnce({ value: "Title" })
+                    .mockReturnValueOnce({ value: "Option 1" })
+                    .mockReturnValueOnce({ value: "Option 2" })
+                    .mockReturnValueOnce({ value: "Option 3" })
+                    .mockReturnValueOnce({ value: "Option 4" }),
+            },
+            reply: jest.fn().mockImplementation((options: any) => {
+                sentEmbed = options.embeds[0];
+
+                return response;
+            }),
+            user: {
+                username: "username",
+                avatarURL: jest.fn().mockReturnValue("https://avatarurl.com/user.png"),
+            },
+        } as unknown as CommandInteraction;
+
+        // Act
+        const command = new Command();
+        await command.execute(interaction);
+
+        // Assert
+        expect(sentEmbed).toBeDefined();
+        expect(sentEmbed!.data.description).toBe("1️⃣ Option 1\n2️⃣ Option 2\n3️⃣ Option 3\n4️⃣ Option 4");
+
+        expect(message.react).toHaveBeenCalledTimes(4);
+    });
 });
