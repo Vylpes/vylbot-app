@@ -1,9 +1,15 @@
+import Command from "../../src/commands/rules";
+
 beforeEach(() => {
     process.env = {};
 });
 
 describe('Constructor', () => {
-    test.todo('EXPECT properties to be set');
+    test('EXPECT properties to be set', () => {
+        const command = new Command();
+
+        expect(command.CommandBuilder).toMatchSnapshot();
+    });
 });
 
 describe('Execute', () => {
