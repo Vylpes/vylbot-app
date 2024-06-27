@@ -130,7 +130,9 @@ describe("user", () => {
             isChatInputCommand: jest.fn().mockReturnValue(true),
             options: {
                 getSubcommand: jest.fn().mockReturnValue("user"),
-                getUser: jest.fn().mockReturnValue(user),
+                get: jest.fn().mockReturnValue({
+                    user: user
+                }),
             },
             guildId: "guildId",
             reply: jest.fn().mockImplementation((options) => {
@@ -150,8 +152,8 @@ describe("user", () => {
         expect(AuditTools.TypeToFriendlyText).toHaveBeenCalledTimes(1);
         expect(AuditTools.TypeToFriendlyText).toHaveBeenCalledWith(AuditType.Warn);
 
-        expect(interaction.options.getUser).toHaveBeenCalledTimes(1);
-        expect(interaction.options.getUser).toHaveBeenCalledWith("target");
+        expect(interaction.options.get).toHaveBeenCalledTimes(1);
+        expect(interaction.options.get).toHaveBeenCalledWith("target", true);
 
         expect(interaction.reply).toHaveBeenCalledTimes(1);
         expect(repliedWith).toBeDefined();
@@ -193,7 +195,9 @@ describe("user", () => {
             isChatInputCommand: jest.fn().mockReturnValue(true),
             options: {
                 getSubcommand: jest.fn().mockReturnValue("user"),
-                getUser: jest.fn().mockReturnValue(null),
+                get: jest.fn().mockReturnValue({
+                    user: null
+                }),
             },
             guildId: "guildId",
             reply: jest.fn(),
@@ -202,7 +206,7 @@ describe("user", () => {
         const audits = new Audits();
         await audits.execute(interaction);
 
-        expect(interaction.options.getUser).toHaveBeenCalledTimes(1);
+        expect(interaction.options.get).toHaveBeenCalledTimes(1);
 
         expect(interaction.reply).toHaveBeenCalledTimes(1);
         expect(interaction.reply).toHaveBeenCalledWith("User not found.");
@@ -213,7 +217,9 @@ describe("user", () => {
             isChatInputCommand: jest.fn().mockReturnValue(true),
             options: {
                 getSubcommand: jest.fn().mockReturnValue("user"),
-                getUser: jest.fn().mockReturnValue({}),
+                get: jest.fn().mockReturnValue({
+                    user: {},
+                }),
             },
             guildId: "guildId",
             reply: jest.fn(),
@@ -226,7 +232,7 @@ describe("user", () => {
 
         expect(Audit.FetchAuditsByUserId).toHaveBeenCalledTimes(1);
 
-        expect(interaction.options.getUser).toHaveBeenCalledTimes(1);
+        expect(interaction.options.get).toHaveBeenCalledTimes(1);
 
         expect(interaction.reply).toHaveBeenCalledTimes(1);
         expect(interaction.reply).toHaveBeenCalledWith("There are no audits for this user.");
@@ -237,7 +243,9 @@ describe("user", () => {
             isChatInputCommand: jest.fn().mockReturnValue(true),
             options: {
                 getSubcommand: jest.fn().mockReturnValue("user"),
-                getUser: jest.fn().mockReturnValue({}),
+                get: jest.fn().mockReturnValue({
+                    user: {},
+                }),
             },
             guildId: "guildId",
             reply: jest.fn(),
@@ -250,7 +258,7 @@ describe("user", () => {
 
         expect(Audit.FetchAuditsByUserId).toHaveBeenCalledTimes(1);
 
-        expect(interaction.options.getUser).toHaveBeenCalledTimes(1);
+        expect(interaction.options.get).toHaveBeenCalledTimes(1);
 
         expect(interaction.reply).toHaveBeenCalledTimes(1);
         expect(interaction.reply).toHaveBeenCalledWith("There are no audits for this user.");
@@ -593,8 +601,9 @@ describe("add", () => {
             isChatInputCommand: jest.fn().mockReturnValue(true),
             options: {
                 getSubcommand: jest.fn().mockReturnValue("add"),
-                getUser: jest.fn().mockReturnValue(user),
-                get: jest.fn().mockReturnValueOnce(type)
+                get: jest.fn()
+                    .mockReturnValueOnce({ user })
+                    .mockReturnValueOnce(type)
                     .mockReturnValue(reason),
             },
             user: {
@@ -637,8 +646,9 @@ describe("add", () => {
             isChatInputCommand: jest.fn().mockReturnValue(true),
             options: {
                 getSubcommand: jest.fn().mockReturnValue("add"),
-                getUser: jest.fn().mockReturnValue(null),
-                get: jest.fn().mockReturnValue({}),
+                get: jest.fn()
+                    .mockReturnValueOnce({ user: null })
+                    .mockReturnValue({}),
             },
             reply: jest.fn(),
         } as unknown as CommandInteraction;
@@ -656,8 +666,9 @@ describe("add", () => {
             isChatInputCommand: jest.fn().mockReturnValue(true),
             options: {
                 getSubcommand: jest.fn().mockReturnValue("add"),
-                getUser: jest.fn().mockReturnValue(null),
-                get: jest.fn().mockReturnValueOnce(null)
+                get: jest.fn()
+                    .mockReturnValueOnce({ user: null })
+                    .mockReturnValueOnce(null)
                     .mockReturnValue({}),
             },
             reply: jest.fn(),
@@ -676,10 +687,11 @@ describe("add", () => {
             isChatInputCommand: jest.fn().mockReturnValue(true),
             options: {
                 getSubcommand: jest.fn().mockReturnValue("add"),
-                getUser: jest.fn().mockReturnValue(null),
-                get: jest.fn().mockReturnValueOnce({
-                    value: undefined
-                })
+                get: jest.fn()
+                    .mockReturnValueOnce({ user: null })
+                    .mockReturnValueOnce({
+                        value: undefined
+                    })
                     .mockReturnValue({}),
             },
             reply: jest.fn(),
@@ -708,8 +720,9 @@ describe("add", () => {
             isChatInputCommand: jest.fn().mockReturnValue(true),
             options: {
                 getSubcommand: jest.fn().mockReturnValue("add"),
-                getUser: jest.fn().mockReturnValue(user),
-                get: jest.fn().mockReturnValueOnce(type)
+                get: jest.fn()
+                    .mockReturnValueOnce({ user })
+                    .mockReturnValueOnce(type)
                     .mockReturnValue(null),
             },
             user: {
@@ -752,8 +765,9 @@ describe("add", () => {
             isChatInputCommand: jest.fn().mockReturnValue(true),
             options: {
                 getSubcommand: jest.fn().mockReturnValue("add"),
-                getUser: jest.fn().mockReturnValue(user),
-                get: jest.fn().mockReturnValueOnce(type)
+                get: jest.fn()
+                    .mockReturnValueOnce({ user })
+                    .mockReturnValueOnce(type)
                     .mockReturnValue(reason),
             },
             user: {

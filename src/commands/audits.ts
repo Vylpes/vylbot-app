@@ -92,7 +92,7 @@ export default class Audits extends Command {
     private async SendAuditForUser(interaction: CommandInteraction) {
         if (!interaction.guildId) return;
 
-        const user = interaction.options.getUser('target');
+        const user = interaction.options.get('target', true).user!;
 
         if (!user) {
             await interaction.reply("User not found.");
@@ -190,7 +190,7 @@ export default class Audits extends Command {
     private async AddAudit(interaction: CommandInteraction) {
         if (!interaction.guildId) return;
 
-        const user = interaction.options.getUser('target');
+        const user = interaction.options.get('target', true).user!;
         const auditType = interaction.options.get('type');
         const reasonInput = interaction.options.get('reason');
 
