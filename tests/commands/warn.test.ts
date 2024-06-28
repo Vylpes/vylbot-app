@@ -108,7 +108,7 @@ describe('Execute', () => {
         expect(logChannel.send).toHaveBeenCalledTimes(1);
 
         expect(sentEmbeds).toBeDefined();
-        expect(sentEmbeds).toMatchSnapshot();
+        expect(sentEmbeds).toMatchSnapshot("sentEmbeds");
 
         expect(Audit.prototype.Save).toHaveBeenCalledWith(Audit, expect.any(Audit));
 
@@ -117,7 +117,7 @@ describe('Execute', () => {
             AuditId: expect.any(String),
             WhenCreated: expect.any(Date),
             WhenUpdated: expect.any(Date)
-        });
+        }, "savedAudit");
     });
 
     test.todo("GIVEN interaction.guild is null, EXPECT nothing to happen");
