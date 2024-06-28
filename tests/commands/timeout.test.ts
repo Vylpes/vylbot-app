@@ -44,8 +44,8 @@ describe('execute', () => {
 
         const timeoutFunc = jest.fn();
 
-        let dmChannelSentEmbeds: (APIEmbed | JSONEncodable<APIEmbed>)[] | undefined;
-        let logsChannelSentEmbeds: (APIEmbed | JSONEncodable<APIEmbed>)[] | undefined;
+        let dmChannelSentEmbeds: readonly (APIEmbed | JSONEncodable<APIEmbed>)[] | undefined;
+        let logsChannelSentEmbeds: readonly (APIEmbed | JSONEncodable<APIEmbed>)[] | undefined;
 
         const dmChannel = {
             send: jest.fn().mockImplementation((options: MessageCreateOptions) => {
@@ -697,8 +697,8 @@ describe('execute', () => {
 
         const timeoutFunc = jest.fn();
 
-        let dmChannelSentEmbeds: (APIEmbed | JSONEncodable<APIEmbed>)[] | undefined;
-        let logsChannelSentEmbeds: (APIEmbed | JSONEncodable<APIEmbed>)[] | undefined;
+        let dmChannelSentEmbeds: readonly (APIEmbed | JSONEncodable<APIEmbed>)[] | undefined;
+        let logsChannelSentEmbeds: readonly (APIEmbed | JSONEncodable<APIEmbed>)[] | undefined;
 
         const dmChannel = {
             send: jest.fn().mockImplementation((options: MessageCreateOptions) => {

@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Execute EXPECT user to be warned 1`] = `
+[
+  {
+    "color": 3166394,
+    "description": "<@userId> \`userTag\`",
+    "fields": [
+      {
+        "name": "Moderator",
+        "value": "<@moderatorId>",
+      },
+      {
+        "name": "Reason",
+        "value": "Test reason",
+      },
+    ],
+    "thumbnail": {
+      "url": "https://google.com/avatar.png",
+    },
+    "title": "Member Warned",
+  },
+]
+`;
+
+exports[`Execute EXPECT user to be warned 2`] = `
+{
+  "AuditId": Any<String>,
+  "AuditType": 1,
+  "Id": Any<String>,
+  "ModeratorId": "moderatorId",
+  "Reason": "Test reason",
+  "ServerId": "guildId",
+  "UserId": "userId",
+  "WhenCreated": Any<Date>,
+  "WhenUpdated": Any<Date>,
+}
+`;
