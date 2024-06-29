@@ -17,6 +17,7 @@ import Poll from "./commands/poll";
 import Role from "./commands/Role/role";
 import ConfigRole from "./commands/Role/config";
 import Rules from "./commands/rules";
+import Say from "./commands/say";
 import Setup from "./commands/setup";
 import Timeout from "./commands/timeout";
 import Unmute from "./commands/unmute";
@@ -55,6 +56,7 @@ export default class Registry {
         CoreClient.RegisterCommand("mute", new Mute());
         CoreClient.RegisterCommand("poll", new Poll());
         CoreClient.RegisterCommand("rules", new Rules());
+        CoreClient.RegisterCommand("say", new Say());
         CoreClient.RegisterCommand("setup", new Setup());
         CoreClient.RegisterCommand("timeout", new Timeout());
         CoreClient.RegisterCommand("unmute", new Unmute());
