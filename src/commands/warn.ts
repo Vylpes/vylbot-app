@@ -27,21 +27,16 @@ export default class Warn extends Command {
     public override async execute(interaction: CommandInteraction) {
         if (!interaction.guild || !interaction.guildId) return;
 
-        const targetUser = interaction.options.get('target');
+        const targetUser = interaction.options.get('target', true).user!;
         const reasonInput = interaction.options.get('reason');
-
-        if (!targetUser || !targetUser.user || !targetUser.member) {
-            await interaction.reply('Fields are required.');
-            return;
-        }
 
         const reason = reasonInput && reasonInput.value ? reasonInput.value.toString() : "*none*";
 
         const logEmbed = new EmbedBuilder()
             .setColor(EmbedColours.Ok)
             .setTitle("Member Warned")
-            .setDescription(`<@${targetUser.user.id}> \`${targetUser.user.tag}\``)
-            .setThumbnail(targetUser.user.avatarURL())
+            .setDescription(`<@${targetUser.id}> \`${targetUser.tag}\``)
+            .setThumbnail(targetUser.avatarURL())
             .addFields([
                 {
                     name: "Moderator",
@@ -55,15 +50,15 @@ export default class Warn extends Command {
 
         const channelName = await SettingsHelper.GetSetting('channels.logs.mod', interaction.guildId);
 
-        if (!channelName) return;
+        if (channelName) {
+            const channel = interaction.guild.channels.cache.find(x => x.name == channelName) as TextChannel;
 
-        const channel = interaction.guild.channels.cache.find(x => x.name == channelName) as TextChannel;
-
-        if (channel) {
-            await channel.send({ embeds: [ logEmbed ]});
+            if (channel) {
+                await channel.send({ embeds: [ logEmbed ]});
+            }
         }
 
-        const audit = new Audit(targetUser.user.id, AuditType.Warn, reason, interaction.user.id, interaction.guildId);
+        const audit = new Audit(targetUser.id, AuditType.Warn, reason, interaction.user.id, interaction.guildId);
         await audit.Save(Audit, audit);
 
         await interaction.reply('Successfully warned user.');

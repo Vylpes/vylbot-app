@@ -95,7 +95,7 @@ describe('Execute', () => {
         expect(interaction.reply).toHaveBeenCalledWith("Successfully warned user.");
 
         expect(interaction.options.get).toHaveBeenCalledTimes(2);
-        expect(interaction.options.get).toHaveBeenCalledWith("target");
+        expect(interaction.options.get).toHaveBeenCalledWith("target", true);
         expect(interaction.options.get).toHaveBeenCalledWith("reason");
 
         expect(interaction.guild!.channels.cache.find).toHaveBeenCalledTimes(1);
@@ -120,21 +120,375 @@ describe('Execute', () => {
         }, "savedAudit");
     });
 
-    test.todo("GIVEN interaction.guild is null, EXPECT nothing to happen");
+    test("GIVEN interaction.guild is null, EXPECT nothing to happen", async () => {
+        let sentEmbeds: EmbedBuilder[] | undefined;
+        let savedAudit: Audit | undefined;
 
-    test.todo("GIVEN interaction.guildId is null, EXPECT nothing to happen");
+        // Arrange
+        const targetUser = {
+            user: {
+                id: "userId",
+                tag: "userTag",
+                avatarURL: jest.fn().mockReturnValue("https://google.com/avatar.png"),
+            },
+            member: {},
+        };
 
-    test.todo("GIVEN targetUser is null, EXPECT error");
+        const reason = {
+            value: "Test reason",
+        };
 
-    test.todo("GIVEN targetUser.user is undefined, EXPECT error");
+        const logChannel = {
+            send: jest.fn().mockImplementation((opts: any) => {
+                sentEmbeds = opts.embeds;
+            }),
+        } as unknown as TextChannel;
 
-    test.todo("GIVEN targetUser.member is undefined, EXPECT error");
+        const interaction = {
+            reply: jest.fn(),
+            options: {
+                get: jest.fn()
+                    .mockReturnValueOnce(targetUser)
+                    .mockReturnValue(reason),
+            },
+            guildId: "guildId",
+            user: {
+                id: "moderatorId",
+            },
+        } as unknown as CommandInteraction;
 
-    test.todo("GIVEN reasonInput is null, EXPECT reason to be defaulted");
+        SettingsHelper.GetSetting = jest.fn().mockResolvedValue("mod-logs");
 
-    test.todo("GIVEN reasonInput.value is undefined, EXPECT reason to be defaulted");
+        Audit.prototype.Save = jest.fn().mockImplementation((_, audit: Audit) => {
+            savedAudit = audit;
+        });
+        
+        // Act
+        const command = new Warn();
+        await command.execute(interaction);
 
-    test.todo("GIVEN channels.logs.mod setting is not found, EXPECT command to return");
+        // Assert
+        expect(interaction.reply).not.toHaveBeenCalled();
+        
+        expect(Audit.prototype.Save).not.toHaveBeenCalled();
+    });
 
-    test.todo("GIVEN channel is not found, EXPECT logEmbed to not be sent");
+    test("GIVEN interaction.guildId is null, EXPECT nothing to happen", async () => {
+        let sentEmbeds: EmbedBuilder[] | undefined;
+        let savedAudit: Audit | undefined;
+
+        // Arrange
+        const targetUser = {
+            user: {
+                id: "userId",
+                tag: "userTag",
+                avatarURL: jest.fn().mockReturnValue("https://google.com/avatar.png"),
+            },
+            member: {},
+        };
+
+        const reason = {
+            value: "Test reason",
+        };
+
+        const logChannel = {
+            send: jest.fn().mockImplementation((opts: any) => {
+                sentEmbeds = opts.embeds;
+            }),
+        } as unknown as TextChannel;
+
+        const interaction = {
+            reply: jest.fn(),
+            options: {
+                get: jest.fn()
+                    .mockReturnValueOnce(targetUser)
+                    .mockReturnValue(reason),
+            },
+            guild: {
+                channels: {
+                    cache: {
+                        find: jest.fn().mockReturnValue(logChannel),
+                    },
+                },
+            },
+            user: {
+                id: "moderatorId",
+            },
+        } as unknown as CommandInteraction;
+
+        SettingsHelper.GetSetting = jest.fn().mockResolvedValue("mod-logs");
+
+        Audit.prototype.Save = jest.fn().mockImplementation((_, audit: Audit) => {
+            savedAudit = audit;
+        });
+        
+        // Act
+        const command = new Warn();
+        await command.execute(interaction);
+
+        // Assert
+        expect(interaction.reply).not.toHaveBeenCalled();
+
+        expect(Audit.prototype.Save).not.toHaveBeenCalled();
+    });
+
+    test("GIVEN reasonInput is null, EXPECT reason to be defaulted", async () => {
+        let sentEmbeds: EmbedBuilder[] | undefined;
+        let savedAudit: Audit | undefined;
+
+        // Arrange
+        const targetUser = {
+            user: {
+                id: "userId",
+                tag: "userTag",
+                avatarURL: jest.fn().mockReturnValue("https://google.com/avatar.png"),
+            },
+            member: {},
+        };
+
+        const reason = {
+            value: "Test reason",
+        };
+
+        const logChannel = {
+            send: jest.fn().mockImplementation((opts: any) => {
+                sentEmbeds = opts.embeds;
+            }),
+        } as unknown as TextChannel;
+
+        const interaction = {
+            reply: jest.fn(),
+            options: {
+                get: jest.fn()
+                    .mockReturnValueOnce(targetUser)
+                    .mockReturnValue(null),
+            },
+            guild: {
+                channels: {
+                    cache: {
+                        find: jest.fn().mockReturnValue(logChannel),
+                    },
+                },
+            },
+            guildId: "guildId",
+            user: {
+                id: "moderatorId",
+            },
+        } as unknown as CommandInteraction;
+
+        SettingsHelper.GetSetting = jest.fn().mockResolvedValue("mod-logs");
+
+        Audit.prototype.Save = jest.fn().mockImplementation((_, audit: Audit) => {
+            savedAudit = audit;
+        });
+        
+        // Act
+        const command = new Warn();
+        await command.execute(interaction);
+
+        // Assert
+        expect(sentEmbeds).toBeDefined();
+
+        expect(sentEmbeds![0].data.fields).toBeDefined();
+        expect(sentEmbeds![0].data.fields!.length).toBe(2);
+
+        const logEmbedReasonField = sentEmbeds![0].data.fields!.find(x => x.name == "Reason");
+
+        expect(logEmbedReasonField).toBeDefined();
+        expect(logEmbedReasonField!.value).toBe("*none*");
+    });
+
+    test("GIVEN reasonInput.value is undefined, EXPECT reason to be defaulted", async () => {
+        let sentEmbeds: EmbedBuilder[] | undefined;
+        let savedAudit: Audit | undefined;
+
+        // Arrange
+        const targetUser = {
+            user: {
+                id: "userId",
+                tag: "userTag",
+                avatarURL: jest.fn().mockReturnValue("https://google.com/avatar.png"),
+            },
+            member: {},
+        };
+
+        const reason = {
+            value: undefined,
+        };
+
+        const logChannel = {
+            send: jest.fn().mockImplementation((opts: any) => {
+                sentEmbeds = opts.embeds;
+            }),
+        } as unknown as TextChannel;
+
+        const interaction = {
+            reply: jest.fn(),
+            options: {
+                get: jest.fn()
+                    .mockReturnValueOnce(targetUser)
+                    .mockReturnValue(reason),
+            },
+            guild: {
+                channels: {
+                    cache: {
+                        find: jest.fn().mockReturnValue(logChannel),
+                    },
+                },
+            },
+            guildId: "guildId",
+            user: {
+                id: "moderatorId",
+            },
+        } as unknown as CommandInteraction;
+
+        SettingsHelper.GetSetting = jest.fn().mockResolvedValue("mod-logs");
+
+        Audit.prototype.Save = jest.fn().mockImplementation((_, audit: Audit) => {
+            savedAudit = audit;
+        });
+        
+        // Act
+        const command = new Warn();
+        await command.execute(interaction);
+
+        // Assert
+        expect(sentEmbeds).toBeDefined();
+
+        expect(sentEmbeds![0].data.fields).toBeDefined();
+        expect(sentEmbeds![0].data.fields!.length).toBe(2);
+
+        const logEmbedReasonField = sentEmbeds![0].data.fields!.find(x => x.name == "Reason");
+
+        expect(logEmbedReasonField).toBeDefined();
+        expect(logEmbedReasonField!.value).toBe("*none*");
+    });
+
+    test("GIVEN channels.logs.mod setting is not found, EXPECT command to return", async () => {
+        let sentEmbeds: EmbedBuilder[] | undefined;
+        let savedAudit: Audit | undefined;
+
+        // Arrange
+        const targetUser = {
+            user: {
+                id: "userId",
+                tag: "userTag",
+                avatarURL: jest.fn().mockReturnValue("https://google.com/avatar.png"),
+            },
+            member: {},
+        };
+
+        const reason = {
+            value: "Test reason",
+        };
+
+        const logChannel = {
+            send: jest.fn().mockImplementation((opts: any) => {
+                sentEmbeds = opts.embeds;
+            }),
+        } as unknown as TextChannel;
+
+        const interaction = {
+            reply: jest.fn(),
+            options: {
+                get: jest.fn()
+                    .mockReturnValueOnce(targetUser)
+                    .mockReturnValue(reason),
+            },
+            guild: {
+                channels: {
+                    cache: {
+                        find: jest.fn().mockReturnValue(logChannel),
+                    },
+                },
+            },
+            guildId: "guildId",
+            user: {
+                id: "moderatorId",
+            },
+        } as unknown as CommandInteraction;
+
+        SettingsHelper.GetSetting = jest.fn().mockResolvedValue(undefined);
+
+        Audit.prototype.Save = jest.fn().mockImplementation((_, audit: Audit) => {
+            savedAudit = audit;
+        });
+        
+        // Act
+        const command = new Warn();
+        await command.execute(interaction);
+
+        // Assert
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("Successfully warned user.");
+
+        expect(Audit.prototype.Save).toHaveBeenCalledTimes(1);
+
+        expect(logChannel.send).not.toHaveBeenCalled();
+    });
+
+    test("GIVEN channel is not found, EXPECT logEmbed to not be sent", async () => {
+        let sentEmbeds: EmbedBuilder[] | undefined;
+        let savedAudit: Audit | undefined;
+
+        // Arrange
+        const targetUser = {
+            user: {
+                id: "userId",
+                tag: "userTag",
+                avatarURL: jest.fn().mockReturnValue("https://google.com/avatar.png"),
+            },
+            member: {},
+        };
+
+        const reason = {
+            value: "Test reason",
+        };
+
+        const logChannel = {
+            send: jest.fn().mockImplementation((opts: any) => {
+                sentEmbeds = opts.embeds;
+            }),
+        } as unknown as TextChannel;
+
+        const interaction = {
+            reply: jest.fn(),
+            options: {
+                get: jest.fn()
+                    .mockReturnValueOnce(targetUser)
+                    .mockReturnValue(reason),
+            },
+            guild: {
+                channels: {
+                    cache: {
+                        find: jest.fn().mockReturnValue(undefined),
+                    },
+                },
+            },
+            guildId: "guildId",
+            user: {
+                id: "moderatorId",
+            },
+        } as unknown as CommandInteraction;
+
+        SettingsHelper.GetSetting = jest.fn().mockResolvedValue("mod-logs");
+
+        Audit.prototype.Save = jest.fn().mockImplementation((_, audit: Audit) => {
+            savedAudit = audit;
+        });
+        
+        // Act
+        const command = new Warn();
+        await command.execute(interaction);
+
+        // Assert
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("Successfully warned user.");
+        
+        expect(Audit.prototype.Save).toHaveBeenCalledTimes(1);
+
+        expect(interaction.guild!.channels.cache.find).toHaveBeenCalledTimes(1);
+
+        expect(logChannel.send).not.toHaveBeenCalled();
+    });
 });
