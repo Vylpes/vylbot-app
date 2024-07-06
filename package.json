@@ -8,7 +8,7 @@
     "clean": "rm -rf node_modules/ dist/",
     "build": "tsc",
     "start": "node ./dist/vylbot",
-    "test": "echo true",
+    "test": "jest . --passWithNoTests",
     "db:up": "typeorm migration:run -d dist/database/dataSources/appDataSource.js",
     "db:down": "typeorm migration:revert -d dist/database/dataSources/appDataSource.js",
     "db:create": "typeorm migration:create ./src/database/migrations",
