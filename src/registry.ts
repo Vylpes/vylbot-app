@@ -12,7 +12,6 @@ import Config from "./commands/config";
 import Disable from "./commands/disable";
 import Ignore from "./commands/ignore";
 import Kick from "./commands/kick";
-import Mute from "./commands/mute";
 import Poll from "./commands/poll";
 import Role from "./commands/Role/role";
 import ConfigRole from "./commands/Role/config";
@@ -20,7 +19,6 @@ import Rules from "./commands/rules";
 import Say from "./commands/say";
 import Setup from "./commands/setup";
 import Timeout from "./commands/timeout";
-import Unmute from "./commands/unmute";
 import Warn from "./commands/warn";
 
 // Command Imports: MankBot
@@ -53,13 +51,11 @@ export default class Registry {
         CoreClient.RegisterCommand("disable", new Disable());
         CoreClient.RegisterCommand("ignore", new Ignore());
         CoreClient.RegisterCommand("kick", new Kick());
-        CoreClient.RegisterCommand("mute", new Mute());
         CoreClient.RegisterCommand("poll", new Poll());
         CoreClient.RegisterCommand("rules", new Rules());
         CoreClient.RegisterCommand("say", new Say());
         CoreClient.RegisterCommand("setup", new Setup());
         CoreClient.RegisterCommand("timeout", new Timeout());
-        CoreClient.RegisterCommand("unmute", new Unmute());
         CoreClient.RegisterCommand("warn", new Warn());
 
         CoreClient.RegisterCommand("role", new Role());
