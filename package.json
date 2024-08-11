@@ -32,7 +32,7 @@
     "discord.js": "^14.3.0",
     "dotenv": "^16.0.0",
     "emoji-regex": "^10.0.0",
-    "minimatch": "9.0.5",
+    "minimatch": "10.0.1",
     "mysql": "^2.18.1",
     "random-bunny": "^2.1.6",
     "typeorm": "0.3.20"
