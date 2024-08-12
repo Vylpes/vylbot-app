@@ -768,9 +768,9 @@
     pretty-format "^29.0.0"
 
 "@types/node@*":
-  version "22.1.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.1.0.tgz#6d6adc648b5e03f0e83c78dc788c2b037d0ad94b"
-  integrity sha512-AOmuRF0R2/5j1knA3c6G3HOk523Ga+l+ZXltX8SF1+5oqcXijjfTd8fY3XRZqSihEu9XhtQnKYLmkFaoxgsJHw==
+  version "22.2.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.2.0.tgz#7cf046a99f0ba4d628ad3088cb21f790df9b0c5b"
+  integrity sha512-bm6EG6/pCpkxDf/0gDNDdtDILMOHgaQBVOJGdwsqClnxA3xL6jtMv76rLBc006RVMWbmaf0xbmom4Z/5o2nRkQ==
   dependencies:
     undici-types "~6.13.0"
 
@@ -3665,9 +3665,9 @@ quick-lru@^5.1.1:
   integrity sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==
 
 random-bunny@^2.1.6:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/random-bunny/-/random-bunny-2.2.0.tgz#0c624fc1d30a4995cb91b725708d1e8192b20895"
-  integrity sha512-3CkxpCLJNhFoVdsTh2TFV3ieHlZBODDOVUvidKwlmZuV8QA7bpuhDAm1nSulJuu4QJKtvvIVMXs5HdZBimMpvQ==
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/random-bunny/-/random-bunny-2.3.0.tgz#091fd4a67ab9aad62c48e59f274cda00d3aa8144"
+  integrity sha512-MVYQk1JDyQtb/7VIyGPIeCYFIYMDDTgt6GYA9FjEcVkvRH087GZGFZFcgt7HasATfOm/PljrKg6FOjDk4PxNEA==
   dependencies:
     commander "^12.0.0"
     glob-parent "^6.0.0"
