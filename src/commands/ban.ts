@@ -62,7 +62,6 @@ export default class Ban extends Command {
         }
 
         await member.ban();
-        await interaction.reply(`\`${targetUser.user.tag}\` has been banned.`);
 
         const channelName = await SettingsHelper.GetSetting('channels.logs.mod', interaction.guildId);
 
@@ -74,7 +73,29 @@ export default class Ban extends Command {
             await channel.send({ embeds: [ logEmbed ]});
         }
 
+        const dmEmbed = new EmbedBuilder()
+            .setColor(EmbedColours.Ok)
+            .setTitle(interaction.guild.name)
+            .setDescription("You have been banned by a moderator.")
+            .addFields([
+                {
+                    name: "Reason",
+                    value: reason,
+                },
+            ]);
+
+        let replyText = "Successfully banned user.";
+
+        try {
+            const dmChannel = await targetUser.user!.createDM();
+            await dmChannel.send({ embeds: [ dmEmbed ] });
+        } catch {
+            replyText += " *Note: I was unable to DM the user the reason.*";
+        }
+
         const audit = new Audit(targetUser.user.id, AuditType.Ban, reason, interaction.user.id, interaction.guildId);
         await audit.Save(Audit, audit);
+
+        await interaction.reply(replyText);
     }
 }

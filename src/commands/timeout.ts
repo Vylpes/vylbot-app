@@ -104,54 +104,30 @@ export default class Timeout extends Command {
             await channel.send({ embeds: [ logEmbed ]});
         }
 
+        const dmEmbed = new EmbedBuilder()
+            .setColor(EmbedColours.Ok)
+            .setTitle(interaction.guild.name)
+            .setDescription("You have been given a warning by a moderator.")
+            .addFields([
+                {
+                    name: "Reason",
+                    value: reason || "*none*",
+                },
+            ]);
+
+        let replyText = "Successfully warned user.";
+
+        try {
+            const dmChannel = await targetUser.user!.createDM();
+            await dmChannel.send({ embeds: [ dmEmbed ] });
+        } catch {
+            replyText += " *Note: I was unable to DM the user the reason.*";
+        }
+
         // Create Audit
         const audit = new Audit(targetUser.user.id, AuditType.Timeout, reason || "*none*", interaction.user.id, interaction.guildId);
         await audit.Save(Audit, audit);
 
-        // DM User, if possible
-        const resultEmbed = new EmbedBuilder()
-            .setColor(EmbedColours.Ok)
-            .setDescription(`<@${targetUser.user.id}> has been timed out`);
-
-        const dmEmbed = new EmbedBuilder()
-            .setColor(EmbedColours.Ok)
-            .setDescription(`You have been timed out in ${interaction.guild.name}`)
-            .addFields([
-                {
-                    name: "Reason",
-                    value: reason || "*none*"
-                },
-                {
-                    name: "Length",
-                    value: timeLength.GetLengthShort(),
-                },
-                {
-                    name: "Until",
-                    value: timeLength.GetDateFromNow().toString(),
-                },
-            ]);
-
-        try {
-            const dmChannel = await targetUser.user.createDM();
-
-            await dmChannel.send({ embeds: [ dmEmbed ]});
-
-            resultEmbed.addFields([
-                {
-                    name: "DM Sent",
-                    value: "true",
-                },
-            ]);
-        } catch {
-            resultEmbed.addFields([
-                {
-                    name: "DM Sent",
-                    value: "false",
-                },
-            ]);
-        }
-
-        // Success Reply
-        await interaction.reply({ embeds: [ resultEmbed ]});
+        await interaction.reply(replyText);
     }
 }
