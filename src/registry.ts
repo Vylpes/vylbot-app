@@ -28,6 +28,9 @@ import AddLobby from "./commands/501231711271780357/Lobby/add";
 import RemoveLobby from "./commands/501231711271780357/Lobby/remove";
 import ListLobby from "./commands/501231711271780357/Lobby/list";
 
+// Command Imports: Potato Talk
+import Moons from "./commands/304276391837302787/moons";
+
 // Event Imports
 import GuildMemberAdd from "./events/MemberEvents/GuildMemberAdd";
 import GuildMemberRemove from "./events/MemberEvents/GuildMemberRemove";
@@ -38,6 +41,7 @@ import MessageCreate from "./events/MessageEvents/MessageCreate";
 
 // Button Event Imports
 import Verify from "./buttonEvents/verify";
+import MoonsButtonEvent from "./buttonEvents/moons";
 
 export default class Registry {
     public static RegisterCommands() {
@@ -68,12 +72,16 @@ export default class Registry {
         CoreClient.RegisterCommand("listlobby", new ListLobby(), "501231711271780357");
         CoreClient.RegisterCommand("entry", new Entry(), "501231711271780357");
 
+        // Exclusive Commands: Potato Talk
+        CoreClient.RegisterCommand("moons", new Moons(), "304276391837302787");
+
         // Add Exclusive Commands to Test Server
         CoreClient.RegisterCommand("lobby", new Lobby(), "442730357897429002");
         CoreClient.RegisterCommand("addlobby", new AddLobby(), "442730357897429002");
         CoreClient.RegisterCommand("removelobby", new RemoveLobby(), "442730357897429002");
         CoreClient.RegisterCommand("listlobby", new ListLobby(), "442730357897429002");
         CoreClient.RegisterCommand("entry", new Entry(), "442730357897429002");
+        CoreClient.RegisterCommand("moons", new Moons(), "442730357897429002");
     }
 
     public static RegisterEvents() {
@@ -88,5 +96,6 @@ export default class Registry {
 
     public static RegisterButtonEvents() {
         CoreClient.RegisterButtonEvent("verify", new Verify());
+        CoreClient.RegisterButtonEvent("moons", new MoonsButtonEvent());
     }
 }
