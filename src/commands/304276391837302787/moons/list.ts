@@ -1,5 +1,5 @@
 import {ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedBuilder} from "discord.js";
-import Moon from "../../../database/entities/Moon";
+import Moon from "../../../database/entities/304276391837302787/Moon";
 import EmbedColours from "../../../constants/EmbedColours";
 
 export default async function ListMoons(interaction: CommandInteraction) {
@@ -17,7 +17,7 @@ export default async function ListMoons(interaction: CommandInteraction) {
 
     const totalPages = Math.ceil(moons[1] / pageLength);
 
-    const description = moons[0].flatMap(x => `${x.MoonNumber}. ${x.Description.slice(0, 15)}`);
+    const description = moons[0].flatMap(x => `**${x.MoonNumber} -** ${x.Description.slice(0, 15)}`);
 
     const embed = new EmbedBuilder()
         .setTitle(`${user.username}'s Moons`)

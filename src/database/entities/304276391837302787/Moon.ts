@@ -1,6 +1,6 @@
 import { Column, Entity, IsNull } from "typeorm";
-import BaseEntity from "../../contracts/BaseEntity";
-import AppDataSource from "../dataSources/appDataSource";
+import BaseEntity from "../../../contracts/BaseEntity";
+import AppDataSource from "../../dataSources/appDataSource";
 
 @Entity()
 export default class Moon extends BaseEntity {
@@ -45,5 +45,13 @@ export default class Moon extends BaseEntity {
         });
 
         return moons;
+    }
+
+    public static async FetchMoonCountByUserId(userId: string): Promise<number> {
+        const repository = AppDataSource.getRepository(Moon);
+
+        const count = await repository.count({ where: { UserId: userId } });
+
+        return count;
     }
 }

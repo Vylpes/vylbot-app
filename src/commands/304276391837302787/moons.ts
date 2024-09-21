@@ -1,6 +1,7 @@
 import { Command } from "../../type/command";
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
 import ListMoons from "./moons/list";
+import AddMoon from "./moons/add";
 
 export default class Moons extends Command {
     constructor() {
@@ -20,7 +21,16 @@ export default class Moons extends Command {
                     .addNumberOption(option =>
                         option
                                     .setName("page")
-                                    .setDescription("The page to start with")));
+                                    .setDescription("The page to start with")))
+            .addSubcommand(subcommand =>
+                subcommand
+                        .setName('add')
+                        .setDescription('Add a moon to your count!')
+                        .addStringOption(option =>
+                            option
+                                .setName("description")
+                                .setDescription("What deserved a moon?")
+                                .setRequired(true)));
     }
 
     public override async execute(interaction: CommandInteraction) {
@@ -29,6 +39,9 @@ export default class Moons extends Command {
         switch (interaction.options.getSubcommand()) {
             case "list":
                 await ListMoons(interaction);
+                break;
+            case "add":
+                await AddMoon(interaction);
                 break;
         }
     }
