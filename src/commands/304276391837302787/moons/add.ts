@@ -1,6 +1,7 @@
 import {CommandInteraction, EmbedBuilder} from "discord.js";
 import Moon from "../../../database/entities/304276391837302787/Moon";
 import EmbedColours from "../../../constants/EmbedColours";
+import UserSetting from "../../../database/entities/UserSetting";
 
 export default async function AddMoon(interaction: CommandInteraction) {
     const description = interaction.options.get("description", true).value?.toString();
@@ -10,7 +11,16 @@ export default async function AddMoon(interaction: CommandInteraction) {
         return;
     }
 
-    const moonCount = await Moon.FetchMoonCountByUserId(interaction.user.id);
+    let moonSetting = await UserSetting.FetchOneByKey(interaction.user.id, "moons");
+    const moonCount = moonSetting && Number(moonSetting.Value) ? Number(moonSetting.Value) : 0;
+
+    if (moonSetting) {
+        moonSetting.UpdateValue(`${moonCount + 1}`);
+    } else {
+       moonSetting = new UserSetting(interaction.user.id, "moons", `${moonCount + 1}`);
+    }
+
+    await moonSetting.Save(UserSetting, moonSetting);
 
     const moon = new Moon(moonCount + 1, description, interaction.user.id);
 

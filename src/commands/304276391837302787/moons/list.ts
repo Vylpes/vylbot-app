@@ -1,6 +1,7 @@
 import {ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedBuilder} from "discord.js";
 import Moon from "../../../database/entities/304276391837302787/Moon";
 import EmbedColours from "../../../constants/EmbedColours";
+import UserSetting from "../../../database/entities/UserSetting";
 
 export default async function ListMoons(interaction: CommandInteraction) {
     const user = interaction.options.get("user")?.user ?? interaction.user;
@@ -15,6 +16,9 @@ export default async function ListMoons(interaction: CommandInteraction) {
         return;
     }
 
+    const moonSetting = await UserSetting.FetchOneByKey(interaction.user.id, "moons");
+    const totalMoons = moonSetting && Number(moonSetting.Value) ? Number(moonSetting.Value) : 0;
+
     const totalPages = Math.ceil(moons[1] / pageLength);
 
     const description = moons[0].flatMap(x => `**${x.MoonNumber} -** ${x.Description.slice(0, 15)}`);
@@ -23,7 +27,7 @@ export default async function ListMoons(interaction: CommandInteraction) {
         .setTitle(`${user.username}'s Moons`)
         .setColor(EmbedColours.Ok)
         .setDescription(description.join("\n"))
-        .setFooter({ text: `Page ${page + 1} of ${totalPages} · ${moons[1]} moons` });
+        .setFooter({ text: `Page ${page + 1} of ${totalPages} · ${totalMoons} moons` });
 
     const row = new ActionRowBuilder<ButtonBuilder>()
         .addComponents(
