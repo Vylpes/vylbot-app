@@ -22,7 +22,9 @@ export default async function AddMoon(interaction: CommandInteraction) {
 
     await moonSetting.Save(UserSetting, moonSetting);
 
-    const moon = new Moon(moonCount + 1, description, interaction.user.id);
+    const allMoons = await Moon.FetchMoonCountByUserId(interaction.user.id);
+
+    const moon = new Moon(allMoons + 1, description, interaction.user.id);
 
     await moon.Save(Moon, moon);
 
