@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
 import SettingsHelper from "../helpers/SettingsHelper";
 import StringTools from "../helpers/StringTools";
 import { Command } from "../type/command";
@@ -59,6 +59,8 @@ export default class Code extends Command {
             .setTitle("Entry Code")
             .setDescription(code);
 
-        await interaction.channel.send({ embeds: [ embed ]});
+        const channel = interaction.channel as TextChannel;
+
+        await channel.send({ embeds: [ embed ]});
     }
 }

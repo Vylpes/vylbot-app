@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
 import { existsSync, readFileSync } from "fs";
 import EmbedColours from "../constants/EmbedColours";
 import { Command } from "../type/command";
@@ -79,7 +79,7 @@ export default class Rules extends Command {
             embeds.push(embed);
         });
 
-        const channel = interaction.channel;
+        const channel = interaction.channel as TextChannel;
 
         if (!channel) {
             await interaction.reply({ content: "Channel not found.", ephemeral: true });
@@ -109,7 +109,9 @@ export default class Rules extends Command {
                     .setLabel(buttonLabel || "Verify")
             ]);
 
-        await interaction.channel?.send({
+        const channel = interaction.channel as TextChannel;
+
+        await channel.send({
             components: [ row ]
         });
 
