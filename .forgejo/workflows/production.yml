@@ -17,9 +17,9 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 18.x
-    - run: npm ci
-    - run: npm run build
-    - run: npm test
+    - run: yarn install --frozen-lockfile
+    - run: yarn build
+    - run: yarn test
 
     - name: "Copy files over to location"
       run: cp -r . ${{ secrets.PROD_REPO_PATH }}
@@ -63,5 +63,5 @@ jobs:
           && (pm2 delete vylbot_prod || true) \
           && docker compose up -d \
           && sleep 10 \
-          && npm run db:up \
+          && yarn db:up \
           && pm2 start --name vylbot_prod dist/vylbot.js
