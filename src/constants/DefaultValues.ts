@@ -44,6 +44,9 @@ export default class DefaultValues {
             this.values.push({ Key: "verification.role", Value: "Entry" });
             this.values.push({ Key: "verification.code", Value: "" });
 
+            // Gif Only Mode
+            this.values.push({ Key: "channel.linkonly", Value: "" })
+
             // Event
             this.values.push({ Key: "event.message.delete.enabled", Value: "false" });
             this.values.push({ Key: "event.message.delete.channel", Value: "message-logs" });
