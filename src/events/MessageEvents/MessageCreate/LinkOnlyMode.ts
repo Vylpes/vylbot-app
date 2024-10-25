@@ -6,11 +6,7 @@ export default async function LinkOnlyMode(message: Message) {
 
     const gifOnlyMode = await SettingsHelper.GetSetting("channel.linkonly", message.guild.id);
 
-    if (!gifOnlyMode) return;
-
-    const channel = message.guild.channels.cache.find(x => x.id == gifOnlyMode) || message.guild.channels.fetch(gifOnlyMode);
-
-    if (!channel) return;
+    if (gifOnlyMode != message.channel.id) return;
 
     if (message.content.startsWith("https://") || message.content.startsWith("http://")) return;
 
