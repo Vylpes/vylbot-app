@@ -16,7 +16,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 18.x
+        node-version: 20.x
     - run: yarn install --frozen-lockfile
     - run: yarn build
     - run: yarn test
@@ -29,7 +29,7 @@ jobs:
     needs: build
     runs-on: node
     steps:
-    - uses: https://github.com/appleboy/ssh-action@v1.0.3
+    - uses: https://github.com/appleboy/ssh-action@v1.1.0
       env:
         DB_NAME: ${{ secrets.PROD_DB_NAME }}
         DB_AUTH_USER: ${{ secrets.PROD_DB_AUTH_USER }}

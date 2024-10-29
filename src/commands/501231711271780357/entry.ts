@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
 import EmbedColours from "../../constants/EmbedColours";
 import SettingsHelper from "../../helpers/SettingsHelper";
 import { Command } from "../../type/command";
@@ -24,6 +24,8 @@ export default class Entry extends Command {
             .setTitle("Welcome")
             .setDescription(`Welcome to the server! Please make sure to read the rules in the <#${rulesChannelId}> channel and type the code found there in here to proceed to the main part of the server.`);
 
-        await interaction.channel.send({ embeds: [ embed ]});
+        const channel = interaction.channel as TextChannel;
+
+        await channel.send({ embeds: [ embed ]});
     }
 }
