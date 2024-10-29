@@ -31,7 +31,6 @@ import ListLobby from "./commands/501231711271780357/Lobby/list";
 
 // Command Imports: Potato Talk
 import Moons from "./commands/304276391837302787/moons";
-import MoonSet from "./commands/304276391837302787/moonset";
 
 // Event Imports
 import GuildMemberAdd from "./events/MemberEvents/GuildMemberAdd";
@@ -77,7 +76,6 @@ export default class Registry {
 
         // Exclusive Commands: Potato Talk
         CoreClient.RegisterCommand("moons", new Moons(), "304276391837302787");
-        CoreClient.RegisterCommand("moonset", new MoonSet(), "304276391837302787");
 
         // Add Exclusive Commands to Test Server
         CoreClient.RegisterCommand("lobby", new Lobby(), "442730357897429002");
@@ -86,7 +84,6 @@ export default class Registry {
         CoreClient.RegisterCommand("listlobby", new ListLobby(), "442730357897429002");
         CoreClient.RegisterCommand("entry", new Entry(), "442730357897429002");
         CoreClient.RegisterCommand("moons", new Moons(), "442730357897429002");
-        CoreClient.RegisterCommand("moonset", new MoonSet(), "442730357897429002");
     }
 
     public static RegisterEvents() {
