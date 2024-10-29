@@ -22,6 +22,13 @@ export default async function ListMoons(interaction: CommandInteraction) {
         description = moons[0].flatMap(x => `**${x.MoonNumber} -** ${x.Description.slice(0, 15)}`);
     }
 
+    const moonDifference = totalMoons - moons[1];
+    const isLastPage = page + 1 == totalPages || moons[0].length == 0;
+
+    if (isLastPage && moonDifference > 0) {
+        description.push(`...plus ${moonDifference} more untracked`);
+    }
+
     const embed = new EmbedBuilder()
         .setTitle(`${user.username}'s Moons`)
         .setColor(EmbedColours.Ok)
@@ -39,7 +46,7 @@ export default async function ListMoons(interaction: CommandInteraction) {
                 .setCustomId(`moons list ${user.id} ${page + 1}`)
                 .setLabel("Next")
                 .setStyle(ButtonStyle.Primary)
-                .setDisabled(page + 1 == totalPages || moons[0].length == 0));
+                .setDisabled(isLastPage));
 
     await interaction.reply({
         embeds: [ embed ],

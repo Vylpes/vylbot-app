@@ -29,7 +29,18 @@ export default async function List(interaction: ButtonInteraction) {
 
     const totalPages = Math.ceil(moons[1] / pageLength);
 
-    const description = moons[0].flatMap(x => `**${x.MoonNumber} -** ${x.Description.slice(0, 15)}`);
+    let description = ["*none*"];
+
+    if (moons[0].length > 0) {
+        description = moons[0].flatMap(x => `**${x.MoonNumber} -** ${x.Description.slice(0, 15)}`);
+    }
+
+    const moonDifference = totalMoons - moons[1];
+    const isLastPage = pageNumber + 1 == totalPages || moons[0].length == 0;
+
+    if (isLastPage && moonDifference > 0) {
+        description.push(`...plus ${moonDifference} more untracked`);
+    }
 
     const embed = new EmbedBuilder()
         .setTitle(`${member?.user.username}'s Moons`)
@@ -48,7 +59,7 @@ export default async function List(interaction: ButtonInteraction) {
                 .setCustomId(`moons list ${userId} ${pageNumber + 1}`)
                 .setLabel("Next")
                 .setStyle(ButtonStyle.Primary)
-                .setDisabled(pageNumber + 1 == totalPages));
+                .setDisabled(isLastPage));
 
     await interaction.update({
         embeds: [ embed ],
