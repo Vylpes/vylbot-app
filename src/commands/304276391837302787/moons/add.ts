@@ -24,11 +24,7 @@ export default async function AddMoon(interaction: CommandInteraction) {
 
     const allMoons = await Moon.FetchMoonCountByUserId(interaction.user.id);
 
-    let moonNumber = allMoons + 1;
-
-    if (allMoons < moonCount) {
-        moonNumber = moonCount + 1;
-    }
+    const moonNumber = allMoons + 1;
 
     const moon = new Moon(moonNumber, description, interaction.user.id);
 
