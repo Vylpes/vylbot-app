@@ -1,7 +1,7 @@
 import {ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, EmbedBuilder} from "discord.js";
-import Moon from "../../database/entities/304276391837302787/Moon";
-import EmbedColours from "../../constants/EmbedColours";
-import UserSetting from "../../database/entities/UserSetting";
+import Moon from "../../../database/entities/304276391837302787/Moon";
+import EmbedColours from "../../../constants/EmbedColours";
+import UserSetting from "../../../database/entities/UserSetting";
 
 export default async function List(interaction: ButtonInteraction) {
     if (!interaction.guild) return;
