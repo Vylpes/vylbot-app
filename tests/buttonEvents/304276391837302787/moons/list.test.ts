@@ -1,7 +1,64 @@
-import {ButtonInteraction, EmbedBuilder} from "discord.js";
+import {ActionRowBuilder, ButtonBuilder, ButtonInteraction, EmbedBuilder} from "discord.js";
 import List from "../../../../src/buttonEvents/304276391837302787/moons/list";
 import UserSetting from "../../../../src/database/entities/UserSetting";
 import Moon from "../../../../src/database/entities/304276391837302787/Moon";
+
+describe("GIVEN happy flow", () => {
+    let updatedWithEmbeds: EmbedBuilder[] | undefined;
+    let updatedWithRows: ActionRowBuilder<ButtonBuilder>[] | undefined;
+
+    const interaction = {
+        guild: {
+            members: {
+                cache: {
+                    find: jest.fn().mockReturnValue({
+                        user: {
+                            username: "username",
+                        },
+                    }),
+                },
+            },
+        },
+        reply: jest.fn(),
+        update: jest.fn((options: any) => {
+            updatedWithEmbeds = options.embeds;
+            updatedWithRows = options.components;
+        }),
+        customId: "moons list userId 0",
+    } as unknown as ButtonInteraction;
+
+    beforeAll(async () => {
+        UserSetting.FetchOneByKey = jest.fn();
+        Moon.FetchPaginatedMoonsByUserId = jest.fn().mockResolvedValue([
+            [
+                {
+                    MoonNumber: 1,
+                    Description: "Test Description",
+                }
+            ],
+            1,
+        ]);
+
+        await List(interaction);
+    });
+
+    test("EXPECT moons to be fetched", () => {
+        expect(Moon.FetchPaginatedMoonsByUserId).toHaveBeenCalledTimes(1);
+        expect(Moon.FetchPaginatedMoonsByUserId).toHaveBeenCalledWith("userId", 10, 0);
+    });
+
+    test("EXPECT interaction.update to be called", () => {
+        expect(interaction.update).toHaveBeenCalledTimes(1);
+    });
+
+    test("EXPECT embed to be updated", () => {
+        expect(updatedWithEmbeds).toMatchSnapshot();
+    });
+
+    test("EXPECT row to be updated", () => {
+        expect(updatedWithRows).toMatchSnapshot();
+    });
+});
 
 describe("GIVEN interaction.guild is null", () => {
     const interaction = {
@@ -205,31 +262,7 @@ describe("GIVEN no moons on current page", () => {
     test("EXPECT description to say so", () => {
         expect(updatedWith).toBeDefined();
         expect(updatedWith?.length).toBe(1);
-        
+
         expect(updatedWith![0].data.description).toBe("*none*");
-    });
-});
-
-describe("GIVEN happy flow", () => {
-    test.todo("EXPECT moons to be fetched");
-
-    test.todo("EXPECT embed to be updated");
-
-    test.todo("EXPECT row to be updated");
-
-    describe("GIVEN it is the first page", () => {
-        test.todo("EXPECT Previous button to be disabled");
-    });
-
-    describe("GIVEN it is the last page", () => {
-        test.todo("EXPECT Next button to be disabled");
-
-        describe("GIVEN there are more moons in the counter than in the database", () => {
-            test.todo("EXPECT untracked counter to be present");
-        });
-    });
-
-    describe("GIVEN no moons on the current page", () => {
-        test.todo("EXPECT Next button to be disabled");
     });
 });
