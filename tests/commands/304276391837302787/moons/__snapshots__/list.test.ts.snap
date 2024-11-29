@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GIVEN happy flow EXPECT interaction to be replied 1`] = `
+{
+  "components": [
+    {
+      "components": [
+        {
+          "custom_id": "moons list userId -1",
+          "disabled": true,
+          "emoji": undefined,
+          "label": "Previous",
+          "style": 1,
+          "type": 2,
+        },
+        {
+          "custom_id": "moons list userId 01",
+          "disabled": true,
+          "emoji": undefined,
+          "label": "Next",
+          "style": 1,
+          "type": 2,
+        },
+      ],
+      "type": 1,
+    },
+  ],
+  "embeds": [
+    {
+      "color": 3166394,
+      "description": "**1 -** Test Descriptio",
+      "footer": {
+        "icon_url": undefined,
+        "text": "Page 01 of 1 · 0 moons",
+      },
+      "title": "undefined's Moons",
+    },
+  ],
+}
+`;
