@@ -47,4 +47,15 @@ export default class AutoKickConfig extends BaseEntity {
 
         return query;
     }
+
+    public static async FetchAllByServerId(serverId: string): Promise<AutoKickConfig[]> {
+        const repository = AppDataSource.getRepository(AutoKickConfig);
+
+        const query = repository
+            .createQueryBuilder("config")
+            .where("config.serverId = :serverId", { serverId })
+            .getMany();
+
+        return query;
+    }
 }

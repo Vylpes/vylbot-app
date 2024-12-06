@@ -4,6 +4,7 @@ import { EventType } from "./constants/EventType";
 // Command Imports
 import About from "./commands/about";
 import Audits from "./commands/audits";
+import Autokick from "./commands/autokick";
 import Ban from "./commands/ban";
 import Bunny from "./commands/bunny";
 import Clear from "./commands/clear";
@@ -45,6 +46,7 @@ export default class Registry {
     public static RegisterCommands() {
         CoreClient.RegisterCommand("about", new About());
         CoreClient.RegisterCommand("audits", new Audits());
+        CoreClient.RegisterCommand("autokick", new Autokick());
         CoreClient.RegisterCommand("ban", new Ban());
         CoreClient.RegisterCommand("bunny", new Bunny());
         CoreClient.RegisterCommand("clear", new Clear());
