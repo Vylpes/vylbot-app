@@ -80,17 +80,115 @@ describe("GIVEN happy flow", () => {
 });
 
 describe("GIVEN description is null", () => {
-    test.todo("EXPECT error replied");
+    const interaction = {
+        reply: jest.fn(),
+        options: {
+            get: jest.fn().mockReturnValue({
+                value: null,
+            }),
+        },
+    } as unknown as CommandInteraction;
+
+    beforeEach(async () => {
+        await AddMoon(interaction);
+    });
+
+    test("EXPECT error replied", () => {
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("Name must be less than 255 characters!");
+    });
 });
 
 describe("GIVEN description is greater than 255 characters", () => {
-    test.todo("EXPECT error replied");
+    const optionGet = jest.fn();
+
+    const interaction = {
+        reply: jest.fn(),
+        options: {
+            get: optionGet,
+        },
+    } as unknown as CommandInteraction;
+
+    beforeEach(async () => {
+        let longString = "";
+
+        for (let i = 0; i < 30; i++) {
+            longString += "1234567890";
+        }
+
+        optionGet.mockReturnValue({
+            value: longString,
+        });
+
+        await AddMoon(interaction);
+    });
+
+    test("EXPECT error replied", () => {
+        expect(interaction.reply).toHaveBeenCalledTimes(1);
+        expect(interaction.reply).toHaveBeenCalledWith("Name must be less than 255 characters!");
+    });
 });
 
 describe("GIVEN moon count setting exists", () => {
-    test.todo("EXPECT existing entity to be updated");
+    const moonSetting = {
+        Value: "1",
+        UpdateValue: jest.fn(),
+        Save: jest.fn(),
+    };
+
+    const interaction = {
+        reply: jest.fn(),
+        options: {
+            get: jest.fn().mockReturnValue({
+                value: "Test Description",
+            }),
+        },
+        user: {
+            id: "userId",
+        },
+    } as unknown as CommandInteraction;
+
+    beforeEach(async () => {
+        UserSetting.FetchOneByKey = jest.fn().mockResolvedValue(moonSetting);
+        
+        await AddMoon(interaction);
+    });
+
+    test("EXPECT existing entity to be updated", () => {
+        expect(moonSetting.UpdateValue).toHaveBeenCalledTimes(1);
+        expect(moonSetting.UpdateValue).toHaveBeenCalledWith("2");
+    });
 });
 
 describe("GIVEN moon count setting does not exist", () => {
-    test.todo("EXPECT new entity to be created");
+    let savedSetting: UserSetting | undefined;
+
+    const interaction = {
+        reply: jest.fn(),
+        options: {
+            get: jest.fn().mockReturnValue({
+                value: "Test Description",
+            }),
+        },
+        user: {
+            id: "userId",
+        },
+    } as unknown as CommandInteraction;
+
+    beforeEach(async () => {
+        UserSetting.FetchOneByKey = jest.fn().mockResolvedValue(null);
+        UserSetting.prototype.Save = jest.fn().mockImplementation((_, setting: UserSetting) => {
+            savedSetting = setting;
+        });
+        
+        await AddMoon(interaction);
+    });
+
+    test("EXPECT new entity to be created", () => {
+        // Expect the entity to have the new entity.
+        // Probably the best way we can really imply a new entity
+        // that I can think of
+        expect(savedSetting).toBeDefined();
+        expect(savedSetting?.Value).toBe("1");
+    });
 });
