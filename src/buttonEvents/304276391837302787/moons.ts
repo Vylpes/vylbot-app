@@ -1,5 +1,5 @@
 import {ButtonInteraction} from "discord.js";
-import {ButtonEvent} from "../type/buttonEvent";
+import {ButtonEvent} from "../../type/buttonEvent";
 import List from "./moons/list";
 
 export default class Moons extends ButtonEvent {

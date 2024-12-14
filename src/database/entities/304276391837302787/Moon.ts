@@ -14,7 +14,7 @@ export default class Moon extends BaseEntity {
 
     @Column()
     MoonNumber: number;
-    
+
     @Column()
     Description: string;
 

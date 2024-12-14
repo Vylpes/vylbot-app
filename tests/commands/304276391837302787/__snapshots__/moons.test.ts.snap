@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`constructor EXPECT CommandBuilder to be defined correctly 1`] = `
+{
+  "contexts": undefined,
+  "default_member_permissions": undefined,
+  "default_permission": undefined,
+  "description": "View and create moons",
+  "description_localizations": undefined,
+  "dm_permission": undefined,
+  "integration_types": undefined,
+  "name": "moons",
+  "name_localizations": undefined,
+  "nsfw": undefined,
+  "options": [
+    {
+      "description": "List moons you have obtained",
+      "description_localizations": undefined,
+      "name": "list",
+      "name_localizations": undefined,
+      "options": [
+        {
+          "description": "The user to view (Defaults to yourself)",
+          "description_localizations": undefined,
+          "name": "user",
+          "name_localizations": undefined,
+          "required": false,
+          "type": 6,
+        },
+        {
+          "autocomplete": undefined,
+          "choices": undefined,
+          "description": "The page to start with",
+          "description_localizations": undefined,
+          "max_value": undefined,
+          "min_value": undefined,
+          "name": "page",
+          "name_localizations": undefined,
+          "required": false,
+          "type": 10,
+        },
+      ],
+      "type": 1,
+    },
+    {
+      "description": "Add a moon to your count!",
+      "description_localizations": undefined,
+      "name": "add",
+      "name_localizations": undefined,
+      "options": [
+        {
+          "autocomplete": undefined,
+          "choices": undefined,
+          "description": "What deserved a moon?",
+          "description_localizations": undefined,
+          "max_length": undefined,
+          "min_length": undefined,
+          "name": "description",
+          "name_localizations": undefined,
+          "required": true,
+          "type": 3,
+        },
+      ],
+      "type": 1,
+    },
+  ],
+  "type": 1,
+}
+`;

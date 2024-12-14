@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`constructor EXPECT settings to be configured 1`] = `
+{
+  "Id": Any<String>,
+  "Key": "key",
+  "UserId": "userId",
+  "Value": "value",
+  "WhenCreated": Any<Date>,
+  "WhenUpdated": Any<Date>,
+}
+`;
