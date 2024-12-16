@@ -1,6 +1,5 @@
 import { Client, Partials } from "discord.js";
 import * as dotenv from "dotenv";
-import { createConnection } from "typeorm";
 import { EventType } from "../constants/EventType";
 import ICommandItem from "../contracts/ICommandItem";
 import IEventItem from "../contracts/IEventItem";
@@ -12,6 +11,7 @@ import AppDataSource from "../database/dataSources/appDataSource";
 import ButtonEventItem from "../contracts/ButtonEventItem";
 import { ButtonEvent } from "../type/buttonEvent";
 import CacheHelper from "../helpers/CacheHelper";
+import TimerHelper from "../helpers/TimerHelper";
 
 export class CoreClient extends Client {
     private static _commandItems: ICommandItem[];
@@ -20,6 +20,7 @@ export class CoreClient extends Client {
 
     private _events: Events;
     private _util: Util;
+    private _timerHelper: TimerHelper;
 
     public static get commandItems(): ICommandItem[] {
         return this._commandItems;
@@ -43,6 +44,7 @@ export class CoreClient extends Client {
 
         this._events = new Events();
         this._util = new Util();
+        this._timerHelper = new TimerHelper();
     }
 
     public async start() {
@@ -52,7 +54,11 @@ export class CoreClient extends Client {
         }
 
         await AppDataSource.initialize()
-            .then(() => console.log("Data Source Initialized"))
+            .then(() => {
+                console.log("Data Source Initialized");
+
+                // this.timerHelper.AddTimer
+            })
             .catch((err) => console.error("Error Initialising Data Source", err));
 
         super.on("interactionCreate", this._events.onInteractionCreate);
