@@ -12,11 +12,14 @@ import ButtonEventItem from "../contracts/ButtonEventItem";
 import { ButtonEvent } from "../type/buttonEvent";
 import CacheHelper from "../helpers/CacheHelper";
 import TimerHelper from "../helpers/TimerHelper";
+import AutoKick from "../timers/AutoKick";
 
 export class CoreClient extends Client {
     private static _commandItems: ICommandItem[];
     private static _eventItems: IEventItem[];
     private static _buttonEvents: ButtonEventItem[];
+    private static _baseClient: Client;
+
 
     private _events: Events;
     private _util: Util;
@@ -32,6 +35,10 @@ export class CoreClient extends Client {
 
     public static get buttonEvents(): ButtonEventItem[] {
         return this._buttonEvents;
+    }
+
+    public static get baseClient(): Client {
+        return this._baseClient;
     }
 
     constructor(intents: number[], partials: Partials[]) {
@@ -57,7 +64,7 @@ export class CoreClient extends Client {
             .then(() => {
                 console.log("Data Source Initialized");
 
-                // this.timerHelper.AddTimer
+                this._timerHelper.AddTimer("*/5 * * * *", "Europe/London", AutoKick, true);
             })
             .catch((err) => console.error("Error Initialising Data Source", err));
 
@@ -72,6 +79,8 @@ export class CoreClient extends Client {
 
         this._util.loadEvents(this, CoreClient._eventItems);
         this._util.loadSlashCommands(this);
+
+        CoreClient._baseClient = this;
     }
 
     public static RegisterCommand(name: string, command: Command, serverId?: string) {
