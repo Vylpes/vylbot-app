@@ -63,10 +63,6 @@ jobs:
           && docker compose down \
           && (pm2 stop vylbot_stage || true) \
           && (pm2 delete vylbot_stage || true) \
-          && (pm2 stop vylbot_hotfix || true) \
-          && (pm2 delete vylbot_hotfix || true) \
-          && (pm2 stop vylbot_release || true) \
-          && (pm2 delete vylbot_release || true) \
           && docker compose up -d \
           && sleep 10 \
           && yarn db:up \
