@@ -11,6 +11,8 @@ export default async function AutoKick() {
         const guild = client.guilds.cache.find(x => x.id == config.ServerId) || await client.guilds.fetch(config.ServerId);
 
         if (!guild) {
+            console.error("Guild not found");
+
             continue;
         }
 
@@ -19,6 +21,8 @@ export default async function AutoKick() {
         const role = guild.roles.cache.find(x => x.id == config.RoleId);
 
         if (!role) {
+            console.error("Role not found in guild");
+
             continue;
         }
 
@@ -26,6 +30,8 @@ export default async function AutoKick() {
             const member = memberEntity[1];
 
             if (!member.kickable) {
+                console.error("Member not kickable");
+
                 continue;
             }
 
@@ -39,6 +45,8 @@ export default async function AutoKick() {
                     const channel = guild.channels.cache.find(x => x.id == config.NoticeChannelId) || await guild.channels.fetch(config.NoticeChannelId);
 
                     if (!channel?.isSendable()) {
+                        console.log("Channel not sendable");
+
                         continue;
                     }
 
@@ -60,10 +68,14 @@ export default async function AutoKick() {
                 }
             } else if (config.NoticeChannelId && config.NoticeTime) {
                 const whenToNotice = new Date(whenToKick.getTime() - config.NoticeTime);
+                whenToNotice.setMinutes(0, 0, 0);
+                whenToNotice.setHours(whenToNotice.getHours() + 1);
 
                 const channel = guild.channels.cache.find(x => x.id == config.NoticeChannelId) || await guild.channels.fetch(config.NoticeChannelId);
 
                 if (!channel?.isSendable()) {
+                    console.error("Channel not sendable");
+
                     continue;
                 }
 
@@ -71,9 +83,9 @@ export default async function AutoKick() {
                     && now.getDate() == whenToNotice.getDate()
                     && now.getHours() == whenToNotice.getHours()) {
 
-                    const nextHour = new Date(whenToNotice);
+                    const nextHour = new Date(whenToKick);
                     nextHour.setMinutes(0, 0, 0);
-                    nextHour.setHours(whenToNotice.getHours() + 1);
+                    nextHour.setHours(whenToKick.getHours() + 1);
 
                     const embed = new EmbedBuilder()
                         .setTitle("Auto Kick Notice")
