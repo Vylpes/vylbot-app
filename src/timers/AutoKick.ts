@@ -70,6 +70,11 @@ export default async function AutoKick() {
                 if (now.getMonth() == whenToNotice.getMonth()
                     && now.getDate() == whenToNotice.getDate()
                     && now.getHours() == whenToNotice.getHours()) {
+
+                    const nextHour = new Date(whenToNotice);
+                    nextHour.setMinutes(0, 0, 0);
+                    nextHour.setHours(whenToNotice.getHours() + 1);
+
                     const embed = new EmbedBuilder()
                         .setTitle("Auto Kick Notice")
                         .setColor(EmbedColours.Warning)
@@ -82,7 +87,7 @@ export default async function AutoKick() {
                             },
                             {
                                 name: "When To Kick",
-                                value: `<t:${Math.round(whenToKick.getTime() / 1000)}:R>`,
+                                value: `<t:${Math.round(nextHour.getTime() / 1000)}:R>`,
                                 inline: true,
                             },
                         ]);
