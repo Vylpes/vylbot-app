@@ -1,6 +1,5 @@
 import { Client, Partials } from "discord.js";
 import * as dotenv from "dotenv";
-import { createConnection } from "typeorm";
 import { EventType } from "../constants/EventType";
 import ICommandItem from "../contracts/ICommandItem";
 import IEventItem from "../contracts/IEventItem";
@@ -12,14 +11,18 @@ import AppDataSource from "../database/dataSources/appDataSource";
 import ButtonEventItem from "../contracts/ButtonEventItem";
 import { ButtonEvent } from "../type/buttonEvent";
 import CacheHelper from "../helpers/CacheHelper";
+import TimerHelper from "../helpers/TimerHelper";
+import AutoKick from "../timers/AutoKick";
 
 export class CoreClient extends Client {
     private static _commandItems: ICommandItem[];
     private static _eventItems: IEventItem[];
     private static _buttonEvents: ButtonEventItem[];
+    private static _baseClient: Client;
 
     private _events: Events;
     private _util: Util;
+    private _timerHelper: TimerHelper;
 
     public static get commandItems(): ICommandItem[] {
         return this._commandItems;
@@ -33,6 +36,10 @@ export class CoreClient extends Client {
         return this._buttonEvents;
     }
 
+    public static get baseClient(): Client {
+        return this._baseClient;
+    }
+
     constructor(intents: number[], partials: Partials[]) {
         super({ intents: intents, partials: partials });
         dotenv.config();
@@ -43,6 +50,7 @@ export class CoreClient extends Client {
 
         this._events = new Events();
         this._util = new Util();
+        this._timerHelper = new TimerHelper();
     }
 
     public async start() {
@@ -51,8 +59,16 @@ export class CoreClient extends Client {
             return;
         }
 
+        CoreClient._baseClient = this;
+
         await AppDataSource.initialize()
-            .then(() => console.log("Data Source Initialized"))
+            .then(() => {
+                console.log("Data Source Initialized");
+
+                this._timerHelper.AddTimer("0 * * * *", "Europe/London", AutoKick, false);
+
+                this._timerHelper.StartAllTimers();
+            })
             .catch((err) => console.error("Error Initialising Data Source", err));
 
         super.on("interactionCreate", this._events.onInteractionCreate);
