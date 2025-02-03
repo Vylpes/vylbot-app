@@ -43,7 +43,7 @@ import MessageCreate from "./events/MessageEvents/MessageCreate";
 
 // Button Event Imports
 import Verify from "./buttonEvents/verify";
-import MoonsButtonEvent from "./buttonEvents/moons";
+import MoonsButtonEvent from "./buttonEvents/304276391837302787/moons";
 
 export default class Registry {
     public static RegisterCommands() {
