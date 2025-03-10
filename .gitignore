@@ -103,6 +103,13 @@ dist
 # TernJS port file
 .tern-port
 
+# Terraform files
+.terraform
+*.tfvars
+*.tfstate
+*.tfstate.*
+s3key
+
 config.json
 .DS_Store
 ormconfig.json
