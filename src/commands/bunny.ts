@@ -1,7 +1,9 @@
 import { Command } from "../type/command";
 import randomBunny from "random-bunny";
-import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { AttachmentBuilder, CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import EmbedColours from "../constants/EmbedColours";
+import axios from "axios";
+import {createWriteStream} from "fs";
 
 export default class Bunny extends Command {
     constructor() {
@@ -31,15 +33,20 @@ export default class Bunny extends Command {
         const result = await randomBunny(selectedSubreddit, 'hot');
 
         if (result.IsSuccess) {
+            const fetchedImageData = await axios.get(result.Result!.Url, {
+                responseType: 'stream',
+            });
+            const image = new AttachmentBuilder(fetchedImageData.data, { name: "bunny.png" });
+
             const embed = new EmbedBuilder()
                 .setColor(EmbedColours.Ok)
                 .setTitle(result.Result!.Title)
                 .setDescription(result.Result!.Permalink)
-                .setImage(result.Result!.Url)
+                .setImage("attachment://bunny.png")
                 .setURL(`https://reddit.com${result.Result!.Permalink}`)
                 .setFooter({ text: `r/${selectedSubreddit} · ${result.Result!.Ups} upvotes`});
 
-            await interaction.editReply({ embeds: [ embed ]});
+            await interaction.editReply({ embeds: [ embed ],  files: [ image ]});
         } else {
             await interaction.editReply("There was an error running this command.");
         }
