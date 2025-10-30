@@ -3,7 +3,7 @@ import randomBunny from "random-bunny";
 import { AttachmentBuilder, CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import EmbedColours from "../constants/EmbedColours";
 import axios from "axios";
-import {createWriteStream} from "fs";
+import IReturnResult from "random-bunny/dist/contracts/IReturnResult";
 
 export default class Bunny extends Command {
     constructor() {
@@ -30,9 +30,22 @@ export default class Bunny extends Command {
         const random = Math.floor(Math.random() * subreddits.length);
         const selectedSubreddit = subreddits[random];
 
-        const result = await randomBunny(selectedSubreddit, 'hot');
+        let result: IReturnResult | null = null;
+        let tries = 0;
+        let validResult = false;
 
-        if (result.IsSuccess) {
+        try {
+            do {
+                result = await randomBunny(selectedSubreddit, 'hot');
+                tries++;
+                validResult = result.IsSuccess && result.Result != null && !result.Result!.Url.match(/imgur.com/);
+            } while (tries < 5 && !validResult);
+        }
+        catch {
+            validResult = false;
+        }
+
+        if (validResult && result != null) {
             const fetchedImageData = await axios.get(result.Result!.Url, {
                 responseType: 'stream',
             });
