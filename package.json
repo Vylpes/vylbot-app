@@ -1,6 +1,6 @@
 {
   "name": "vylbot-app",
-  "version": "3.2.4",
+  "version": "3.2.5",
   "description": "A discord bot made for Vylpes' Den",
   "main": "./dist/vylbot",
   "typings": "./dist",
@@ -29,14 +29,17 @@
   "dependencies": {
     "@discordjs/rest": "^2.0.0",
     "@types/uuid": "^10.0.0",
+    "@types/jest": "^29.0.0",
+    "axios": "^1.13.1",
     "cron": "^3.3.1",
     "discord.js": "^14.3.0",
     "dotenv": "^16.0.0",
     "emoji-regex": "^10.0.0",
     "minimatch": "10.0.1",
     "mysql": "^2.18.1",
-    "random-bunny": "^2.1.6",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.20",
+    "random-bunny": "^2.4.1",
+    "ts-jest": "^29.0.0"
   },
   "resolutions": {
   },
