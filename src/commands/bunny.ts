@@ -1,6 +1,6 @@
 import { Command } from "../type/command";
 import randomBunny from "random-bunny";
-import { AttachmentBuilder, CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import EmbedColours from "../constants/EmbedColours";
 import axios from "axios";
 import IReturnResult from "random-bunny/dist/contracts/IReturnResult";
@@ -59,7 +59,14 @@ export default class Bunny extends Command {
                 .setURL(`https://reddit.com${result.Result!.Permalink}`)
                 .setFooter({ text: `r/${selectedSubreddit} · ${result.Result!.Ups} upvotes`});
 
-            await interaction.editReply({ embeds: [ embed ],  files: [ image ]});
+            const row = new ActionRowBuilder<ButtonBuilder>()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`bunny delete ${interaction.user.id}`)
+                        .setLabel("Delete")
+                        .setStyle(ButtonStyle.Danger));
+
+            await interaction.editReply({ embeds: [ embed ],  files: [ image ], components: [ row ]});
         } else {
             await interaction.editReply("There was an error running this command.");
         }

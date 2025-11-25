@@ -44,6 +44,7 @@ import MessageCreate from "./events/MessageEvents/MessageCreate";
 // Button Event Imports
 import Verify from "./buttonEvents/verify";
 import MoonsButtonEvent from "./buttonEvents/304276391837302787/moons";
+import BunnyButtonEvent from "./buttonEvents/bunny";
 
 export default class Registry {
     public static RegisterCommands() {
@@ -101,5 +102,6 @@ export default class Registry {
     public static RegisterButtonEvents() {
         CoreClient.RegisterButtonEvent("verify", new Verify());
         CoreClient.RegisterButtonEvent("moons", new MoonsButtonEvent());
+        CoreClient.RegisterButtonEvent("bunny", new BunnyButtonEvent());
     }
 }
