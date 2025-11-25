@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`constructor EXPECT CommandBuilder to be defined correctly 1`] = `
+{
+  "contexts": undefined,
+  "default_member_permissions": "8",
+  "default_permission": undefined,
+  "description": "Rules-related commands",
+  "description_localizations": undefined,
+  "dm_permission": undefined,
+  "integration_types": undefined,
+  "name": "rules",
+  "name_localizations": undefined,
+  "nsfw": undefined,
+  "options": [
+    {
+      "description": "Send the rules embeds for this server",
+      "description_localizations": undefined,
+      "name": "embeds",
+      "name_localizations": undefined,
+      "options": [],
+      "type": 1,
+    },
+    {
+      "description": "Send the server verification embed button",
+      "description_localizations": undefined,
+      "name": "access",
+      "name_localizations": undefined,
+      "options": [],
+      "type": 1,
+    },
+  ],
+  "type": 1,
+}
+`;

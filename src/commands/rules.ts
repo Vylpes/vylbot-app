@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from "fs";
 import EmbedColours from "../constants/EmbedColours";
 import { Command } from "../type/command";
 import SettingsHelper from "../helpers/SettingsHelper";
+import path from "path";
 
 interface IRules {
     title?: string;
@@ -47,12 +48,14 @@ export default class Rules extends Command {
     private async SendEmbeds(interaction: CommandInteraction) {
         if (!interaction.guildId) return;
 
-        if (!existsSync(`${process.cwd()}/data/rules/${interaction.guildId}.json`)) {
+        const rulesFilePath = path.join(process.cwd(), process.env.DATA_DIR!, `/rules/${interaction.guildId}.json`);
+
+        if (!existsSync(rulesFilePath)) {
             await interaction.reply('Rules file doesn\'t exist.');
             return;
         }
 
-        const rulesFile = readFileSync(`${process.cwd()}/data/rules/${interaction.guildId}.json`).toString();
+        const rulesFile = readFileSync(rulesFilePath).toString();
         const rules = JSON.parse(rulesFile) as IRules[];
 
         const embeds: EmbedBuilder[] = [];
