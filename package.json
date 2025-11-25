@@ -41,8 +41,7 @@
     "random-bunny": "^2.4.1",
     "ts-jest": "^29.0.0"
   },
-  "resolutions": {
-  },
+  "resolutions": {},
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/node": "^22.0.0",
@@ -50,6 +49,6 @@
     "jest-mock-extended": "^3.0.7",
     "np": "^10.0.0",
     "ts-jest": "^29.2.4",
-    "typescript": "^5.0.0"
+    "typescript": "^5.9.3"
   }
 }
