@@ -1,6 +1,6 @@
 {
   "name": "vylbot-app",
-  "version": "3.2.5",
+  "version": "3.3.0",
   "description": "A discord bot made for Vylpes' Den",
   "main": "./dist/vylbot",
   "typings": "./dist",
@@ -48,6 +48,6 @@
     "jest-mock-extended": "^3.0.7",
     "np": "^10.0.0",
     "ts-jest": "^29.2.4",
-    "typescript": "^5.0.0"
+    "typescript": "^5.9.3"
   }
 }
