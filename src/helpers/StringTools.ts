@@ -1,7 +1,7 @@
 export default class StringTools {
     public static Capitalise(str: string): string {
         const words = str.split(" ");
-        let result: string[] = [];
+        const result: string[] = [];
 
         words.forEach(word => {
             const firstLetter = word.substring(0, 1).toUpperCase();
@@ -29,7 +29,7 @@ export default class StringTools {
         const characters = 'abcdefghkmnpqrstuvwxyz23456789';
         const charactersLength = characters.length;
 
-        for ( var i = 0; i < length; i++ ) {
+        for ( let i = 0; i < length; i++ ) {
           result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
 

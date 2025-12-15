@@ -1,5 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
-import EmbedColours from "../constants/EmbedColours";
+import { CommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 
 export default class Say extends Command {

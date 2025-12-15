@@ -58,17 +58,9 @@ export default class Poll extends Command {
         ]
             .filter(x => x != null);
 
-        const arrayOfNumbers = [
-            ':one:',
-            ':two:',
-            ':three:',
-            ':four:',
-            ':five:',
-        ];
-
         const reactionEmojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"];
 
-        description.forEach((value, index) => {
+        description.forEach((_, index) => {
             description[index] = `${reactionEmojis[index]} ${description[index]}`;
         });
 
@@ -84,7 +76,7 @@ export default class Poll extends Command {
 
         const message = await interaction.reply({ embeds: [ embed ]});
 
-        description.forEach(async (value, index) => {
+        description.forEach(async (_, index) => {
             await (await message.fetch()).react(reactionEmojis[index]);
         });
     }

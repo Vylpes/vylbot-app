@@ -94,6 +94,7 @@ export class CoreClient extends Client {
         CoreClient._commandItems.push(item);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type -- the function parameters can't be determined now, however the discord api will handle it
     public static RegisterEvent(eventType: EventType, func: Function) {
         const item: IEventItem = {
             EventType: eventType,

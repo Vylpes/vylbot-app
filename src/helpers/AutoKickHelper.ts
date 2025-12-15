@@ -30,7 +30,7 @@ export default class AutoKickHelper {
     public static async UnsetSetting(serverId: string) {
         const configs = await AutoKickConfig.FetchAllByServerId(serverId);
 
-        for (let config of configs) {
+        for (const config of configs) {
             await AutoKickConfig.Remove(AutoKickConfig, config);
         }
     }

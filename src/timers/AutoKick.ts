@@ -7,7 +7,7 @@ export default async function AutoKick() {
     const client = CoreClient.baseClient;
     const autoKickConfigs = await AutoKickConfig.FetchAll(AutoKickConfig);
 
-    for (let config of autoKickConfigs) {
+    for (const config of autoKickConfigs) {
         const guild = client.guilds.cache.find(x => x.id == config.ServerId) || await client.guilds.fetch(config.ServerId);
 
         if (!guild) {
@@ -26,7 +26,7 @@ export default async function AutoKick() {
             continue;
         }
 
-        for (let memberEntity of role.members) {
+        for (const memberEntity of role.members) {
             const member = memberEntity[1];
 
             if (!member.kickable) {
