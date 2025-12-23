@@ -69,7 +69,11 @@ export class CoreClient extends Client {
 
                 this._timerHelper.StartAllTimers();
             })
-            .catch((err) => console.error("Error Initialising Data Source", err));
+            .catch((err) => {
+                console.error("Error Initialising Data Source", err)
+                console.error(err);
+                throw err;
+            });
 
         super.on("interactionCreate", this._events.onInteractionCreate);
         super.on("ready", this._events.onReady);
