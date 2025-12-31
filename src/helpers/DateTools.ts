@@ -9,7 +9,7 @@ export default class DateTools {
         if (diffDays === 0) {
             ageText = "Today";
         } else if (diffDays === 1) {
-            ageText = "1 Day ago";
+            ageText = "1 day ago";
         } else if (diffDays < 7) {
             ageText = `${diffDays} days ago`;
         } else if (diffDays < 28) {
