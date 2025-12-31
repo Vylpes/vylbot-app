@@ -2,6 +2,7 @@ import { EmbedBuilder, GuildMember, TextChannel } from "discord.js";
 import EmbedColours from "../../constants/EmbedColours";
 import SettingsHelper from "../../helpers/SettingsHelper";
 import CacheHelper from "../../helpers/CacheHelper";
+import DateTools from "../../helpers/DateTools";
 
 export default async function GuildMemberRemove(member: GuildMember) {
     if (!member.guild) return;
@@ -20,7 +21,7 @@ export default async function GuildMemberRemove(member: GuildMember) {
         .addFields([
             {
                 name: 'Joined',
-                value: member.joinedAt ? member.joinedAt.toISOString() : "*none*",
+                value: member.joinedAt ? DateTools.FormatDateWithAge(member.joinedAt) : "*none*",
             }
         ]);
 

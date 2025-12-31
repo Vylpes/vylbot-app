@@ -2,6 +2,7 @@ import { EmbedBuilder, GuildMember, TextChannel } from "discord.js";
 import EmbedColours from "../../constants/EmbedColours";
 import SettingsHelper from "../../helpers/SettingsHelper";
 import CacheHelper from "../../helpers/CacheHelper";
+import DateTools from "../../helpers/DateTools";
 
 export default async function GuildMemberAdd(member: GuildMember) {
     if (!member.guild) return;
@@ -20,7 +21,7 @@ export default async function GuildMemberAdd(member: GuildMember) {
         .addFields([
             {
                 name: 'Created',
-                value: member.user.createdAt.toISOString(),
+                value: DateTools.FormatDateWithAge(member.user.createdAt),
             }
         ]);
 
