@@ -27,7 +27,8 @@ jobs:
     - name: "Copy files over to location"
       run: |
         apt update && apt install -y rsync
-        rsync -rvzP --delete . ${{ secrets.STAGE_REPO_PATH }}
+        export SSH_PASS=${{ secrets.STAGE_SSH_PASS }}
+        rsync -rvzP --delete --password-file=<(echo "$SSH_PASS") . ${{ secrets.STAGE_REPO_PATH }}
 
   deploy:
     environment: prod
