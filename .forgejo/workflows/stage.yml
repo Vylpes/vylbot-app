@@ -25,7 +25,7 @@ jobs:
     - run: yarn test
 
     - name: "Copy files over to location"
-      run: rsync -rvzP --delete . ${{ secrets.STAGE_REPO_PATH }}
+      run: /usr/bin/rsync -rvzP --delete . ${{ secrets.STAGE_REPO_PATH }}
 
   deploy:
     environment: prod
