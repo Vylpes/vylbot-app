@@ -12,7 +12,7 @@ jobs:
   build:
     environment: prod
 
-    runs-on: node
+    runs-on: debian
 
     steps:
     - uses: actions/checkout@v4
