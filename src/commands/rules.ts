@@ -48,7 +48,7 @@ export default class Rules extends Command {
     private async SendEmbeds(interaction: CommandInteraction) {
         if (!interaction.guildId) return;
 
-        const rulesFilePath = path.join(process.cwd(), process.env.DATA_DIR!, `/rules/${interaction.guildId}.json`);
+        const rulesFilePath = path.join(process.env.DATA_DIR!, `/rules/${interaction.guildId}.json`);
 
         if (!existsSync(rulesFilePath)) {
             await interaction.reply('Rules file doesn\'t exist.');
