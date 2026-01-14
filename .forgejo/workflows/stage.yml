@@ -26,7 +26,7 @@ jobs:
 
     - name: "Copy files over to location"
       run: |
-        sudo apt update && sudo apt install -y rsync
+        apt update && apt install -y rsync
         rsync -rvzP --delete . ${{ secrets.STAGE_REPO_PATH }}
 
   deploy:
