@@ -25,10 +25,15 @@ jobs:
     - run: yarn test
 
     - name: "Copy files over to location"
-      run: |
-        apt update && apt install -y rsync
-        export SSH_PASS=${{ secrets.STAGE_SSH_PASS }}
-        rsync -rvzP --delete --password-file=<(echo "$SSH_PASS") . ${{ secrets.STAGE_REPO_PATH }}
+      uses: https://github.com/burnett01/rsync-deployments@v8
+      with:
+        switches: -avzP --delete
+        path: .
+        remote_path: ${{ secrets.STAGE_RSYNC_PATH }}
+        remote_host: ${{ secrets.STAGE_SSH_HOST }}
+        remote_port: ${{ secrets.STAGE_SSH_PORT }}
+        remote_user: ${{ secrets.STAGE_SSH_USER }}
+        remote_key: ${{ secrets.STAGE_SSH_KEY }}
 
   deploy:
     environment: prod
