@@ -35,7 +35,7 @@
     "discord.js": "^14.3.0",
     "dotenv": "^16.0.0",
     "emoji-regex": "^10.0.0",
-    "minimatch": "10.0.1",
+    "minimatch": "10.2.3",
     "mysql": "^2.18.1",
     "random-bunny": "^2.4.1",
     "ts-jest": "^29.0.0",
