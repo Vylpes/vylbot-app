@@ -39,6 +39,7 @@ import MessageUpdate from "./events/MessageEvents/MessageUpdate";
 import MessageCreate from "./events/MessageEvents/MessageCreate";
 
 // Button Event Imports
+import BunnyButtonEvent from "./buttonEvents/bunny";
 import Verify from "./buttonEvents/verify";
 
 export default class Registry {
@@ -91,6 +92,7 @@ export default class Registry {
     }
 
     public static RegisterButtonEvents() {
+        CoreClient.RegisterButtonEvent("bunny", new BunnyButtonEvent());
         CoreClient.RegisterButtonEvent("verify", new Verify());
     }
 }
