@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
 import EmbedColours from "../../constants/EmbedColours";
 import SettingsHelper from "../../helpers/SettingsHelper";
 import { Command } from "../../type/command";
@@ -13,7 +13,7 @@ export default class Entry extends Command {
             .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers);
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         if (!interaction.guildId) return;
         if (!interaction.channel) return;
 

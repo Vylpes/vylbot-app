@@ -1,4 +1,4 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../../type/command";
 import { default as eLobby } from "../../../database/entities/501231711271780357/Lobby";
 
@@ -11,7 +11,7 @@ export default class Lobby extends Command {
             .setDescription('Attempt to organise a lobby');
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         if (!interaction.channelId) return;
 
         const lobby = await eLobby.FetchOneByChannelId(interaction.channelId);

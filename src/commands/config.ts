@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { readFileSync } from "fs";
 import DefaultValues from "../constants/DefaultValues";
 import EmbedColours from "../constants/EmbedColours";
@@ -52,7 +52,7 @@ export default class Config extends Command {
                     .setDescription('Lists all settings'))
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         if (!interaction.isChatInputCommand()) return;
         if (!interaction.guildId) return;
 
@@ -83,7 +83,7 @@ export default class Config extends Command {
         }
     }
 
-    private async SendHelpText(interaction: CommandInteraction) {
+    private async SendHelpText(interaction: ChatInputCommandInteraction) {
         const description = readFileSync(`${process.cwd()}/data/usage/config.txt`).toString();
 
         const embed = new EmbedBuilder()
@@ -94,7 +94,7 @@ export default class Config extends Command {
         await interaction.reply({ embeds: [ embed ]});
     }
 
-    private async GetValue(interaction: CommandInteraction) {
+    private async GetValue(interaction: ChatInputCommandInteraction) {
         if (!interaction.guildId) return;
 
         const key = interaction.options.get('key');
@@ -128,7 +128,7 @@ export default class Config extends Command {
         }
     }
 
-    private async ResetValue(interaction: CommandInteraction) {
+    private async ResetValue(interaction: ChatInputCommandInteraction) {
         if (!interaction.guildId) return;
 
         const key = interaction.options.get('key');
@@ -159,7 +159,7 @@ export default class Config extends Command {
         await interaction.reply('The setting has been reset to the default.');
     }
 
-    private async SetValue(interaction: CommandInteraction) {
+    private async SetValue(interaction: ChatInputCommandInteraction) {
         if (!interaction.guildId) return;
 
         const key = interaction.options.get('key');

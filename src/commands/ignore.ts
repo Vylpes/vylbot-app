@@ -1,4 +1,4 @@
-import { CommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import IgnoredChannel from "../database/entities/IgnoredChannel";
 import { Command } from "../type/command";
 
@@ -12,7 +12,7 @@ export default class Ignore extends Command {
             .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         if (!interaction.guildId) return;
 
         const isChannelIgnored = await IgnoredChannel.IsChannelIgnored(interaction.guildId);

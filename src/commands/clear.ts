@@ -1,4 +1,4 @@
-import { CommandInteraction, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
+import { ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
 import { Command } from "../type/command";
 
 export default class Clear extends Command {
@@ -18,7 +18,7 @@ export default class Clear extends Command {
                     .setMaxValue(100));
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         if (!interaction.isChatInputCommand()) return;
         if (!interaction.channel) return;
 

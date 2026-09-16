@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
 import { AuditType } from "../constants/AuditType";
 import EmbedColours from "../constants/EmbedColours";
 import Audit from "../database/entities/Audit";
@@ -24,7 +24,7 @@ export default class Warn extends Command {
                     .setDescription('The reason'));
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         if (!interaction.guild || !interaction.guildId) return;
 
         const targetUser = interaction.options.get('target');

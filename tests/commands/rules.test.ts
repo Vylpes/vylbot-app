@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, CommandInteraction, EmbedBuilder, TextChannel } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, TextChannel } from "discord.js";
 import Rules from "../../src/commands/rules";
 import { existsSync, readFileSync } from "fs";
 import SettingsHelper from "../../src/helpers/SettingsHelper";
@@ -26,12 +26,12 @@ describe("execute", () => {
     describe("GIVEN interaction is not a chat input command", () => {
         const rules = new Rules();
 
-        let interaction: CommandInteraction;
+        let interaction: ChatInputCommandInteraction;
 
         beforeEach(async () => {
             interaction = {
                 isChatInputCommand: jest.fn().mockReturnValue(false),
-            } as unknown as CommandInteraction;
+            } as unknown as ChatInputCommandInteraction;
 
             await rules.execute(interaction);
         });

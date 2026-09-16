@@ -1,4 +1,4 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 import { EmbedBuilder } from "@discordjs/builders";
 import EmbedColours from "../constants/EmbedColours";
@@ -39,7 +39,7 @@ export default class Poll extends Command {
                     .setDescription('Option 5'));
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         const title = interaction.options.get('title');
         const option1 = interaction.options.get('option1');
         const option2 = interaction.options.get('option2');

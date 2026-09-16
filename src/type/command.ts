@@ -1,9 +1,9 @@
-import { CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 
 export class Command {
     public CommandBuilder: any;
     
-    public execute(interaction: CommandInteraction) {
+    public execute(interaction: ChatInputCommandInteraction) {
 
     }
 }
