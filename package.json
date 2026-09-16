@@ -39,7 +39,9 @@
     "random-bunny": "^2.4.1",
     "typeorm": "^0.3.20"
   },
-  "resolutions": {},
+  "resolutions": {
+    "tmp": "^0.2.6"
+  },
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/node": "^22.0.0",
