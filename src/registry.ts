@@ -14,6 +14,7 @@ import Disable from "./commands/disable";
 import Ignore from "./commands/ignore";
 import Kick from "./commands/kick";
 import Linkonly from "./commands/linkonly";
+import Minesweeper from "./commands/minesweeper";
 import Poll from "./commands/poll";
 import Role from "./commands/Role/role";
 import ConfigRole from "./commands/Role/config";
@@ -55,6 +56,7 @@ export default class Registry {
         CoreClient.RegisterCommand("ignore", new Ignore());
         CoreClient.RegisterCommand("kick", new Kick());
         CoreClient.RegisterCommand("linkonly", new Linkonly());
+        CoreClient.RegisterCommand("minesweeper", new Minesweeper());
         CoreClient.RegisterCommand("poll", new Poll());
         CoreClient.RegisterCommand("rules", new Rules());
         CoreClient.RegisterCommand("say", new Say());
