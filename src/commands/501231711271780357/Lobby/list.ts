@@ -1,4 +1,4 @@
-import { CacheType, CommandInteraction, EmbedBuilder, GuildBasedChannel, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { CacheType, CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../../type/command";
 import { default as eLobby } from "../../../database/entities/501231711271780357/Lobby";
 import EmbedColours from "../../../constants/EmbedColours";
@@ -21,7 +21,7 @@ export default class ListLobby extends Command {
 
         const channels: eLobby[] = [];
 
-        for (let channel of interaction.guild.channels.cache.map(x => x)) {
+        for (const channel of interaction.guild.channels.cache.map(x => x)) {
             const lobby = await eLobby.FetchOneByChannelId(channel.id);
 
             if (lobby) {
@@ -34,7 +34,7 @@ export default class ListLobby extends Command {
             .setTitle("Lobbies")
             .setDescription(`Channels: ${channels.length}`);
 
-        for (let lobby of channels) {
+        for (const lobby of channels) {
             embed.addFields([
                 {
                     name: `# ${lobby.Name}`,

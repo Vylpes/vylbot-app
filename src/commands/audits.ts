@@ -112,7 +112,7 @@ export default class Audits extends Command {
             .setTitle("Audits")
             .setDescription(`Audits: ${audits.length}`);
 
-        for (let audit of audits) {
+        for (const audit of audits) {
             embed.addFields([
                 {
                     name: `${audit.AuditId} // ${AuditTools.TypeToFriendlyText(audit.AuditType)}`,

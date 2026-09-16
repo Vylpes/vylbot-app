@@ -1,7 +1,8 @@
-import { Client, REST, Routes, SlashCommandBuilder } from "discord.js";
+import { Client, REST, Routes } from "discord.js";
 import { EventType } from "../constants/EventType";
 import IEventItem from "../contracts/IEventItem";
 import { CoreClient } from "./client";
+import { CommandBuilder } from "../type/command";
 
 export class Util {
     public loadSlashCommands(client: Client) {
@@ -10,13 +11,13 @@ export class Util {
         const globalCommands = registeredCommands.filter(x => !x.ServerId);
         const guildCommands = registeredCommands.filter(x => x.ServerId);
 
-        const globalCommandData: SlashCommandBuilder[] = globalCommands
+        const globalCommandData: CommandBuilder[] = globalCommands
             .filter(x => x.Command.CommandBuilder)
             .flatMap(x => x.Command.CommandBuilder);
 
         const guildIds: string[] = [];
 
-        for (let command of guildCommands) {
+        for (const command of guildCommands) {
             if (!guildIds.find(x => x == command.ServerId)) {
                 guildIds.push(command.ServerId!);
             }
@@ -31,7 +32,7 @@ export class Util {
             }
         );
 
-        for (let guild of guildIds) {
+        for (const guild of guildIds) {
             const guildCommandData = guildCommands.filter(x => x.ServerId == guild)
                 .filter(x => x.Command.CommandBuilder)
                 .flatMap(x => x.Command.CommandBuilder);

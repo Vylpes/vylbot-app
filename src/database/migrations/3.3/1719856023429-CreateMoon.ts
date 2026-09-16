@@ -1,3 +1,4 @@
+/* eslint-disable -- Historic migration, refusing to edit */
 import { MigrationInterface, QueryRunner } from "typeorm"
 import MigrationHelper from "../../../helpers/MigrationHelper"
 
