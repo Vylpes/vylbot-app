@@ -1,4 +1,4 @@
-import { CommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../type/command";
 import { default as eRole } from "../../database/entities/Role";
 import Server from "../../database/entities/Server";
@@ -18,7 +18,7 @@ export default class ConfigRole extends Command {
                     .setRequired(true));
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         if (!interaction.guildId || !interaction.guild) return;
         if (!interaction.member) return;
 

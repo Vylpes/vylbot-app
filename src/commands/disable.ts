@@ -1,4 +1,4 @@
-import { CommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import SettingsHelper from "../helpers/SettingsHelper";
 import { Command } from "../type/command";
 
@@ -30,7 +30,7 @@ export default class Disable extends Command {
                             .setRequired(true)));
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         if (!interaction.isChatInputCommand()) return;
 
         switch (interaction.options.getSubcommand()) {
@@ -45,7 +45,7 @@ export default class Disable extends Command {
         }
     }
 
-    private async Add(interaction: CommandInteraction) {
+    private async Add(interaction: ChatInputCommandInteraction) {
         if (!interaction.guildId) return;
 
         const commandName = interaction.options.get('name');
@@ -65,7 +65,7 @@ export default class Disable extends Command {
         await interaction.reply(`Disabled command ${commandName.value}`);
     }
 
-    private async Remove(interaction: CommandInteraction) {
+    private async Remove(interaction: ChatInputCommandInteraction) {
         if (!interaction.guildId) return;
 
         const commandName = interaction.options.get('name');

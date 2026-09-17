@@ -1,4 +1,4 @@
-import { CacheType, CommandInteraction, EmbedBuilder, GuildMember, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
+import { CacheType, ChatInputCommandInteraction, EmbedBuilder, GuildMember, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
 import { AuditType } from "../constants/AuditType";
 import EmbedColours from "../constants/EmbedColours";
 import Audit from "../database/entities/Audit";
@@ -30,7 +30,7 @@ export default class Timeout extends Command {
                     .setDescription('The reason'));
     }
 
-    public override async execute(interaction: CommandInteraction<CacheType>) {
+    public override async execute(interaction: ChatInputCommandInteraction<CacheType>) {
         if (!interaction.guild || !interaction.guildId) return;
 
         // Interaction Inputs

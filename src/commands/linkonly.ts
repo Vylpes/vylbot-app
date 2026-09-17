@@ -1,4 +1,4 @@
-import { CommandInteraction, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 import { Command } from "../type/command";
 import SettingsHelper from "../helpers/SettingsHelper";
 
@@ -15,7 +15,7 @@ export default class Linkonly extends Command {
                 .setDescription("The channel"));
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         if (!interaction.guild) return;
 
         const channel = interaction.options.get("channel")?.channel;

@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
 import SettingsHelper from "../helpers/SettingsHelper";
 import StringTools from "../helpers/StringTools";
 import { Command } from "../type/command";
@@ -21,7 +21,7 @@ export default class Code extends Command {
                     .setDescription('Sends the embed with the current code to the current channel'));
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         if (!interaction.isChatInputCommand()) return;
 
         switch (interaction.options.getSubcommand()) {
@@ -34,7 +34,7 @@ export default class Code extends Command {
         }
     }
 
-    private async Randomise(interaction: CommandInteraction) {
+    private async Randomise(interaction: ChatInputCommandInteraction) {
         if (!interaction.guildId) return;
 
         const randomCode = StringTools.RandomString(5);
@@ -44,7 +44,7 @@ export default class Code extends Command {
         await interaction.reply(`Entry code has been set to \`${randomCode}\``);
     }
 
-    private async SendEmbed(interaction: CommandInteraction) {
+    private async SendEmbed(interaction: ChatInputCommandInteraction) {
         if (!interaction.guildId) return;
         if (!interaction.channel) return;
 

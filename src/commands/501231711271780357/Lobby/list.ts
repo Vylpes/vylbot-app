@@ -1,4 +1,4 @@
-import { CacheType, CommandInteraction, EmbedBuilder, GuildBasedChannel, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { CacheType, ChatInputCommandInteraction, EmbedBuilder, GuildBasedChannel, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../../type/command";
 import { default as eLobby } from "../../../database/entities/501231711271780357/Lobby";
 import EmbedColours from "../../../constants/EmbedColours";
@@ -13,7 +13,7 @@ export default class ListLobby extends Command {
             .setDefaultMemberPermissions(PermissionsBitField.Flags.ModerateMembers);
     }
 
-    public override async execute(interaction: CommandInteraction<CacheType>) {
+    public override async execute(interaction: ChatInputCommandInteraction<CacheType>) {
         if (!interaction.guild) {
             await interaction.reply('Guild not found.');
             return;

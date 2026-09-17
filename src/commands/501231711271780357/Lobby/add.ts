@@ -1,4 +1,4 @@
-import { CommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../../type/command";
 import { default as eLobby } from "../../../database/entities/501231711271780357/Lobby";
 
@@ -32,7 +32,7 @@ export default class AddRole extends Command {
                     .setRequired(true));
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         const channel = interaction.options.get('channel');
         const role = interaction.options.get('role');
         const cooldown = interaction.options.get('cooldown');

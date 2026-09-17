@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import EmbedColours from "../constants/EmbedColours";
 import { Command } from "../type/command";
 
@@ -16,7 +16,7 @@ export default class Say extends Command {
                     .setRequired(true));
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         const message = interaction.options.get("message", true);
 
         await interaction.reply(message.value as string);

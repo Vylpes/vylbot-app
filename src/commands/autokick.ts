@@ -1,4 +1,4 @@
-import {ChatInputCommandInteraction, CommandInteraction, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder} from "discord.js";
+import {ChatInputCommandInteraction, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder} from "discord.js";
 import {Command} from "../type/command";
 import TimeLengthInput from "../helpers/TimeLengthInput";
 import AutoKickHelper from "../helpers/AutoKickHelper";
@@ -33,7 +33,7 @@ export default class Autokick extends Command {
                 .setDescription("Unset the current configuration"));
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         if (!interaction.isChatInputCommand()) return;
 
         const subcommand = interaction.options.getSubcommand();

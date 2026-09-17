@@ -1,4 +1,4 @@
-import { CommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import Server from "../database/entities/Server";
 import { Command } from "../type/command";
 
@@ -12,7 +12,7 @@ export default class Setup extends Command {
             .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         if (!interaction.guildId) return;
 
         const server = await Server.FetchOneById(Server, interaction.guildId);

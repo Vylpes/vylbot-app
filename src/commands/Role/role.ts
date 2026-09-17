@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder, GuildMemberRoleManager, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, GuildMemberRoleManager, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../type/command";
 import { default as eRole } from "../../database/entities/Role";
 import EmbedColours from "../../constants/EmbedColours";
@@ -25,7 +25,7 @@ export default class Role extends Command {
                     .setDescription('List togglable roles'));
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         if (!interaction.isChatInputCommand()) return;
 
         switch (interaction.options.getSubcommand()) {
@@ -40,7 +40,7 @@ export default class Role extends Command {
         }
     }
 
-    private async SendRolesList(interaction: CommandInteraction) {
+    private async SendRolesList(interaction: ChatInputCommandInteraction) {
         const roles = await this.GetRolesList(interaction);
 
         const embed = new EmbedBuilder()
@@ -51,7 +51,7 @@ export default class Role extends Command {
         await interaction.reply({ embeds: [ embed ]});
     }
 
-    private async ToggleRole(interaction: CommandInteraction) {
+    private async ToggleRole(interaction: ChatInputCommandInteraction) {
         if (!interaction.guild) return;
         if (!interaction.member) return;
 
@@ -89,7 +89,7 @@ export default class Role extends Command {
         }
     }
 
-    private async GetRolesList(interaction: CommandInteraction): Promise<string[]> {
+    private async GetRolesList(interaction: ChatInputCommandInteraction): Promise<string[]> {
         if (!interaction.guildId || !interaction.guild) return [];
 
         const rolesArray = await eRole.FetchAllByServerId(interaction.guildId);

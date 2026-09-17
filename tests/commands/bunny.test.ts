@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import Bunny from "../../src/commands/bunny";
 import randomBunny from "random-bunny";
 import axios from "axios";
@@ -10,7 +10,7 @@ const mockRandomBunny = randomBunny as jest.MockedFunction<typeof randomBunny>;
 const mockAxios = axios as jest.Mocked<typeof axios>;
 
 describe("GIVEN a successful fetch", () => {
-    let interaction: CommandInteraction;
+    let interaction: ChatInputCommandInteraction;
     let editReplySpy: jest.Mock;
     let deferReplySpy: jest.Mock;
 
@@ -25,7 +25,7 @@ describe("GIVEN a successful fetch", () => {
             user: {
                 id: "userId123",
             },
-        } as unknown as CommandInteraction;
+        } as unknown as ChatInputCommandInteraction;
 
         mockRandomBunny.mockResolvedValue({
             IsSuccess: true,
@@ -75,7 +75,7 @@ describe("GIVEN a successful fetch", () => {
 });
 
 describe("GIVEN randomBunny fails", () => {
-    let interaction: CommandInteraction;
+    let interaction: ChatInputCommandInteraction;
     let editReplySpy: jest.Mock;
 
     beforeEach(async () => {
@@ -88,7 +88,7 @@ describe("GIVEN randomBunny fails", () => {
             user: {
                 id: "userId123",
             },
-        } as unknown as CommandInteraction;
+        } as unknown as ChatInputCommandInteraction;
 
         mockRandomBunny.mockResolvedValue({
             IsSuccess: false,
@@ -106,7 +106,7 @@ describe("GIVEN randomBunny fails", () => {
 });
 
 describe("GIVEN randomBunny throws an error", () => {
-    let interaction: CommandInteraction;
+    let interaction: ChatInputCommandInteraction;
     let editReplySpy: jest.Mock;
 
     beforeEach(async () => {
@@ -119,7 +119,7 @@ describe("GIVEN randomBunny throws an error", () => {
             user: {
                 id: "userId123",
             },
-        } as unknown as CommandInteraction;
+        } as unknown as ChatInputCommandInteraction;
 
         mockRandomBunny.mockRejectedValue(new Error("API Error"));
 
@@ -134,14 +134,14 @@ describe("GIVEN randomBunny throws an error", () => {
 });
 
 describe("GIVEN interaction is not a chat input command", () => {
-    let interaction: CommandInteraction;
+    let interaction: ChatInputCommandInteraction;
 
     beforeEach(async () => {
         mockRandomBunny.mockClear();
         
         interaction = {
             isChatInputCommand: jest.fn().mockReturnValue(false),
-        } as unknown as CommandInteraction;
+        } as unknown as ChatInputCommandInteraction;
 
         const bunny = new Bunny();
         await bunny.execute(interaction);

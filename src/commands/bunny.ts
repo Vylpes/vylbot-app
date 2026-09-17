@@ -1,6 +1,6 @@
 import { Command } from "../type/command";
 import randomBunny from "random-bunny";
-import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import EmbedColours from "../constants/EmbedColours";
 import axios from "axios";
 import IReturnResult from "random-bunny/dist/contracts/IReturnResult";
@@ -14,7 +14,7 @@ export default class Bunny extends Command {
             .setDescription("Get a random picture of a rabbit.");
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         if (!interaction.isChatInputCommand()) return;
 
         await interaction.deferReply();

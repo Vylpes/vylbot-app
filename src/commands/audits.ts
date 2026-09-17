@@ -1,7 +1,7 @@
 import Audit from "../database/entities/Audit";
 import AuditTools from "../helpers/AuditTools";
 import { Command } from "../type/command";
-import { CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { AuditType } from "../constants/AuditType";
 import EmbedColours from "../constants/EmbedColours";
 
@@ -69,7 +69,7 @@ export default class Audits extends Command {
 
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         if (!interaction.isChatInputCommand()) return;
 
         switch (interaction.options.getSubcommand()) {
@@ -90,7 +90,7 @@ export default class Audits extends Command {
         }
     }
 
-    private async SendAuditForUser(interaction: CommandInteraction) {
+    private async SendAuditForUser(interaction: ChatInputCommandInteraction) {
         if (!interaction.guildId) return;
 
         const user = interaction.options.get('target', true).user!;
@@ -124,7 +124,7 @@ export default class Audits extends Command {
         await interaction.reply({ embeds: [ embed ]});
     }
 
-    private async SendAudit(interaction: CommandInteraction) {
+    private async SendAudit(interaction: ChatInputCommandInteraction) {
         if (!interaction.guildId) return;
 
         const auditId = interaction.options.get('auditid');
@@ -166,7 +166,7 @@ export default class Audits extends Command {
             await interaction.reply({ embeds: [ embed ]});
     }
 
-    private async ClearAudit(interaction: CommandInteraction) {
+    private async ClearAudit(interaction: ChatInputCommandInteraction) {
         if (!interaction.guildId) return;
 
         const auditId = interaction.options.get('auditid');
@@ -188,7 +188,7 @@ export default class Audits extends Command {
         await interaction.reply("Audit cleared.");
     }
 
-    private async AddAudit(interaction: CommandInteraction) {
+    private async AddAudit(interaction: ChatInputCommandInteraction) {
         if (!interaction.guildId) return;
 
         const user = interaction.options.get('target', true).user!;

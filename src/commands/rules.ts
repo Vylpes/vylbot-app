@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, EmbedBuilder, PermissionsBitField, SlashCommandBuilder, TextChannel } from "discord.js";
 import { existsSync, readFileSync } from "fs";
 import EmbedColours from "../constants/EmbedColours";
 import { Command } from "../type/command";
@@ -30,7 +30,7 @@ export default class Rules extends Command {
                     .setDescription('Send the server verification embed button'));
     }
 
-    public override async execute(interaction: CommandInteraction) {
+    public override async execute(interaction: ChatInputCommandInteraction) {
         if (!interaction.isChatInputCommand()) return;
 
         switch (interaction.options.getSubcommand()) {
@@ -45,7 +45,7 @@ export default class Rules extends Command {
         }
     }
 
-    private async SendEmbeds(interaction: CommandInteraction) {
+    private async SendEmbeds(interaction: ChatInputCommandInteraction) {
         if (!interaction.guildId) return;
 
         const rulesFilePath = path.join(process.env.DATA_DIR!, `/rules/${interaction.guildId}.json`);
@@ -99,7 +99,7 @@ export default class Rules extends Command {
         await interaction.reply({ embeds: [ successEmbed ], ephemeral: true });
     }
 
-    private async SendAccessButton(interaction: CommandInteraction) {
+    private async SendAccessButton(interaction: ChatInputCommandInteraction) {
         if (!interaction.guildId) return;
 
         const buttonLabel = await SettingsHelper.GetSetting("rules.access.label", interaction.guildId);
