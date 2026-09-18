@@ -79,12 +79,6 @@ describe('Minesweeper', () => {
         });
 
         test('EXPECT numbers to correctly count adjacent mines', () => {
-            const grid = [
-                ['M', '0', '0'],
-                ['0', '0', '0'],
-                ['0', '0', '0']
-            ];
-
             jest.spyOn(Math, 'random').mockReturnValue(0);
             const result = minesweeper.generateGrid(3, 3, 1);
 
