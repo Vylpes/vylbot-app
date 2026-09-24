@@ -1,12 +1,9 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import Bunny from "../../src/commands/bunny";
-import randomBunny from "random-bunny";
 import axios from "axios";
 
-jest.mock("random-bunny");
 jest.mock("axios");
 
-const mockRandomBunny = randomBunny as jest.MockedFunction<typeof randomBunny>;
 const mockAxios = axios as jest.Mocked<typeof axios>;
 
 describe("GIVEN a successful fetch", () => {
@@ -27,19 +24,18 @@ describe("GIVEN a successful fetch", () => {
             },
         } as unknown as ChatInputCommandInteraction;
 
-        mockRandomBunny.mockResolvedValue({
-            IsSuccess: true,
-            Result: {
-                Url: "https://example.com/bunny.jpg",
-                Title: "Cute Bunny",
-                Permalink: "/r/rabbits/comments/123/cute_bunny",
-                Ups: 100,
-            },
-        } as any);
-
-        mockAxios.get.mockResolvedValue({
-            data: "image-stream-data",
-        } as any);
+        mockAxios.get
+            .mockResolvedValueOnce({
+                data: {
+                    _id: "abc123",
+                    breed: "french lop",
+                    url: "https://example.com/bunny.jpg",
+                    urlId: "a9e1bb20",
+                },
+            } as any)
+            .mockResolvedValueOnce({
+                data: "image-stream-data",
+            } as any);
 
         const bunny = new Bunny();
         await bunny.execute(interaction);
@@ -49,13 +45,19 @@ describe("GIVEN a successful fetch", () => {
         expect(deferReplySpy).toHaveBeenCalledTimes(1);
     });
 
-    test("EXPECT randomBunny to be called", () => {
-        expect(mockRandomBunny).toHaveBeenCalled();
+    test("EXPECT Rabbit API to be called", () => {
+        expect(mockAxios.get).toHaveBeenCalledWith("https://rabbit-api-two.vercel.app/api/random");
+    });
+
+    test("EXPECT image URL to be fetched", () => {
+        expect(mockAxios.get).toHaveBeenCalledWith("https://example.com/bunny.jpg", {
+            responseType: "stream",
+        });
     });
 
     test("EXPECT reply with embed, image and delete button", () => {
         expect(editReplySpy).toHaveBeenCalledTimes(1);
-        
+
         const reply = editReplySpy.mock.calls[0][0];
         expect(reply.embeds).toBeDefined();
         expect(reply.embeds.length).toBe(1);
@@ -63,10 +65,14 @@ describe("GIVEN a successful fetch", () => {
         expect(reply.files.length).toBe(1);
         expect(reply.components).toBeDefined();
         expect(reply.components.length).toBe(1);
-        
+
+        const embed = reply.embeds[0] as EmbedBuilder;
+        expect(embed.data.title).toBe("French Lop");
+        expect(embed.data.footer?.text).toBe("via Rabbit API");
+
         const actionRow = reply.components[0];
         expect(actionRow.components.length).toBe(1);
-        
+
         const button = actionRow.components[0].data;
         expect(button.custom_id).toBe("bunny delete userId123");
         expect(button.label).toBe("Delete");
@@ -74,12 +80,13 @@ describe("GIVEN a successful fetch", () => {
     });
 });
 
-describe("GIVEN randomBunny fails", () => {
+describe("GIVEN Rabbit API returns no url", () => {
     let interaction: ChatInputCommandInteraction;
     let editReplySpy: jest.Mock;
 
     beforeEach(async () => {
         editReplySpy = jest.fn();
+        mockAxios.get.mockReset();
 
         interaction = {
             isChatInputCommand: jest.fn().mockReturnValue(true),
@@ -90,9 +97,13 @@ describe("GIVEN randomBunny fails", () => {
             },
         } as unknown as ChatInputCommandInteraction;
 
-        mockRandomBunny.mockResolvedValue({
-            IsSuccess: false,
-            Result: null,
+        mockAxios.get.mockResolvedValue({
+            data: {
+                _id: "abc123",
+                breed: "hotot",
+                url: "",
+                urlId: "xyz",
+            },
         } as any);
 
         const bunny = new Bunny();
@@ -101,16 +112,17 @@ describe("GIVEN randomBunny fails", () => {
 
     test("EXPECT error message to be replied", () => {
         expect(editReplySpy).toHaveBeenCalledTimes(1);
-        expect(editReplySpy).toHaveBeenCalledWith("There was an error running this command.");
+        expect(editReplySpy).toHaveBeenCalledWith("Sorry, I couldn't fetch a bunny image right now. Please try again later.");
     });
 });
 
-describe("GIVEN randomBunny throws an error", () => {
+describe("GIVEN Rabbit API throws an error", () => {
     let interaction: ChatInputCommandInteraction;
     let editReplySpy: jest.Mock;
 
     beforeEach(async () => {
         editReplySpy = jest.fn();
+        mockAxios.get.mockReset();
 
         interaction = {
             isChatInputCommand: jest.fn().mockReturnValue(true),
@@ -121,7 +133,7 @@ describe("GIVEN randomBunny throws an error", () => {
             },
         } as unknown as ChatInputCommandInteraction;
 
-        mockRandomBunny.mockRejectedValue(new Error("API Error"));
+        mockAxios.get.mockRejectedValue(new Error("API Error"));
 
         const bunny = new Bunny();
         await bunny.execute(interaction);
@@ -129,7 +141,45 @@ describe("GIVEN randomBunny throws an error", () => {
 
     test("EXPECT error message to be replied", () => {
         expect(editReplySpy).toHaveBeenCalledTimes(1);
-        expect(editReplySpy).toHaveBeenCalledWith("There was an error running this command.");
+        expect(editReplySpy).toHaveBeenCalledWith("Sorry, I couldn't fetch a bunny image right now. Please try again later.");
+    });
+});
+
+describe("GIVEN image download throws an error", () => {
+    let interaction: ChatInputCommandInteraction;
+    let editReplySpy: jest.Mock;
+
+    beforeEach(async () => {
+        editReplySpy = jest.fn();
+        mockAxios.get.mockReset();
+
+        interaction = {
+            isChatInputCommand: jest.fn().mockReturnValue(true),
+            deferReply: jest.fn(),
+            editReply: editReplySpy,
+            user: {
+                id: "userId123",
+            },
+        } as unknown as ChatInputCommandInteraction;
+
+        mockAxios.get
+            .mockResolvedValueOnce({
+                data: {
+                    _id: "abc123",
+                    breed: "rex",
+                    url: "https://example.com/bunny.jpg",
+                    urlId: "xyz",
+                },
+            } as any)
+            .mockRejectedValueOnce(new Error("Download failed"));
+
+        const bunny = new Bunny();
+        await bunny.execute(interaction);
+    });
+
+    test("EXPECT error message to be replied", () => {
+        expect(editReplySpy).toHaveBeenCalledTimes(1);
+        expect(editReplySpy).toHaveBeenCalledWith("Sorry, I couldn't fetch a bunny image right now. Please try again later.");
     });
 });
 
@@ -137,8 +187,8 @@ describe("GIVEN interaction is not a chat input command", () => {
     let interaction: ChatInputCommandInteraction;
 
     beforeEach(async () => {
-        mockRandomBunny.mockClear();
-        
+        mockAxios.get.mockClear();
+
         interaction = {
             isChatInputCommand: jest.fn().mockReturnValue(false),
         } as unknown as ChatInputCommandInteraction;
@@ -148,6 +198,6 @@ describe("GIVEN interaction is not a chat input command", () => {
     });
 
     test("EXPECT function to return early", () => {
-        expect(mockRandomBunny).not.toHaveBeenCalled();
+        expect(mockAxios.get).not.toHaveBeenCalled();
     });
 });
