@@ -56,7 +56,22 @@ export default class Rules extends Command {
         }
 
         const rulesFile = readFileSync(rulesFilePath).toString();
-        const rules = JSON.parse(rulesFile) as IRules[];
+
+        let rules: IRules[];
+
+        try {
+            rules = JSON.parse(rulesFile) as IRules[];
+        } catch (error) {
+            const message = error instanceof SyntaxError
+                ? error.message
+                : "Unknown error while parsing rules file.";
+
+            await interaction.reply({
+                content: `Rules file contains invalid JSON: ${message}`,
+                ephemeral: true,
+            });
+            return;
+        }
 
         const embeds: EmbedBuilder[] = [];
 
