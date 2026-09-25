@@ -1,9 +1,16 @@
 import { Command } from "../type/command";
-import randomBunny from "random-bunny";
 import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import EmbedColours from "../constants/EmbedColours";
 import axios from "axios";
-import IReturnResult from "random-bunny/dist/contracts/IReturnResult";
+
+interface RabbitApiResponse {
+    _id: string;
+    breed: string;
+    url: string;
+    urlId: string;
+}
+
+const RABBIT_API_URL = "https://rabbit-api-two.vercel.app/api/random";
 
 export default class Bunny extends Command {
     constructor() {
@@ -19,45 +26,31 @@ export default class Bunny extends Command {
 
         await interaction.deferReply();
 
-        const subreddits = [
-            'rabbits',
-            'bunnieswithhats',
-            'buncomfortable',
-            'bunnytongues',
-            'dutchbunnymafia',
-        ];
-
-        const random = Math.floor(Math.random() * subreddits.length);
-        const selectedSubreddit = subreddits[random];
-
-        let result: IReturnResult | null = null;
-        let tries = 0;
-        let validResult = false;
-
         try {
-            do {
-                result = await randomBunny(selectedSubreddit, 'hot');
-                tries++;
-                validResult = result.IsSuccess && result.Result != null && !result.Result!.Url.match(/imgur.com/);
-            } while (tries < 5 && !validResult);
-        }
-        catch {
-            validResult = false;
-        }
+            const { data } = await axios.get<RabbitApiResponse>(RABBIT_API_URL);
 
-        if (validResult && result != null) {
-            const fetchedImageData = await axios.get(result.Result!.Url, {
-                responseType: 'stream',
+            if (!data?.url) {
+                await interaction.editReply("Sorry, I couldn't fetch a bunny image right now. Please try again later.");
+                return;
+            }
+
+            const fetchedImageData = await axios.get(data.url, {
+                responseType: "stream",
             });
             const image = new AttachmentBuilder(fetchedImageData.data, { name: "bunny.png" });
 
+            const breedTitle = data.breed
+                ? data.breed
+                    .split(" ")
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(" ")
+                : "Bunny";
+
             const embed = new EmbedBuilder()
                 .setColor(EmbedColours.Ok)
-                .setTitle(result.Result!.Title)
-                .setDescription(result.Result!.Permalink)
+                .setTitle(breedTitle)
                 .setImage("attachment://bunny.png")
-                .setURL(`https://reddit.com${result.Result!.Permalink}`)
-                .setFooter({ text: `r/${selectedSubreddit} · ${result.Result!.Ups} upvotes`});
+                .setFooter({ text: "via Rabbit API" });
 
             const row = new ActionRowBuilder<ButtonBuilder>()
                 .addComponents(
@@ -66,9 +59,9 @@ export default class Bunny extends Command {
                         .setLabel("Delete")
                         .setStyle(ButtonStyle.Danger));
 
-            await interaction.editReply({ embeds: [ embed ],  files: [ image ], components: [ row ]});
-        } else {
-            await interaction.editReply("There was an error running this command.");
+            await interaction.editReply({ embeds: [ embed ], files: [ image ], components: [ row ] });
+        } catch {
+            await interaction.editReply("Sorry, I couldn't fetch a bunny image right now. Please try again later.");
         }
     }
 }
