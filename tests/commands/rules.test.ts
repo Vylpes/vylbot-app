@@ -238,6 +238,45 @@ describe("SendEmbeds via execute", () => {
         });
     });
 
+    describe("GIVEN rules file contains invalid JSON", () => {
+        const rules = new Rules();
+
+        let interaction: ChatInputCommandInteraction;
+
+        beforeEach(async () => {
+            process.env.DATA_DIR = "data";
+
+            (existsSync as jest.Mock).mockReturnValue(true);
+            (readFileSync as jest.Mock).mockReturnValue("{ invalid json");
+
+            interaction = {
+                isChatInputCommand: jest.fn().mockReturnValue(true),
+                guildId: "test-guild-id",
+                options: {
+                    getSubcommand: jest.fn().mockReturnValue("embeds"),
+                },
+                reply: jest.fn(),
+            } as unknown as ChatInputCommandInteraction;
+
+            await rules.execute(interaction);
+        });
+
+        test("EXPECT existsSync to have been called", () => {
+            expect(existsSync).toHaveBeenCalledTimes(1);
+        });
+
+        test("EXPECT readFileSync to have been called", () => {
+            expect(readFileSync).toHaveBeenCalledTimes(1);
+        });
+
+        test("EXPECT interaction.reply to be called with JSON error message", () => {
+            expect(interaction.reply).toHaveBeenCalledTimes(1);
+            const args = (interaction.reply as jest.Mock).mock.calls[0][0];
+            expect(args.ephemeral).toBe(true);
+            expect(args.content).toMatch(/^Rules file contains invalid JSON: /);
+        });
+    });
+
     describe("GIVEN channel is not found", () => {
         const rules = new Rules();
 
